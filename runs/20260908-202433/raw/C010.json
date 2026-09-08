@@ -1,0 +1,19 @@
+{
+  "id": "C010",
+  "category": "normal",
+  "question": "怎么把一个查询参数声明为可选？请给出代码，并说明判断依据是什么。",
+  "answer": "根据文档，把查询参数声明为可选的方式是**给它设置默认值 `None`**。\n\n## 代码示例\n\n文档中 `docs_src/query_params/tutorial002_py310.py` 的例子：\n\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/items/{item_id}\")\nasync def read_item(item_id: str, q: str | None = None):\n    if q:\n        return {\"item_id\": item_id, \"q\": q}\n    return {\"item_id\": item_id}\n```\n\n在这个例子中，函数参数 `q` 就是可选的，默认值为 `None`。\n\n## 判断依据\n\n文档中明确说明了以下几点：\n\n1. **Optional parameters 一节**指出：\n   > \"The same way, you can declare optional query parameters, by setting their default to `None`\"\n   > （同样地，你可以通过把默认值设为 `None` 来声明可选的查询参数。）\n\n   > \"In this case, the function parameter `q` will be optional, and will be `None` by default.\"\n   > （在这种情况下，函数参数 `q` 将是可选的，默认值为 `None`。）\n\n2. **Required query parameters 一节**进一步说明：\n   > \"When you declare a default value for non-path parameters (for now, we have only seen query parameters), then it is not required.\"\n   > （当你为非路径参数声明了默认值时，它就不是必需的。）\n\n   > \"If you don't want to add a specific value but just make it optional, set the default as `None`.\"\n   > （如果你不想指定具体值，只是想让它可选，就把默认值设为 `None`。）\n\n3. **Request Body 文档中的 note** 也补充了 FastAPI 判断\"非必需\"的机制：\n   > \"FastAPI will know that the value of `q` is not required because of the default value `= None`.\"\n   > \"The `str | None` is not used by FastAPI to determine that the value is not required, it will know it's not required because it has a default value of `= None`.\"\n\n   也就是说，**FastAPI 判断参数是否必需，依据的是\"有没有默认值\"，而不是类型注解里的 `| None`**。类型注解 `str | None` 只是为了让编辑器提供更好的类型支持。\n\n## 小结\n\n- 声明可选查询参数：设置默认值 `= None`。\n- 判断依据：**有默认值 → 非必需（可选）；没有默认值 → 必需**。",
+  "case_sha256": "4792506103c3",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13199,
+  "completion_tokens": 537,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.91,
+  "raw_id": "a7a1c08d-a071-4a68-9270-933937f68d13"
+}

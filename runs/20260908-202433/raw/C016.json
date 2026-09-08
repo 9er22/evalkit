@@ -1,0 +1,19 @@
+{
+  "id": "C016",
+  "category": "normal",
+  "question": "response_model 应该写在哪里？能写在路径操作函数的参数里吗？",
+  "answer": "`response_model` 不能写在路径操作函数的参数里，它是**路径操作装饰器**（`get`、`post`、`put`、`delete` 等）的参数。\n\n文档中的说明：\n\n> Notice that `response_model` is a parameter of the \"decorator\" method (`get`, `post`, etc). Not of your *path operation function*, like all the parameters and body.\n\n用法示例：\n\n```python\n@app.post(\"/items/\", response_model=Item)\nasync def create_item(item: Item) -> Any:\n    return item\n\n\n@app.get(\"/items/\", response_model=list[Item])\nasync def read_items() -> Any:\n    return [\n        {\"name\": \"Portal Gun\", \"price\": 42.0},\n        {\"name\": \"Plumbus\", \"price\": 32.0},\n    ]\n```\n\n补充几点文档提到的相关内容：\n\n- `response_model` 接收的类型和 Pydantic 模型字段的类型一样，可以是 Pydantic 模型，也可以是 Pydantic 模型的 `list`（如 `List[Item]`）。\n- 如果同时声明了返回类型注解和 `response_model`，`response_model` 优先级更高。\n- 可以用 `response_model=None` 来禁用该路径操作的响应模型生成。",
+  "case_sha256": "bf17a82c6d34",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13195,
+  "completion_tokens": 267,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.14,
+  "raw_id": "f9a273f0-ec78-4a36-9c2a-4916f0821449"
+}

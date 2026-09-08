@@ -1,0 +1,19 @@
+{
+  "id": "C020",
+  "category": "edge",
+  "question": "怎么把路径参数 item_id 的取值范围限制在 1 到 10 之间？",
+  "answer": "这份文档没有讲到。\n\n文档里关于路径参数（Path Parameters）只覆盖了这些内容：\n\n- 用 `{item_id}` 声明路径参数\n- 用 Python 类型注解声明类型（如 `item_id: int`），从而获得数据转换和校验\n- 用 `Enum` 来限定路径参数的**预定义可选值**（例如 `ModelName` 的 `alexnet`/`resnet`/`lenet`）\n- 路径顺序、包含路径的路径参数（`:path`）等\n\n文档中**没有**提到如何给路径参数设置数值范围（如 1 到 10 这样的最小/最大值约束），也没有出现 `Path`、`ge`、`le`、`gt`、`lt` 之类的参数或用法。因此无法依据这份文档回答该问题。",
+  "case_sha256": "d10419c4ac4c",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13201,
+  "completion_tokens": 180,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.11,
+  "raw_id": "daacf625-a19c-4243-8af0-41fdd5d69185"
+}

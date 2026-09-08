@@ -1,0 +1,19 @@
+{
+  "id": "C024",
+  "category": "edge",
+  "question": "用 FastAPI 怎么接收客户端上传的文件？",
+  "answer": "这份文档没有讲到。文档内容只涉及路径参数、查询参数、请求体（Pydantic 模型）和响应模型，没有提到文件上传的相关内容。",
+  "case_sha256": "3259d72ce605",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13182,
+  "completion_tokens": 35,
+  "reasoning_tokens": null,
+  "elapsed_sec": 0.8,
+  "raw_id": "99325918-1741-428a-af55-5916438c3451"
+}

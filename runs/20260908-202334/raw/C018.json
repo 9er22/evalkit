@@ -1,0 +1,19 @@
+{
+  "id": "C018",
+  "category": "normal",
+  "question": "response_model_exclude_unset=True 是干什么的？用它请求 id 为 foo 的 item，会返回什么？",
+  "answer": "根据文档，`response_model_exclude_unset=True` 是 *path operation decorator* 的一个参数，作用是：**在响应中不包含那些未实际设置、而是使用了默认值的字段**，只返回实际被设置过的值。\n\n文档中给出的例子是：\n\n```python\n@app.get(\"/items/{item_id}\", response_model=Item, response_model_exclude_unset=True)\nasync def read_item(item_id: str):\n    return items[item_id]\n```\n\n其中 `items` 字典里 `foo` 对应的数据是：\n\n```python\n{\"name\": \"Foo\", \"price\": 50.2}\n```\n\n文档明确说明：如果对该 *path operation* 发送请求，获取 ID 为 `foo` 的 item，响应（不包含默认值）将是：\n\n```JSON\n{\n    \"name\": \"Foo\",\n    \"price\": 50.2\n}\n```\n\n也就是说，`description`、`tax`、`tags` 这些有默认值的字段不会出现在响应中，因为它们没有被实际设置。",
+  "case_sha256": "2b798bd913b5",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13214,
+  "completion_tokens": 217,
+  "reasoning_tokens": null,
+  "elapsed_sec": 2.39,
+  "raw_id": "910a9635-49e5-44ed-ad21-29aa0a716971"
+}

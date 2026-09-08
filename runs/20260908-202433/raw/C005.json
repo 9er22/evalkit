@@ -1,0 +1,19 @@
+{
+  "id": "C005",
+  "category": "normal",
+  "question": "想让一个路径参数只接受几个预设的固定值，文档推荐怎么做？请写出 Enum 类的定义方式。",
+  "answer": "文档推荐使用标准的 Python `Enum`（枚举）来实现这个需求。\n\n具体做法是：导入 `Enum`，然后创建一个同时继承自 `str` 和 `Enum` 的子类。继承 `str` 可以让 API 文档知道这些值必须是字符串类型，并能正确渲染。然后创建带有固定值的类属性，这些就是可用的合法值。\n\n文档中的 `Enum` 类定义方式如下：\n\n```python\nfrom enum import Enum\n\nfrom fastapi import FastAPI\n\n\nclass ModelName(str, Enum):\n    alexnet = \"alexnet\"\n    resnet = \"resnet\"\n    lenet = \"lenet\"\n```\n\n然后在路径操作中，用这个枚举类作为路径参数的类型注解：\n\n```python\n@app.get(\"/models/{model_name}\")\nasync def get_model(model_name: ModelName):\n    if model_name is ModelName.alexnet:\n        return {\"model_name\": model_name, \"message\": \"Deep Learning FTW!\"}\n\n    if model_name.value == \"lenet\":\n        return {\"model_name\": model_name, \"message\": \"LeCNN all the images\"}\n\n    return {\"model_name\": model_name, \"message\": \"Have some residuals\"}\n```\n\n依据：文档 \"Path Parameters\" 章节的 \"Predefined values\" 部分（`docs/en/docs/tutorial/path-params.md`）。\n\n补充几点文档提到的要点：\n- 路径参数的值会是一个**枚举成员**（enumeration member）。\n- 可以用 `model_name is ModelName.alexnet` 这样的方式比较枚举成员。\n- 可以用 `model_name.value`（或 `ModelName.lenet.value`）获取实际的字符串值。\n- 因为可用值是预定义的，交互式文档会很好地展示它们。",
+  "case_sha256": "52e551eed11b",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13211,
+  "completion_tokens": 362,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.63,
+  "raw_id": "7519ebf5-f7c4-47ad-a1ed-5d56dd7749e4"
+}

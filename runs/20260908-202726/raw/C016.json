@@ -1,0 +1,19 @@
+{
+  "id": "C016",
+  "category": "normal",
+  "question": "response_model 应该写在哪里？能写在路径操作函数的参数里吗？",
+  "answer": "_model 应该写在**路径操作装饰器**的参数里，例如 `@app.get()`、`@app.post()`、`@app.put()` 等，而不是写在路径操作函数的参数里。\n\n文档中明确说明：\n\n> Notice that `response_model` is a parameter of the \"decorator\" method (`get`, `post`, etc). Not of your *path operation function*, like all the parameters and body.\n\n也就是说，`response_model` 是装饰器方法的参数，不是路径操作函数的参数。路径操作函数的参数用于声明路径参数、查询参数和请求体等。",
+  "case_sha256": "bf17a82c6d34",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13194,
+  "completion_tokens": 123,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.61,
+  "raw_id": "72afc509-e792-4f2e-b852-0e6f63640920"
+}

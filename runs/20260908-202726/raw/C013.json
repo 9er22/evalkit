@@ -1,0 +1,19 @@
+{
+  "id": "C013",
+  "category": "normal",
+  "question": "要接收一个 JSON 请求体，文档里怎么做？请给出完整代码，并说明哪些字段是必填。",
+  "answer": "根据文档，要接收一个 JSON 请求体，你需要使用 Pydantic 的 `BaseModel` 来定义一个数据模型，然后在路径操作函数中将其声明为参数。\n\n完整代码示例（来自文档）：\n\n```python\nfrom fastapi import FastAPI\nfrom pydantic import BaseModel\n\n\nclass Item(BaseModel):\n    name: str\n    description: str | None = None\n    price: float\n    tax: float | None = None\n\n\napp = FastAPI()\n\n\n@app.post(\"/items/\")\nasync def create_item(item: Item):\n    return item\n```\n\n**必填字段说明：**\n\n- `name`：必填，类型为 `str`，因为它没有默认值。\n- `price`：必填，类型为 `float`，因为它没有默认值。\n\n**可选字段说明：**\n\n- `description`：可选，类型为 `str | None`，默认值为 `None`。\n- `tax`：可选，类型为 `float | None`，默认值为 `None`。\n\n文档明确指出：\"当模型属性有默认值时，它不是必填的。否则，它是必填的。使用 `None` 使其仅为可选。\"",
+  "case_sha256": "824dcf560056",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13212,
+  "completion_tokens": 244,
+  "reasoning_tokens": null,
+  "elapsed_sec": 2.11,
+  "raw_id": "146c51dc-82e5-4039-833d-056757afba1a"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "C004",
+  "category": "normal",
+  "question": "同时有 /users/me 和 /users/{user_id} 两个路径操作，声明顺序应该怎么排？写反了会发生什么？",
+  "answer": "根据文档，`/users/me` 的路径操作必须**先于** `/users/{user_id}` 声明。\n\n如果写反了（即先声明 `/users/{user_id}`），那么当请求 `/users/me` 时，`/users/{user_id}` 会先匹配，它会认为 `user_id` 参数的值是 `\"me\"`，从而返回错误的结果，而不是返回当前用户的数据。\n\n文档原文依据如下：\n\n> Because *path operations* are evaluated in order, you need to make sure that the path for `/users/me` is declared before the one for `/users/{user_id}`:\n> \n> ```python\n> @app.get(\"/users/me\")\n> async def read_user_me():\n>     return {\"user_id\": \"the current user\"}\n> \n> @app.get(\"/users/{user_id}\")\n> async def read_user(user_id: str):\n>     return {\"user_id\": user_id}\n> ```\n> \n> Otherwise, the path for `/users/{user_id}` would match also for `/users/me`, \"thinking\" that it's receiving a parameter `user_id` with a value of `\"me\"`.",
+  "case_sha256": "253e4a0d6e00",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13224,
+  "completion_tokens": 249,
+  "reasoning_tokens": null,
+  "elapsed_sec": 2.12,
+  "raw_id": "5d89b0fa-4684-4286-9837-16afa82c32b4"
+}

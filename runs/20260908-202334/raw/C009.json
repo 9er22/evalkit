@@ -1,0 +1,19 @@
+{
+  "id": "C009",
+  "category": "normal",
+  "question": "文档例子里的 skip 和 limit 两个查询参数，默认值分别是多少？如果只访问 /items/ 不传任何参数，会发生什么？",
+  "answer": "根据文档，在查询参数示例中，`skip` 的默认值是 `0`，`limit` 的默认值是 `10`。\n\n如果只访问 `/items/` 而不传任何参数，文档说明这等同于访问 `/items/?skip=0&limit=10`。因此，函数会使用默认值 `skip=0` 和 `limit=10` 来执行。",
+  "case_sha256": "ce9facb4e37a",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13226,
+  "completion_tokens": 84,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.23,
+  "raw_id": "53ad48c7-ec70-4fd9-a3ac-1e292cc8fe1a"
+}

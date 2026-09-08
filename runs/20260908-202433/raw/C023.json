@@ -1,0 +1,19 @@
+{
+  "id": "C023",
+  "category": "edge",
+  "question": "文档推荐用 response_model_include / response_model_exclude 来隐藏字段吗？",
+  "answer": "不推荐。\n\n文档在 `response_model_include` 和 `response_model_exclude` 一节里明确给出了 tip：\n\n> But it is still recommended to use the ideas above, using multiple classes, instead of these parameters.\n\n也就是说，文档建议改用上面讲过的**多个类（继承）**的方式，而不是用这两个参数。\n\n原因是：\n\n> This is because the JSON Schema generated in your app's OpenAPI (and the docs) will still be the one for the complete model, even if you use `response_model_include` or `response_model_exclude` to omit some attributes.\n\n即使用这两个参数省略了某些属性，OpenAPI（以及文档）里生成的 JSON Schema 仍然是完整模型的 schema。文档还提到 `response_model_by_alias` 也有同样的问题。\n\n文档把这两个参数定位为一种\"快捷方式\"（quick shortcut），仅适用于\"你只有一个 Pydantic 模型、又想从输出里去掉一些数据\"的场景。",
+  "case_sha256": "f2339bd09ab0",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13199,
+  "completion_tokens": 198,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.26,
+  "raw_id": "11c48494-9ae1-4ff2-b3c8-ecf8032729a8"
+}

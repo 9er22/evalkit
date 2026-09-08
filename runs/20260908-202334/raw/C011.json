@@ -1,0 +1,19 @@
+{
+  "id": "C011",
+  "category": "normal",
+  "question": "查询参数声明为 bool 类型时，URL 里写哪些值会被当成 True？请尽量列全。",
+  "answer": "根据文档，当查询参数声明为 `bool` 类型时，以下值会被转换为 `True`：\n\n- `1`\n- `True`\n- `true`\n- `on`\n- `yes`\n\n以及这些值的任何大小写变体（例如大写、首字母大写等）。\n\n依据是文档中的这段描述：\n\n> In this case, if you go to:\n> `http://127.0.0.1:8000/items/foo?short=1`\n> or\n> `http://127.0.0.1:8000/items/foo?short=True`\n> or\n> `http://127.0.0.1:8000/items/foo?short=true`\n> or\n> `http://127.0.0.1:8000/items/foo?short=on`\n> or\n> `http://127.0.0.1:8000/items/foo?short=yes`\n> or any other case variation (uppercase, first letter in uppercase, etc), your function will see the parameter `short` with a `bool` value of `True`. Otherwise as `False`.\n\n文档明确列出了 `1`、`True`、`true`、`on`、`yes` 这几种写法，并说明其他大小写变体也会被识别为 `True`。除此之外的其他值（如 `0`、`false`、`no`、`off` 等）则会被视为 `False`。",
+  "case_sha256": "bf4797fe621f",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13210,
+  "completion_tokens": 315,
+  "reasoning_tokens": null,
+  "elapsed_sec": 2.51,
+  "raw_id": "1c5a9fb8-d1ef-4ebb-b0ac-409e266623e2"
+}

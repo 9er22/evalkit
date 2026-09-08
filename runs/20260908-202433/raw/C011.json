@@ -1,0 +1,19 @@
+{
+  "id": "C011",
+  "category": "normal",
+  "question": "查询参数声明为 bool 类型时，URL 里写哪些值会被当成 True？请尽量列全。",
+  "answer": "根据文档（`docs/en/docs/tutorial/query-params.md` 的 \"Query parameter type conversion\" 一节），当查询参数声明为 `bool` 类型时，以下写法都会被解析为 `True`：\n\n- `?short=1`\n- `?short=True`\n- `?short=true`\n- `?short=on`\n- `?short=yes`\n\n文档还说明：**任何其他大小写变体**（例如全大写、首字母大写等）也都会被当作 `True`；否则为 `False`。\n\n原文：\n\n> In this case, if you go to:\n> ```\n> http://127.0.0.1:8000/items/foo?short=1\n> ```\n> or\n> ```\n> http://127.0.0.1:8000/items/foo?short=True\n> ```\n> or\n> ```\n> http://127.0.0.1:8000/items/foo?short=true\n> ```\n> or\n> ```\n> http://127.0.0.1:8000/items/foo?short=on\n> ```\n> or\n> ```\n> http://127.0.0.1:8000/items/foo?short=yes\n> ```\n> or any other case variation (uppercase, first letter in uppercase, etc), your function will see the parameter `short` with a `bool` value of `True`. Otherwise as `False`.\n\n注意：文档只列出了以上这些值，并没有给出完整的布尔真值列表（例如没有提到 `t`、`y`、`enabled` 等），所以这里只依据文档列出的内容作答。",
+  "case_sha256": "bf4797fe621f",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13211,
+  "completion_tokens": 353,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.34,
+  "raw_id": "dbb1e4ca-a155-48a2-838a-0793d83be695"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "C006",
+  "category": "normal",
+  "question": "当路径参数是一个枚举成员时，怎么取出它真正的字符串值？",
+  "answer": "根据文档，当路径参数是一个枚举成员时，你可以使用 `your_enum_member.value` 来获取它真正的字符串值。\n\n文档中的原文是：\n\n> You can get the actual value (a `str` in this case) using `model_name.value`, or in general, `your_enum_member.value`\n\n文档还给出了一个示例，其中使用了 `model_name.value == \"lenet\"` 这样的比较方式。",
+  "case_sha256": "1d72ea8c9c86",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13192,
+  "completion_tokens": 91,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.18,
+  "raw_id": "31c494e3-9f7a-4d4e-8f90-6f9ef77f1789"
+}

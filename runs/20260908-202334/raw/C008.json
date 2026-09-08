@@ -1,0 +1,19 @@
+{
+  "id": "C008",
+  "category": "normal",
+  "question": "如果 file_path 需要以斜杠开头（比如 /home/johndoe/myfile.txt），URL 应该怎么写？",
+  "answer": "根据文档，如果 `file_path` 需要以斜杠开头（比如 `/home/johndoe/myfile.txt`），URL 应该写成：\n\n```\n/files//home/johndoe/myfile.txt\n```\n\n即需要在 `files` 和 `home` 之间使用双斜杠（`//`）。\n\n依据是文档中 \"Path convertor\" 一节的提示：\n\n> You might need the parameter to contain `/home/johndoe/myfile.txt`, with a leading slash (`/`).\n> In that case, the URL would be: `/files//home/johndoe/myfile.txt`, with a double slash (`//`) between `files` and `home`.",
+  "case_sha256": "bf9f75b23e6e",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13214,
+  "completion_tokens": 143,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.6,
+  "raw_id": "62589336-9a68-43e1-850b-9ae57d70c2a7"
+}

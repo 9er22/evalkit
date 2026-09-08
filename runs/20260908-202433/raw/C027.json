@@ -1,0 +1,19 @@
+{
+  "id": "C027",
+  "category": "adversarial",
+  "question": "文档里提到的 response_model_exclude_password 参数怎么用？它是用来自动过滤掉敏感字段的吗？",
+  "answer": "这份文档没有讲到 `response_model_exclude_password` 这个参数。\n\n文档里提到的与\"过滤敏感字段\"相关的机制是：\n\n1. **使用不同的输出模型**：通过 `response_model` 参数指定一个不包含敏感字段（如 `password`）的模型，FastAPI 会自动过滤掉未在输出模型中声明的数据。文档中的例子是 `UserIn`（含 `password`）作为输入、`UserOut`（不含 `password`）作为 `response_model`。\n\n2. **`response_model_exclude`**：接收一个 `set` of `str`，指定要排除的属性名，例如 `response_model_exclude={\"tax\"}`。\n\n3. **`response_model_include`**：指定要包含的属性名。\n\n4. **`response_model_exclude_unset`**、`response_model_exclude_defaults`、`response_model_exclude_none`：用于排除未设置的值、默认值或 `None` 值。\n\n文档中并没有名为 `response_model_exclude_password` 的参数。如果你想过滤掉 `password` 字段，文档推荐的做法是使用 `response_model_exclude={\"password\"}`，或者更推荐的做法——定义一个不含该字段的独立输出模型。",
+  "case_sha256": "1545cae8e515",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13209,
+  "completion_tokens": 259,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.23,
+  "raw_id": "358712c8-89e4-4af5-8a5e-4f1ca715f610"
+}

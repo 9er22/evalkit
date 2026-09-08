@@ -1,0 +1,19 @@
+{
+  "id": "C030",
+  "category": "adversarial",
+  "question": "在 FastAPI 里，response_model 应该作为路径操作函数的参数来声明，对吧？比如 def read_item(item, response_model=Item)。",
+  "answer": "不对。这份文档明确讲到，`response_model` 是**路径操作装饰器**（`get`、`post`、`put`、`delete` 等）的参数，而不是路径操作函数的参数。\n\n文档原文（response-model.md）：\n\n> Notice that `response_model` is a parameter of the \"decorator\" method (`get`, `post`, etc). Not of your *path operation function*, like all the parameters and body.\n\n正确用法示例：\n\n```python\n@app.post(\"/items/\", response_model=Item)\nasync def create_item(item: Item) -> Any:\n    return item\n\n\n@app.get(\"/items/\", response_model=list[Item])\nasync def read_items() -> Any:\n    return [\n        {\"name\": \"Portal Gun\", \"price\": 42.0},\n        {\"name\": \"Plumbus\", \"price\": 32.0},\n    ]\n```\n\n所以 `def read_item(item, response_model=Item)` 这种写法不符合文档描述；`response_model` 应写在装饰器里，例如 `@app.get(\"/items/\", response_model=Item)`。\n\n另外文档还提到：如果同时声明了返回类型注解和 `response_model`，`response_model` 会优先被 FastAPI 使用；也可以用 `response_model=None` 来禁用该路径操作的响应模型生成。",
+  "case_sha256": "5f471fc98c14",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13225,
+  "completion_tokens": 278,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.42,
+  "raw_id": "3a55c3ca-2700-4466-900c-2c705781cb05"
+}

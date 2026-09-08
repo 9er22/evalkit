@@ -1,0 +1,19 @@
+{
+  "id": "C015",
+  "category": "normal",
+  "question": "同一个路径操作里同时有请求体、路径参数和查询参数，FastAPI 怎么区分它们？",
+  "answer": "根据文档，FastAPI 通过函数参数的**声明方式**来区分它们。文档在 \"Request body + path + query parameters\" 一节中明确给出了识别规则：\n\n- 如果参数**同时声明在路径中**（即出现在 `@app.put(\"/items/{item_id}\")` 这类路径里），它会被当作**路径参数**。\n- 如果参数是**单一类型**（如 `int`、`float`、`str`、`bool` 等），它会被解释为**查询参数**。\n- 如果参数被声明为 **Pydantic 模型**类型，它会被解释为请求**体**（body）。\n\n文档给出的示例：\n\n```python\n@app.put(\"/items/{item_id}\")\nasync def update_item(item_id: int, item: Item, q: str | None = None):\n    result = {\"item_id\": item_id, **item.model_dump()}\n    if q:\n        result.update({\"q\": q})\n    return result\n```\n\n在这个例子里：\n- `item_id` 出现在路径 `/items/{item_id}` 中，所以是路径参数；\n- `item` 是 Pydantic 模型 `Item`，所以从请求体读取；\n- `q` 是单一类型 `str`，所以是查询参数。\n\n文档还特别说明：`q` 之所以是可选的，是因为它有默认值 `= None`，而不是因为 `str | None` 这个类型标注（类型标注只是为了让编辑器提供更好的支持）。\n\n另外，文档在 \"Multiple path and query parameters\" 一节也提到，多个路径参数和查询参数可以同时声明，FastAPI 知道哪个是哪个，**不需要按特定顺序声明**，它们会按名称被识别。",
+  "case_sha256": "5f2db956a450",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13207,
+  "completion_tokens": 366,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.85,
+  "raw_id": "f88825cf-e27d-4b76-a8f0-596fe1acb751"
+}
