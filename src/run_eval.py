@@ -135,15 +135,27 @@ def parse_case(path: Path) -> dict:
 # ----------------------------- 调用 -----------------------------
 
 def resolve_model(name: str) -> str:
-    """别名或完整模型名 → 完整模型名。"""
+    """别名或完整模型名 → 完整模型名。
+
+    deepseek- 开头的完整名直接放行（带警告），方便试新模型和测试降级逻辑。
+    """
     m = (name or "").strip()
     if not m:
         die("模型名为空。用 --model v4-flash 或在 .env 里设 DEEPSEEK_MODEL。")
     if m in MODELS:
         return MODELS[m]
-    if m in set(MODELS.values()):
+    if m.startswith("deepseek-"):
+        print(f"⚠ 使用未在注册表中的模型名 `{m}`，直接透传（新模型/过期测试）")
         return m
-    die(f"未知模型 `{m}`。可用别名：{', '.join(MODELS)}；或直接填完整模型名。")
+    die(f"未知模型 `{m}`。可用别名：{', '.join(MODELS)}；或填 deepseek- 开头的完整模型名。")
+
+
+# 模型失效（如内测名过期）时的自动降级目标
+FALLBACK_MODEL = "deepseek-v4-flash"
+
+
+class ApiError(Exception):
+    """API 返回非 2xx。message 里带状态码和响应体片段。"""
 
 
 def call_deepseek(api_key: str, system: str, question: str,
@@ -180,9 +192,9 @@ def call_deepseek(api_key: str, system: str, question: str,
             data = json.loads(resp.read().decode("utf-8"))
     except urllib.error.HTTPError as e:
         detail = e.read().decode("utf-8", "replace")[:400]
-        die(f"API 返回 {e.code}：{detail}\n（401/402 通常是 key 错或余额不足）")
+        raise ApiError(f"API 返回 {e.code}：{detail}") from e
     except urllib.error.URLError as e:
-        die(f"网络请求失败：{e.reason}")
+        raise ApiError(f"网络请求失败：{e.reason}") from e
     elapsed = time.time() - t0
 
     msg = data["choices"][0]["message"]
@@ -296,8 +308,28 @@ def main():
         try:
             r = call_deepseek(api_key, system, c["question"], model, temperature,
                               thinking=thinking, reasoning_effort=reasoning_effort)
-        except SystemExit:
-            raise
+        except ApiError as e:
+            # 模型失效（400 且响应体提到 model，典型如内测名过期）→ 自动降级重试
+            msg = str(e)
+            if ("400" in msg and "model" in msg.lower()
+                    and model != FALLBACK_MODEL):
+                print(f"⚠ {c['id']}: 模型 `{model}` 被服务端拒绝（{msg[:120]}），"
+                      f"自动降级到 `{FALLBACK_MODEL}`，后续 case 也用它")
+                model = FALLBACK_MODEL
+                meta["model_fallback"] = {"from": meta["model"], "to": model,
+                                          "at_case": c["id"], "reason": msg[:200]}
+                try:
+                    r = call_deepseek(api_key, system, c["question"], model,
+                                      temperature, thinking=thinking,
+                                      reasoning_effort=reasoning_effort)
+                except ApiError as e2:
+                    print(f"FAIL {c['id']} 降级后仍失败：{e2}")
+                    fail += 1
+                    continue
+            else:
+                print(f"FAIL {c['id']} {msg[:200]}")
+                fail += 1
+                continue
         except Exception as e:  # 单个 case 失败不中断整轮
             print(f"FAIL {c['id']} {e}")
             fail += 1
