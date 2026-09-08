@@ -1,0 +1,16 @@
+{
+  "id": "C018",
+  "category": "normal",
+  "question": "response_model_exclude_unset=True 是干什么的？用它请求 id 为 foo 的 item，会返回什么？",
+  "answer": "根据文档，`response_model_exclude_unset=True` 是 *path operation decorator* 的一个参数，作用是：**在响应中只包含实际被设置过的字段，不包含那些使用了默认值的字段**。\n\n文档中的例子是：\n\n```python\n@app.get(\"/items/{item_id}\", response_model=Item, response_model_exclude_unset=True)\nasync def read_item(item_id: str):\n    return items[item_id]\n```\n\n其中 `items` 字典里 `foo` 对应的数据是：\n\n```python\n\"foo\": {\"name\": \"Foo\", \"price\": 50.2},\n```\n\n所以，用这个参数请求 id 为 `foo` 的 item，返回的响应（不包含默认值）会是：\n\n```JSON\n{\n    \"name\": \"Foo\",\n    \"price\": 50.2\n}\n```\n\n也就是说，`description`、`tax`、`tags` 这些有默认值的字段不会出现在响应中，因为它们没有被实际设置。",
+  "case_sha256": "2b798bd913b5",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-chat",
+  "temperature": 0.0,
+  "finish_reason": "stop",
+  "prompt_tokens": 13214,
+  "completion_tokens": 207,
+  "elapsed_sec": 1.98,
+  "raw_id": "c76c463b-69b1-412a-b33e-740e48ebad86"
+}

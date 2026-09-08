@@ -1,0 +1,16 @@
+{
+  "id": "C015",
+  "category": "normal",
+  "question": "同一个路径操作里同时有请求体、路径参数和查询参数，FastAPI 怎么区分它们？",
+  "answer": "根据文档，FastAPI 通过函数参数的类型和声明方式来区分它们：\n\n- 如果参数也声明在**路径**中，它会被用作**路径参数**。\n- 如果参数是**单一类型**（如 `int`、`float`、`str`、`bool` 等），它会被解释为**查询参数**。\n- 如果参数被声明为**Pydantic 模型**的类型，它会被解释为**请求体**。\n\n文档中的示例代码如下：\n\n```python\n@app.put(\"/items/{item_id}\")\nasync def update_item(item_id: int, item: Item, q: str | None = None):\n    result = {\"item_id\": item_id, **item.model_dump()}\n    if q:\n        result.update({\"q\": q})\n    return result\n```\n\n在这个例子中，`item_id` 是路径参数，`item` 是请求体（因为它是 Pydantic 模型 `Item`），`q` 是查询参数。FastAPI 会根据这些规则自动识别并从正确的位置获取数据。",
+  "case_sha256": "5f2db956a450",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-chat",
+  "temperature": 0.0,
+  "finish_reason": "stop",
+  "prompt_tokens": 13206,
+  "completion_tokens": 224,
+  "elapsed_sec": 2.09,
+  "raw_id": "5af2eac5-2eb5-421d-a807-04a57c166a1e"
+}

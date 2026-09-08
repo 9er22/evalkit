@@ -1,0 +1,16 @@
+{
+  "id": "C022",
+  "category": "edge",
+  "question": "如果我不想用 Pydantic 模型，还能声明请求体吗？",
+  "answer": "根据文档，可以。文档在“Without Pydantic”一节中明确说明：\n\n> If you don't want to use Pydantic models, you can also use **Body** parameters. See the docs for [Body - Multiple Parameters: Singular values in body](body-multiple-params.md#singular-values-in-body).\n\n也就是说，如果你不想使用 Pydantic 模型，可以使用 **Body** 参数来声明请求体。具体用法可以参考文档中“Body - Multiple Parameters: Singular values in body”这一章节。",
+  "case_sha256": "70e74a58c2bc",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-chat",
+  "temperature": 0.0,
+  "finish_reason": "stop",
+  "prompt_tokens": 13192,
+  "completion_tokens": 108,
+  "elapsed_sec": 1.58,
+  "raw_id": "dd707193-cec8-4055-87fc-d247a7041547"
+}

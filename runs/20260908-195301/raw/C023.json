@@ -1,0 +1,16 @@
+{
+  "id": "C023",
+  "category": "edge",
+  "question": "文档推荐用 response_model_include / response_model_exclude 来隐藏字段吗？",
+  "answer": "文档**不推荐**用 `response_model_include` / `response_model_exclude` 来隐藏字段。\n\n文档在介绍这两个参数时明确说明：\n\n> 但依然推荐使用上面的思路，即使用多个类，而不是这些参数。\n\n原因是：即使你使用 `response_model_include` 或 `response_model_exclude` 省略了某些属性，应用 OpenAPI（以及文档）中生成的 JSON Schema 仍然是完整模型的，这可能导致文档与实际返回数据不一致。\n\n文档推荐的做法是：定义不同的输入/输出模型（例如 `UserIn` 和 `UserOut`），通过 `response_model` 或返回类型注解来过滤数据，这样既能保证数据安全，也能让文档准确反映实际返回的数据结构。",
+  "case_sha256": "f2339bd09ab0",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-chat",
+  "temperature": 0.0,
+  "finish_reason": "stop",
+  "prompt_tokens": 13198,
+  "completion_tokens": 154,
+  "elapsed_sec": 2.06,
+  "raw_id": "1b625a7d-8ee7-4f90-be13-a90b70dd3fec"
+}

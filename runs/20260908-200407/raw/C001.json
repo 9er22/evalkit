@@ -1,0 +1,19 @@
+{
+  "id": "C001",
+  "category": "normal",
+  "question": "根据文档，如何声明一个路径参数，让访问 /items/foo 时返回 {\"item_id\": \"foo\"}？请给出完整可运行的代码。",
+  "answer": "根据文档中的“Path Parameters”章节，声明路径参数的方式是在路径字符串中使用 `{参数名}`，并在函数中接收同名参数。对于访问 `/items/foo` 返回 `{\"item_id\": \"foo\"}`，最基础的写法（不声明类型）如下：\n\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/items/{item_id}\")\nasync def read_item(item_id):\n    return {\"item_id\": item_id}\n```\n\n依据是文档中的第一个示例（tutorial001_py310.py），它明确说明路径参数 `item_id` 的值会被传给函数，访问 `http://127.0.0.1:8000/items/foo` 时会返回 `{\"item_id\":\"foo\"}`。\n\n如果你希望自动进行数据校验和类型转换，文档还建议使用 Python 类型注解，例如声明为 `int`：\n\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/items/{item_id}\")\nasync def read_item(item_id: int):\n    return {\"item_id\": item_id}\n```\n\n但这样的代码访问 `/items/foo` 会因为 `foo` 不是整数而返回 422 验证错误，所以如果目标是让 `foo` 被原样接收并返回 `{\"item_id\": \"foo\"}`，应使用不带类型注解（或使用 `str`）的第一种写法。要启动这个应用，你需要将代码保存为文件（如 `main.py`），并使用 `uvicorn main:app --reload` 运行，文档本身并未包含启动代码，只给出了路由定义。",
+  "case_sha256": "b5bd372497b1",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4-flash",
+  "temperature": null,
+  "thinking": "enabled",
+  "reasoning_effort": "low",
+  "finish_reason": "stop",
+  "prompt_tokens": 13228,
+  "completion_tokens": 721,
+  "reasoning_tokens": 383,
+  "elapsed_sec": 6.17,
+  "raw_id": "ce2fa211-60e4-47f6-9ff1-b7b34d0f040b"
+}

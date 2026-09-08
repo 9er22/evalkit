@@ -8,6 +8,8 @@
     python src/run_eval.py --smoke              # 只跑 C001，验证链路
     python src/run_eval.py --only C001 C019     # 跑指定 case
     python src/run_eval.py                      # 全量跑 cases/C0*.md
+    python src/run_eval.py --model v4.1-flash-beta   # 切模型（别名见 MODELS）
+    python src/run_eval.py --thinking enabled --effort low   # 开思考模式
 
 产物：
     runs/<时间戳>/
@@ -39,7 +41,27 @@ RUNS_DIR = ROOT / "runs"
 
 CORPUS_SHA = "50113da16fec53b66b80d75e80a89296de4fa5a5"
 API_URL = "https://api.deepseek.com/chat/completions"
-DEFAULT_MODEL = "deepseek-chat"
+
+# 模型注册表（api-docs.deepseek.com，2026-09-08 核对）：
+# 现役只有 deepseek-v4-flash / deepseek-v4-pro / deepseek-v4-flash-vision-exp 三个名字。
+# 别名是为了在命令行和配置里少打字；填完整模型名也认。
+# 注意：deepseek-chat / deepseek-reasoner 已于 2026-04-24 官方公告废弃
+# （原定 2026-07-24 停用，实测 2026-09-08 仍可调通）——随时可能失效，评测别再依赖。
+MODELS = {
+    "v4-flash":        "deepseek-v4-flash",            # 默认。当前版本 DeepSeek-V4-Flash-0731
+    "v4-pro":          "deepseek-v4-pro",              # 当前版本 DeepSeek-V4-Pro-0813，价格约 3 倍
+    "v4-flash-vision": "deepseek-v4-flash-vision-exp", # 实验版多模态；纯文本能力与 v4-flash 相当
+    # V4.1 Flash 限时内测（2026-09-08 官方群宣布，官方文档尚未收录）：
+    # 新架构 + 原生多模态；计费同 v4-flash；单账号限 20 并发；
+    # ⚠ 模型名自带过期时间，2026-09-10 后失效，届时删除此条即可。
+    "v4.1-flash-beta": "deepseek-v4.1-flash-expires-on-0910",
+    "chat":            "deepseek-chat",                # 废弃别名 = v4-flash 非思考模式
+    "reasoner":        "deepseek-reasoner",            # 废弃别名 = v4-flash 思考模式
+}
+DEFAULT_MODEL = "v4-flash"
+# v4 系默认开思考模式且忽略 temperature（官方文档明确）。
+# 本项目要 temperature=0 的可复现性，所以默认显式关思考；要开用 --thinking enabled。
+DEFAULT_THINKING = "disabled"
 
 
 # ----------------------------- 基础工具 -----------------------------
@@ -112,8 +134,23 @@ def parse_case(path: Path) -> dict:
 
 # ----------------------------- 调用 -----------------------------
 
+def resolve_model(name: str) -> str:
+    """别名或完整模型名 → 完整模型名。"""
+    m = (name or "").strip()
+    if not m:
+        die("模型名为空。用 --model v4-flash 或在 .env 里设 DEEPSEEK_MODEL。")
+    if m in MODELS:
+        return MODELS[m]
+    if m in set(MODELS.values()):
+        return m
+    die(f"未知模型 `{m}`。可用别名：{', '.join(MODELS)}；或直接填完整模型名。")
+
+
 def call_deepseek(api_key: str, system: str, question: str,
-                  model: str, temperature: float, timeout: int = 120) -> dict:
+                  model: str, temperature: float,
+                  thinking: str | None = None,
+                  reasoning_effort: str | None = None,
+                  timeout: int = 120) -> dict:
     payload = {
         "model": model,
         "messages": [
@@ -123,6 +160,11 @@ def call_deepseek(api_key: str, system: str, question: str,
         "temperature": temperature,
         "stream": False,
     }
+    # v4 系默认开思考模式且忽略 temperature。要 temperature 生效必须显式关思考。
+    if thinking:
+        payload["thinking"] = {"type": thinking}
+    if reasoning_effort:
+        payload["reasoning_effort"] = reasoning_effort
     req = urllib.request.Request(
         API_URL,
         data=json.dumps(payload).encode("utf-8"),
@@ -143,12 +185,17 @@ def call_deepseek(api_key: str, system: str, question: str,
         die(f"网络请求失败：{e.reason}")
     elapsed = time.time() - t0
 
+    msg = data["choices"][0]["message"]
     usage = data.get("usage", {})
+    # 思考模式下 usage 里会多 completion_tokens_details.reasoning_tokens
+    reasoning_tokens = (usage.get("completion_tokens_details") or {}).get("reasoning_tokens")
     return {
-        "answer": data["choices"][0]["message"]["content"],
+        "answer": msg.get("content") or "",
+        "reasoning": msg.get("reasoning_content") or "",
         "finish_reason": data["choices"][0].get("finish_reason"),
         "prompt_tokens": usage.get("prompt_tokens"),
         "completion_tokens": usage.get("completion_tokens"),
+        "reasoning_tokens": reasoning_tokens,
         "elapsed_sec": round(elapsed, 2),
         "raw_id": data.get("id"),
     }
@@ -158,17 +205,37 @@ def call_deepseek(api_key: str, system: str, question: str,
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--smoke", action="store_true", help="只跑 C001")
+    ap.add_argument("--smoke", action="store_true", help="只跑 C001，验证链路")
     ap.add_argument("--only", nargs="+", help="只跑指定 case，如 --only C001 C019")
     ap.add_argument("--sleep", type=float, default=1.0, help="case 之间的间隔秒数")
+    ap.add_argument("--model", default=None,
+                    help="模型别名或完整名（v4-flash / v4-pro / v4.1-flash-beta / ...），"
+                         "覆盖 .env 的 DEEPSEEK_MODEL")
+    ap.add_argument("--thinking", choices=["enabled", "disabled"], default=None,
+                    help="思考模式开关（默认 disabled）。v4 系默认开思考且忽略 temperature")
+    ap.add_argument("--effort", choices=["low", "high", "max"], default=None,
+                    help="思考档位，仅 thinking=enabled 时生效")
     args = ap.parse_args()
 
     env = load_env()
     api_key = env.get("DEEPSEEK_API_KEY", "").strip()
     if not api_key or api_key == "sk-xxx":
         die("没读到 DEEPSEEK_API_KEY。先 cp .env.example .env 并填入真实 key。")
-    model = env.get("DEEPSEEK_MODEL", DEFAULT_MODEL)
+
+    model_alias = args.model or env.get("DEEPSEEK_MODEL", "") or DEFAULT_MODEL
+    model = resolve_model(model_alias)
+    thinking = args.thinking or env.get("EVAL_THINKING", DEFAULT_THINKING)
+    reasoning_effort = args.effort or env.get("EVAL_REASONING_EFFORT") or None
+    if thinking == "disabled":
+        reasoning_effort = None  # 关思考时档位无意义，不传
     temperature = float(env.get("EVAL_TEMPERATURE", "0"))
+    if thinking == "enabled":
+        # 官方文档：thinking 模式不支持 temperature/top_p 等参数，传了也不生效
+        print(f"⚠ thinking=enabled：temperature({temperature}) 将被服务端忽略，"
+              f"可复现性依赖模型自身稳定性")
+        temperature_for_record = None  # 记录为 null，别假装它生效了
+    else:
+        temperature_for_record = temperature
 
     if not CORPUS.exists():
         die(f"语料不存在：{CORPUS}\n先跑 python src/fetch_corpus.py 生成。")
@@ -196,11 +263,14 @@ def main():
 
     # meta.json —— 这一轮的"标准版本"快照。
     # rubric 里「标准版本可追溯」这一维，靠的就是这个文件：
-    # 将来分数变了，能查清是语料/提示/case 哪一环动的。
+    # 将来分数变了，能查清是语料/提示/case/模型配置哪一环动的。
     meta = {
         "run_at": datetime.now().isoformat(timespec="seconds"),
         "model": model,
-        "temperature": temperature,
+        "model_alias": model_alias if model_alias != model else None,
+        "thinking": thinking,
+        "reasoning_effort": reasoning_effort,
+        "temperature": temperature_for_record,
         "corpus": {"path": str(CORPUS.relative_to(ROOT)),
                    "sha": CORPUS_SHA, "sha256": sha256(corpus),
                    "chars": len(corpus)},
@@ -210,7 +280,9 @@ def main():
         "results": [],
     }
 
-    print(f"语料 {len(corpus):,} 字符 | 模型 {model} | temperature={temperature}")
+    print(f"语料 {len(corpus):,} 字符 | 模型 {model} | "
+          f"thinking={thinking}" + (f"/{reasoning_effort}" if reasoning_effort else "") +
+          ("" if thinking == "enabled" else f" | temperature={temperature}"))
     print(f"本轮 {len(case_files)} 个 case → {run_dir.relative_to(ROOT)}")
     print("-" * 60)
 
@@ -222,7 +294,8 @@ def main():
 
         system = tpl.replace("{CORPUS}", corpus).replace("{QUESTION}", c["question"])
         try:
-            r = call_deepseek(api_key, system, c["question"], model, temperature)
+            r = call_deepseek(api_key, system, c["question"], model, temperature,
+                              thinking=thinking, reasoning_effort=reasoning_effort)
         except SystemExit:
             raise
         except Exception as e:  # 单个 case 失败不中断整轮
@@ -236,25 +309,32 @@ def main():
             "case_sha256": c["file_hash"],
             "corpus_sha256": sha256(corpus),
             "system_prompt_sha256": sha256(tpl),
-            "model": model, "temperature": temperature,
+            "model": model, "temperature": temperature_for_record,
+            "thinking": thinking, "reasoning_effort": reasoning_effort,
             "finish_reason": r["finish_reason"],
             "prompt_tokens": r["prompt_tokens"],
             "completion_tokens": r["completion_tokens"],
+            "reasoning_tokens": r["reasoning_tokens"],
             "elapsed_sec": r["elapsed_sec"],
             "raw_id": r["raw_id"],
         }
         (raw_dir / f"{c['id']}.json").write_text(
             json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")
-        (raw_dir / f"{c['id']}.md").write_text(
-            f"# {c['id']}（{c['category']}）\n\n"
-            f"**问** {c['question']}\n\n"
-            f"**答**\n\n{r['answer']}\n\n"
-            f"---\n\n"
-            f"- 模型 {model} | temperature {temperature}\n"
-            f"- token 入 {r['prompt_tokens']} / 出 {r['completion_tokens']}"
-            f" | 耗时 {r['elapsed_sec']}s\n"
-            f"- case hash {c['file_hash']} | 语料 hash {sha256(corpus)[:12]}\n",
-            encoding="utf-8")
+        md = (f"# {c['id']}（{c['category']}）\n\n"
+              f"**问** {c['question']}\n\n"
+              f"**答**\n\n{r['answer']}\n\n")
+        if r["reasoning"]:
+            md += (f"<details><summary>思考过程（{len(r['reasoning'])} 字，"
+                   f"评分不参考）</summary>\n\n{r['reasoning']}\n\n</details>\n\n")
+        md += (f"---\n\n"
+               f"- 模型 {model} | thinking {thinking}"
+               + (f"/{reasoning_effort}" if reasoning_effort else "") + "\n"
+               f"- temperature {temperature_for_record if temperature_for_record is not None else '（thinking 模式下被忽略）'}\n"
+               f"- token 入 {r['prompt_tokens']} / 出 {r['completion_tokens']}"
+               + (f"（思考 {r['reasoning_tokens']}）" if r["reasoning_tokens"] else "") +
+               f" | 耗时 {r['elapsed_sec']}s\n"
+               f"- case hash {c['file_hash']} | 语料 hash {sha256(corpus)[:12]}\n")
+        (raw_dir / f"{c['id']}.md").write_text(md, encoding="utf-8")
 
         meta["results"].append({"id": c["id"],
                                 "tokens": r["prompt_tokens"],

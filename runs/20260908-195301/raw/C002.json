@@ -1,0 +1,16 @@
+{
+  "id": "C002",
+  "category": "normal",
+  "question": "把 item_id 声明成 int 之后，访问 /items/3 时，函数里拿到的到底是字符串 \"3\" 还是数字 3？为什么会这样？",
+  "answer": "根据文档，访问 `/items/3` 时，函数里拿到的会是数字 `3`（Python `int`），而不是字符串 `\"3\"`。\n\n文档在“Data conversion”一节中明确说明：\n\n> Notice that the value your function received (and returned) is `3`, as a Python `int`, not a string `\"3\"`.\n\n原因是，当你用 Python 类型注解（如 `item_id: int`）声明路径参数后，**FastAPI** 会自动对请求数据进行“解析”（parsing），即将来自 HTTP 请求的字符串转换为 Python 数据类型。文档提到：\n\n> So, with that type declaration, **FastAPI** gives you automatic request \"parsing\".\n\n因此，类型声明不仅提供了编辑器支持，还触发了自动的数据转换和验证。",
+  "case_sha256": "1f27513a2458",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-chat",
+  "temperature": 0.0,
+  "finish_reason": "stop",
+  "prompt_tokens": 13234,
+  "completion_tokens": 166,
+  "elapsed_sec": 2.66,
+  "raw_id": "3fa4427a-483d-4c7c-8270-aeca08d0280e"
+}

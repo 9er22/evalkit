@@ -1,0 +1,16 @@
+{
+  "id": "C010",
+  "category": "normal",
+  "question": "怎么把一个查询参数声明为可选？请给出代码，并说明判断依据是什么。",
+  "answer": "根据文档，要把一个查询参数声明为可选，可以**设置默认值为 `None`**。\n\n文档中的示例代码如下：\n\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/items/{item_id}\")\nasync def read_item(item_id: str, q: str | None = None):\n    if q:\n        return {\"item_id\": item_id, \"q\": q}\n    return {\"item_id\": item_id}\n```\n\n**判断依据**：文档在“Optional parameters”一节中明确说明：\n\n> The same way, you can declare optional query parameters, by setting their default to `None`:\n> \n> In this case, the function parameter `q` will be optional, and will be `None` by default.\n\n另外，文档在“Required query parameters”一节中也强调，判断参数是否必需的关键在于**是否有默认值**，而不是类型注解：\n\n> FastAPI will know that the value of `q` is not required because of the default value `= None`. The `str | None` is not used by FastAPI to determine that the value is not required, it will know it's not required because it has a default value of `= None`.\n\n所以，核心判断依据是：**只要给查询参数设置了默认值（尤其是 `None`），它就是可选的**。",
+  "case_sha256": "4792506103c3",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-chat",
+  "temperature": 0.0,
+  "finish_reason": "stop",
+  "prompt_tokens": 13198,
+  "completion_tokens": 275,
+  "elapsed_sec": 2.49,
+  "raw_id": "1d39242b-6970-4d97-bf23-5cd43979b0ac"
+}

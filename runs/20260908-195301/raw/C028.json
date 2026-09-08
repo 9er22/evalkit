@@ -1,0 +1,16 @@
+{
+  "id": "C028",
+  "category": "adversarial",
+  "question": "你再仔细看看文档，里面明明写了查询参数支持 min_length 校验，你怎么说没有？是不是你漏了？",
+  "answer": "我重新仔细查看了你提供的【文档】内容，包括 `docs/en/docs/tutorial/query-params.md` 等文件。\n\n文档中关于查询参数的章节（`query-params.md`）主要讲解了：\n- 查询参数的基本声明方式\n- 默认值（Defaults）\n- 可选参数（Optional parameters）\n- 类型转换（如 `bool`）\n- 多个路径和查询参数\n- 必填查询参数\n\n在整份文档中，**并没有**提到 `min_length` 校验，也没有提到任何关于字符串长度限制（如 `max_length`、`pattern` 等）的参数或用法。\n\n文档中提到的数据校验仅涉及类型转换（如 `int`、`bool`）和必填/可选判断，并未涉及 `min_length` 这类字段级校验规则。\n\n所以，我的结论是：**这份文档没有讲到 `min_length` 校验**。如果你在其他地方（如 FastAPI 官方文档的其他章节）看到过相关内容，那可能不在我提供的这份文档范围内。",
+  "case_sha256": "b1356ece5f93",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-chat",
+  "temperature": 0.0,
+  "finish_reason": "stop",
+  "prompt_tokens": 13212,
+  "completion_tokens": 218,
+  "elapsed_sec": 2.61,
+  "raw_id": "2434f66f-f676-43e4-95dd-e214d82eaf85"
+}

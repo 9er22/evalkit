@@ -1,0 +1,37 @@
+{
+  "run_at": "2026-09-08T20:03:51",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "model_alias": "v4.1-flash-beta",
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "temperature": 0.0,
+  "corpus": {
+    "path": "research\\corpus\\CORPUS.md",
+    "sha": "50113da16fec53b66b80d75e80a89296de4fa5a5",
+    "sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+    "chars": 50917
+  },
+  "system_prompt": {
+    "path": "cases\\_system-prompt.md",
+    "sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd"
+  },
+  "cases": {
+    "C001": {
+      "file": "cases\\C001.md",
+      "sha256": "b5bd372497b1",
+      "category": "normal"
+    }
+  },
+  "results": [
+    {
+      "id": "C001",
+      "tokens": 13229,
+      "elapsed": 1.18
+    }
+  ],
+  "summary": {
+    "ok": 1,
+    "fail": 0,
+    "total_prompt_tokens": 13229
+  }
+}
