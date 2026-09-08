@@ -19,3 +19,8 @@ venv/
 .idea/
 .DS_Store
 Thumbs.db
+
+# 语料生成物（由 src/fetch_corpus.py 重建，不要手改）
+research/corpus/CORPUS.md
+research/corpus/resolved/
+research/corpus/_src/
