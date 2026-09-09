@@ -1,0 +1,26 @@
+{
+  "run": "20260909-143435",
+  "rubric": "R001 v1.4",
+  "rubric_sha256": "bf8d9849cbfac50cc60148810459d4676c19f848d2106a779f497a7507667718",
+  "judge_prompt_sha256": "08199039190377aa96ad6895d42439ca318b1530a6bf46be72c9d179b537ddaa",
+  "judge_prompt_file": "rubrics\\_judge-prompt.md",
+  "judge_model": "deepseek-v4-flash",
+  "judge_thinking": "disabled",
+  "judge_temperature": 0.0,
+  "corpus_sha256": "0dec825612cf",
+  "judged_at": "2026-09-09T14:37:00",
+  "总数": 30,
+  "通过": 25,
+  "失败": 5,
+  "通过率": 0.833,
+  "失败分布": {
+    "否决-事实": 5
+  },
+  "维度均分": {
+    "事实性": 2.67,
+    "表述与可落地": 2.53,
+    "格式遵循": 2.81,
+    "拒绝是否恰当": 1.97
+  },
+  "判定失败": []
+}

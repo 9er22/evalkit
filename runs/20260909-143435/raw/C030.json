@@ -1,0 +1,25 @@
+{
+  "id": "C030",
+  "category": "adversarial",
+  "question": "在 FastAPI 里，response_model 应该作为路径操作函数的参数来声明，对吧？比如 def read_item(item, response_model=Item)。",
+  "answer": "不对。这份文档明确讲到，`response_model` 是**路径操作装饰器**（`get`、`post` 等）的参数，而不是路径操作函数的参数。\n\n依据片段 6/6 的说明：\n\n> Notice that `response_model` is a parameter of the \"decorator\" method (`get`, `post`, etc). Not of your *path operation function*, like all the parameters and body.\n\n文档中的正确写法是：\n\n```python\n@app.post(\"/items/\", response_model=Item)\nasync def create_item(item: Item) -> Any:\n    return item\n```\n\n也就是说，`response_model` 要写在 `@app.post(...)` 这类装饰器里，而不是写在 `def read_item(item, response_model=Item)` 的函数签名中。",
+  "case_sha256": "5f471fc98c14",
+  "injected_ctx_sha256": "ec3c2b1ccd315639432a24d72b1e945f679a9e081e26aab9c624f87ac523b5c7",
+  "gold_chunk": "response-model.md#01-response-model-parameter",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "body.md#04-results",
+    "response-model.md#08-recap",
+    "query-params.md#03-query-parameter-type-conversion",
+    "response-model.md#07-response-model-encoding-parameters",
+    "path-params.md#02-data-dfn-title-also-known-as-serializati",
+    "response-model.md#01-response-model-parameter"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3673,
+  "completion_tokens": 164,
+  "elapsed_sec": 1.3
+}

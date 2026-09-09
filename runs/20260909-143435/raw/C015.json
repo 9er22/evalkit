@@ -1,0 +1,25 @@
+{
+  "id": "C015",
+  "category": "normal",
+  "question": "同一个路径操作里同时有请求体、路径参数和查询参数，FastAPI 怎么区分它们？",
+  "answer": "这份文档没有讲到。\n\n文档里分别介绍了路径参数（path-params.md）、查询参数（query-params.md）和请求体（body.md），但没有任何片段说明在同一个路径操作里同时存在这三者时，FastAPI 是如何区分它们的。",
+  "case_sha256": "5f2db956a450",
+  "injected_ctx_sha256": "2410433d0880fdad22d6a5d4677f742b4f49bbeccca7df4a44f39bbfc25dd8b2",
+  "gold_chunk": "body.md#09-request-body-path-query-parameters",
+  "retrieval_hit": false,
+  "injected_chunks": [
+    "response-model.md#07-response-model-encoding-parameters",
+    "path-params.md#08-predefined-values",
+    "response-model.md#04-return-type-and-data-filtering",
+    "response-model.md#06-other-return-type-annotations",
+    "query-params.md#05-required-query-parameters",
+    "body.md#05-automatic-docs"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 5739,
+  "completion_tokens": 54,
+  "elapsed_sec": 0.79
+}

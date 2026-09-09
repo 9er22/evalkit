@@ -1,0 +1,19 @@
+{
+  "id": "C019",
+  "category": "edge",
+  "question": "怎么限制一个查询参数的最小长度，或者用正则表达式校验它？",
+  "answer": "这份文档没有讲到。\n\n文档里关于查询参数（Query Parameters）的部分只覆盖了：类型声明与转换、默认值、可选参数（`None`）、`bool` 转换、必填参数（不声明默认值），以及提示可以像路径参数那样使用 `Enum`。关于用 `min_length` 限制最小长度或用正则表达式（如 `pattern`）校验查询参数的内容，文档中没有出现。\n\n（文档中唯一与\"长度/正则\"相关的线索是路径参数章节提到可以用 `str`、`float`、`bool` 等类型声明，但也没有涉及长度或正则校验。）",
+  "case_sha256": "68858cf0db57",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13193,
+  "completion_tokens": 131,
+  "reasoning_tokens": null,
+  "elapsed_sec": 0.98,
+  "raw_id": "b03fadcb-f360-4035-a5cb-f2789e925545"
+}

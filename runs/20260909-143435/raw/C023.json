@@ -1,0 +1,23 @@
+{
+  "id": "C023",
+  "category": "edge",
+  "question": "文档推荐用 response_model_include / response_model_exclude 来隐藏字段吗？",
+  "answer": "不推荐。\n\n文档在介绍 `response_model_include` 和 `response_model_exclude` 时明确给出了提示（tip）：\n\n> But it is still recommended to use the ideas above, using multiple classes, instead of these parameters.\n\n也就是说，文档建议改用前面讲到的思路——使用多个类（multiple classes）来实现，而不是用这两个参数。\n\n文档给出的理由是：即使你用 `response_model_include` 或 `response_model_exclude` 省略了某些属性，你的应用 OpenAPI（以及文档）中生成的 JSON Schema 仍然是完整模型的 Schema。文档还指出，这一点同样适用于行为类似的 `response_model_by_alias`。\n\n文档同时说明，这两个参数可以当作\"快捷方式\"（quick shortcut）使用：它们接收一个 `set` of `str`，包含要保留（include，其余省略）或要排除（exclude，其余保留）的属性名，适用于\"只有一个 Pydantic 模型、想从输出中移除部分数据\"的场景。",
+  "case_sha256": "f2339bd09ab0",
+  "injected_ctx_sha256": "932e511dde0d110f00da8221e2a07314b0ecfbcbf87ed3c32c80d337f1e7691b",
+  "gold_chunk": "response-model.md#07-response-model-encoding-parameters",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "response-model.md#07-response-model-encoding-parameters",
+    "response-model.md#01-response-model-parameter",
+    "path-params.md#07-order-matters",
+    "body.md#02-create-your-data-model"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3493,
+  "completion_tokens": 204,
+  "elapsed_sec": 1.5
+}

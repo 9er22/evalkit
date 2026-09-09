@@ -1,0 +1,25 @@
+{
+  "id": "C011",
+  "category": "normal",
+  "question": "查询参数声明为 bool 类型时，URL 里写哪些值会被当成 True？请尽量列全。",
+  "answer": "根据文档（片段 6/6，query-params.md），当查询参数声明为 `bool` 类型时，以下写法会被当成 `True`：\n\n- `?short=1`\n- `?short=True`\n- `?short=true`\n- `?short=on`\n- `?short=yes`\n- 以及任何其他大小写变体（全大写、首字母大写等）\n\n文档原文说明：这些值（以及任何其他大小写变体）都会让函数看到 `short` 参数的 `bool` 值为 `True`，否则为 `False`。",
+  "case_sha256": "bf4797fe621f",
+  "injected_ctx_sha256": "61dbce2c1054e70cb841859444086473c56b55c2915610b14a8404c7c6ea6a8e",
+  "gold_chunk": "query-params.md#03-query-parameter-type-conversion",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "body.md#01-import-pydantic-s-basemodel",
+    "response-model.md#07-response-model-encoding-parameters",
+    "response-model.md#00-head",
+    "path-params.md#10-recap",
+    "response-model.md#06-other-return-type-annotations",
+    "query-params.md#03-query-parameter-type-conversion"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 4115,
+  "completion_tokens": 124,
+  "elapsed_sec": 0.88
+}

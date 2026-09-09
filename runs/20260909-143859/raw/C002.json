@@ -1,0 +1,19 @@
+{
+  "id": "C002",
+  "category": "normal",
+  "question": "把 item_id 声明成 int 之后，访问 /items/3 时，函数里拿到的到底是字符串 \"3\" 还是数字 3？为什么会这样？",
+  "answer": "函数里拿到的是数字 `3`（Python 的 `int`），不是字符串 `\"3\"`。\n\n依据文档 `path-params.md` 的 \"Data conversion\" 一节：\n\n- 示例中把 `item_id` 声明为 `int`：\n\n```python\n@app.get(\"/items/{item_id}\")\nasync def read_item(item_id: int):\n    return {\"item_id\": item_id}\n```\n\n- 访问 `http://127.0.0.1:8000/items/3` 时，返回：\n\n```JSON\n{\"item_id\":3}\n```\n\n文档明确说明：\n\n> Notice that the value your function received (and returned) is `3`, as a Python `int`, not a string `\"3\"`.\n\n原因是：URL 里的值本身是字符串，但因为你用了 Python 类型声明（`int`），**FastAPI 会自动做请求 \"parsing\"**，把来自 HTTP 请求的字符串转换成对应的 Python 数据类型，所以函数收到的是 `int` 类型的 `3`。\n\n另外，如果传入的不是合法整数（比如 `/items/foo` 或 `/items/4.2`），FastAPI 会基于同一类型声明做数据校验并返回错误，例如：\n\n```JSON\n{\n  \"detail\": [\n    {\n      \"type\": \"int_parsing\",\n      \"loc\": [\"path\", \"item_id\"],\n      \"msg\": \"Input should be a valid integer, unable to parse string as an integer\",\n      \"input\": \"foo\"\n    }\n  ]\n}\n```",
+  "case_sha256": "1f27513a2458",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13235,
+  "completion_tokens": 324,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.36,
+  "raw_id": "daca53c5-61e4-4ed7-8e76-bc38876c2b8e"
+}

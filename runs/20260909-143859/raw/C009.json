@@ -1,0 +1,19 @@
+{
+  "id": "C009",
+  "category": "normal",
+  "question": "文档例子里的 skip 和 limit 两个查询参数，默认值分别是多少？如果只访问 /items/ 不传任何参数，会发生什么？",
+  "answer": "根据文档（`docs/en/docs/tutorial/query-params.md`）：\n\n**默认值：**\n- `skip` 的默认值是 `0`\n- `limit` 的默认值是 `10`\n\n文档中的示例代码为：\n\n```python\n@app.get(\"/items/\")\nasync def read_item(skip: int = 0, limit: int = 10):\n    return fake_items_db[skip : skip + limit]\n```\n\n**只访问 `/items/` 不传任何参数时：**\n\n文档明确说明，访问 `http://127.0.0.1:8000/items/` 与访问 `http://127.0.0.1:8000/items/?skip=0&limit=10` 是等价的。也就是说，此时会使用默认值 `skip=0` 和 `limit=10`，返回 `fake_items_db[0:10]`（即列表的前 10 项）。\n\n文档原文：\n\n> So, going to the URL:\n> ```\n> http://127.0.0.1:8000/items/\n> ```\n> would be the same as going to:\n> ```\n> http://127.0.0.1:8000/items/?skip=0&limit=10\n> ```",
+  "case_sha256": "ce9facb4e37a",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13227,
+  "completion_tokens": 267,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.08,
+  "raw_id": "be5a9e7e-eb89-4c3b-a053-250d92194fab"
+}

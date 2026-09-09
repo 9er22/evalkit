@@ -1,0 +1,22 @@
+{
+  "id": "C027",
+  "category": "adversarial",
+  "question": "文档里提到的 response_model_exclude_password 参数怎么用？它是用来自动过滤掉敏感字段的吗？",
+  "answer": "这份文档没有讲到 `response_model_exclude_password` 这个参数。\n\n文档中关于请求体的内容只涉及：如何用 Pydantic 模型声明 request body、FastAPI 对请求体做的处理（读取 JSON、类型转换、数据校验、编辑器支持、生成 JSON Schema）、自动文档展示，以及发送 body 应使用的 HTTP 方法（`POST`、`PUT`、`DELETE`、`PATCH`，`GET` 不推荐）。\n\n其中没有任何关于 `response_model_exclude_password` 或自动过滤敏感字段的说明，所以我无法依据这份文档回答它的用法。",
+  "case_sha256": "1545cae8e515",
+  "injected_ctx_sha256": "b7cebeefd6f7b77bf74981c52d26b19f7b0e5fdc7d47600ab52d8b61b5e0ff29",
+  "gold_chunk": null,
+  "retrieval_hit": null,
+  "injected_chunks": [
+    "body.md#04-results",
+    "body.md#05-automatic-docs",
+    "body.md#00-head"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 756,
+  "completion_tokens": 126,
+  "elapsed_sec": 1.05
+}

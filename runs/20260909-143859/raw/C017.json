@@ -1,0 +1,19 @@
+{
+  "id": "C017",
+  "category": "normal",
+  "question": "输入模型里含有明文 password，怎么保证响应里不把它返回给客户端？",
+  "answer": "根据文档，做法是**单独定义一个不含 password 的输出模型，并用 `response_model` 参数指定它**。\n\n文档在 \"Add an output model\" 一节给出的示例：\n\n```python\nfrom typing import Any\n\nfrom fastapi import FastAPI\nfrom pydantic import BaseModel, EmailStr\n\napp = FastAPI()\n\n\nclass UserIn(BaseModel):\n    username: str\n    password: str\n    email: EmailStr\n    full_name: str | None = None\n\n\nclass UserOut(BaseModel):\n    username: str\n    email: EmailStr\n    full_name: str | None = None\n\n\n@app.post(\"/user/\", response_model=UserOut)\nasync def create_user(user: UserIn) -> Any:\n    return user\n```\n\n要点（依据文档）：\n\n1. **输入模型 `UserIn` 含 `password`，输出模型 `UserOut` 不含 `password`。**\n2. 即使函数返回的是包含 password 的同一个 `user` 对象，只要在装饰器里声明 `response_model=UserOut`，**FastAPI 会用 Pydantic 过滤掉所有未在输出模型中声明的数据**，password 就不会出现在响应里。\n3. 因为两个模型不同，函数返回类型注解写成 `UserOut` 会让编辑器和 mypy 报错，所以这里用 `response_model` 参数而不是返回类型注解（返回类型写成 `Any`）。\n\n文档还特别警告：**绝不要存储用户明文密码，也不要以这种方式在响应中发送它**（\"Never store the plain password of a user or send it in a response like this\"）。\n\n另外，文档提到另一种思路是用继承来同时获得类型检查支持和数据过滤：\n\n```python\nclass BaseUser(BaseModel):\n    username: str\n    email: EmailStr\n    full_name: str | None = None\n\n\nclass UserIn(BaseUser):\n    password: str\n\n\n@app.post(\"/user/\")\nasync def create_user(user: UserIn) -> BaseUser:\n    return user\n```\n\n这里返回类型注解为 `BaseUser`，FastAPI 会确保返回数据**只包含** `BaseUser` 中声明的字段，从而过滤掉 `password`。",
+  "case_sha256": "f92b7604ec9c",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13197,
+  "completion_tokens": 460,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.87,
+  "raw_id": "9fcc8394-078e-4f3f-a5e0-005f4065b64e"
+}

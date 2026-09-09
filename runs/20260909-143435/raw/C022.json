@@ -1,0 +1,25 @@
+{
+  "id": "C022",
+  "category": "edge",
+  "question": "如果我不想用 Pydantic 模型，还能声明请求体吗？",
+  "answer": "这份文档没有讲到。\n\n文档中关于请求体的部分（片段 6/6）只介绍了使用 Pydantic 的 `BaseModel` 来声明请求体，没有提到不使用 Pydantic 模型时如何声明请求体。",
+  "case_sha256": "70e74a58c2bc",
+  "injected_ctx_sha256": "90ca433836c5afa573df746edbbb3ebd70155cd20376fbaeeeca7a9d952cb808",
+  "gold_chunk": "body.md#10-without-pydantic",
+  "retrieval_hit": false,
+  "injected_chunks": [
+    "response-model.md#06-other-return-type-annotations",
+    "response-model.md#07-response-model-encoding-parameters",
+    "response-model.md#04-return-type-and-data-filtering",
+    "path-params.md#02-data-dfn-title-also-known-as-serializati",
+    "response-model.md#08-recap",
+    "body.md#01-import-pydantic-s-basemodel"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 4091,
+  "completion_tokens": 50,
+  "elapsed_sec": 0.61
+}

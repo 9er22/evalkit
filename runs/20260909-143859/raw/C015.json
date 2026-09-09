@@ -1,0 +1,19 @@
+{
+  "id": "C015",
+  "category": "normal",
+  "question": "同一个路径操作里同时有请求体、路径参数和查询参数，FastAPI 怎么区分它们？",
+  "answer": "根据文档（`docs/en/docs/tutorial/body.md` 的 \"Request body + path + query parameters\" 一节），FastAPI 按以下规则识别函数参数：\n\n- 如果参数名也声明在**路径**中，就作为**路径参数**。\n- 如果参数是**单一类型**（如 `int`、`float`、`str`、`bool` 等），就解释为**查询参数**。\n- 如果参数声明为 **Pydantic 模型**类型，就解释为请求**体**。\n\n文档给出的示例：\n\n```python\n@app.put(\"/items/{item_id}\")\nasync def update_item(item_id: int, item: Item, q: str | None = None):\n    result = {\"item_id\": item_id, **item.model_dump()}\n    if q:\n        result.update({\"q\": q})\n    return result\n```\n\n其中 `item_id` 是路径参数，`item` 是请求体，`q` 是查询参数。\n\n另外文档还特别说明：FastAPI 判断 `q` 不是必填，是因为它有默认值 `= None`，而不是因为类型注解 `str | None`；类型注解只是为了让编辑器提供更好的支持。",
+  "case_sha256": "5f2db956a450",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13207,
+  "completion_tokens": 259,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.08,
+  "raw_id": "aee713b6-23b2-4591-9b88-0a3a653bb3cd"
+}

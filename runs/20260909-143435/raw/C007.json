@@ -1,0 +1,23 @@
+{
+  "id": "C007",
+  "category": "normal",
+  "question": "我需要一个路径参数，它本身包含斜杠，比如 /files/home/johndoe/myfile.txt。文档说该怎么声明？",
+  "answer": "文档说，可以用 Starlette 的 **path convertor** 来声明这种包含斜杠的路径参数，写法是在参数名后面加 `:path`：\n\n```python\n@app.get(\"/files/{file_path:path}\")\nasync def read_file(file_path: str):\n    return {\"file_path\": file_path}\n```\n\n依据（片段 4/4）：\n\n- 文档指出 OpenAPI 本身不支持声明一个路径参数内部包含路径，但在 **FastAPI** 中仍可通过 Starlette 的内部工具实现。\n- 使用 URL 形式 `/files/{file_path:path}`，其中参数名是 `file_path`，最后的 `:path` 表示该参数应匹配任意路径。\n- 文档还提示：如果参数需要包含前导斜杠（如 `/home/johndoe/myfile.txt`），URL 会变成 `/files//home/johndoe/myfile.txt`，即 `files` 和 `home` 之间是双斜杠 `//`。",
+  "case_sha256": "d34dc9c6b0f6",
+  "injected_ctx_sha256": "6953458ce2f90400920a04b5d69b3b5958e2e59bbdef60453c3bcd4d0c7d5cdc",
+  "gold_chunk": "path-params.md#09-path-parameters-containing-paths",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "query-params.md#02-optional-parameters",
+    "query-params.md#03-query-parameter-type-conversion",
+    "query-params.md#04-multiple-path-and-query-parameters",
+    "path-params.md#09-path-parameters-containing-paths"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 1342,
+  "completion_tokens": 209,
+  "elapsed_sec": 1.18
+}

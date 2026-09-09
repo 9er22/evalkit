@@ -1,0 +1,24 @@
+{
+  "id": "C005",
+  "category": "normal",
+  "question": "想让一个路径参数只接受几个预设的固定值，文档推荐怎么做？请写出 Enum 类的定义方式。",
+  "answer": "文档推荐使用 Python 标准的 `Enum`（枚举）来预定义路径参数的合法取值。\n\n具体做法是：导入 `Enum`，创建一个同时继承 `str` 和 `Enum` 的子类。继承 `str` 可以让 API 文档知道这些值必须是字符串类型，从而正确渲染。然后在类中定义固定值的类属性，这些就是可用的合法值。\n\n文档中的 `Enum` 类定义方式如下：\n\n```python\nfrom enum import Enum\n\nfrom fastapi import FastAPI\n\n\nclass ModelName(str, Enum):\n    alexnet = \"alexnet\"\n    resnet = \"resnet\"\n    lenet = \"lenet\"\n```\n\n定义好之后，用这个枚举类作为路径参数的类型注解即可：\n\n```python\n@app.get(\"/models/{model_name}\")\nasync def get_model(model_name: ModelName):\n    ...\n```\n\n依据：片段 4/5（docs/en/docs/tutorial/path-params.md 的 \"Predefined values\" 一节）。",
+  "case_sha256": "52e551eed11b",
+  "injected_ctx_sha256": "f6e6ef5f6f1af56f456bed2cb4b2316d6fd27a7b109634b673d3ec7450d593ba",
+  "gold_chunk": "path-params.md#08-predefined-values",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "query-params.md#05-required-query-parameters",
+    "query-params.md#03-query-parameter-type-conversion",
+    "body.md#07-use-the-model",
+    "path-params.md#08-predefined-values",
+    "path-params.md#07-order-matters"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2988,
+  "completion_tokens": 207,
+  "elapsed_sec": 1.2
+}

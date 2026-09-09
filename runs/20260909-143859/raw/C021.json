@@ -1,0 +1,19 @@
+{
+  "id": "C021",
+  "category": "edge",
+  "question": "怎么让这个接口返回 201 状态码而不是默认的 200？",
+  "answer": "这份文档没有讲到。\n\n文档中关于响应模型（response model）的部分只涉及返回数据的类型声明、验证、过滤（如 `response_model`、`response_model_exclude_unset`、`response_model_include`、`response_model_exclude` 等），并没有提到如何自定义 HTTP 状态码（例如返回 201 而不是默认的 200）。\n\n关于状态码的设置方式，这份文档没有覆盖。",
+  "case_sha256": "c94b4b71529f",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13195,
+  "completion_tokens": 88,
+  "reasoning_tokens": null,
+  "elapsed_sec": 0.75,
+  "raw_id": "27eaa44f-de0f-4421-af97-06232ff6c0a3"
+}

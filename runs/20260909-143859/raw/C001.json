@@ -1,0 +1,19 @@
+{
+  "id": "C001",
+  "category": "normal",
+  "question": "根据文档，如何声明一个路径参数，让访问 /items/foo 时返回 {\"item_id\": \"foo\"}？请给出完整可运行的代码。",
+  "answer": "根据文档，使用与 Python 格式化字符串相同的语法来声明路径参数即可。文档中给出的完整代码如下：\n\n```python\n# docs_src/path_params/tutorial001_py310.py\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/items/{item_id}\")\nasync def read_item(item_id):\n    return {\"item_id\": item_id}\n```\n\n依据文档说明：\n\n- 路径参数 `item_id` 的值会作为参数 `item_id` 传递给函数。\n- 因此运行该示例并访问 `http://127.0.0.1:8000/items/foo`，会得到响应：\n\n```JSON\n{\"item_id\":\"foo\"}\n```\n\n文档还提到，你也可以用标准的 Python 类型注解来声明路径参数的类型（例如 `item_id: int`），这样 FastAPI 会自动进行数据解析和校验。但就本问题而言，上面这段不带类型注解的代码即可满足需求。",
+  "case_sha256": "b5bd372497b1",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13229,
+  "completion_tokens": 197,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.58,
+  "raw_id": "b8011cb1-ec63-46bc-8201-db17eeb92c9a"
+}

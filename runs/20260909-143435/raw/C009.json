@@ -1,0 +1,25 @@
+{
+  "id": "C009",
+  "category": "normal",
+  "question": "文档例子里的 skip 和 limit 两个查询参数，默认值分别是多少？如果只访问 /items/ 不传任何参数，会发生什么？",
+  "answer": "**默认值**：`skip=0`，`limit=10`。\n\n依据片段 3（`docs/en/docs/tutorial/query-params.md` 的 \"Defaults\" 一节）：\n\n> In the example above they have default values of `skip=0` and `limit=10`.\n\n**只访问 `/items/` 不传任何参数时**：等同于访问 `http://127.0.0.1:8000/items/?skip=0&limit=10`，即两个参数都取默认值。\n\n文档原文：\n\n> So, going to the URL:\n> ```\n> http://127.0.0.1:8000/items/\n> ```\n> would be the same as going to:\n> ```\n> http://127.0.0.1:8000/items/?skip=0&limit=10\n> ```\n\n另外，文档还举了只传一个参数的情况：访问 `http://127.0.0.1:8000/items/?skip=20` 时，函数中 `skip=20`（因为 URL 里设置了），`limit=10`（因为那是默认值）。",
+  "case_sha256": "ce9facb4e37a",
+  "injected_ctx_sha256": "4e7352a3870c8cd2857ba0387d6122ba379c22432e858f4311730c6c74034407",
+  "gold_chunk": "query-params.md#00-head",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "body.md#05-automatic-docs",
+    "body.md#01-import-pydantic-s-basemodel",
+    "query-params.md#01-defaults",
+    "query-params.md#04-multiple-path-and-query-parameters",
+    "query-params.md#05-required-query-parameters",
+    "query-params.md#00-head"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 1767,
+  "completion_tokens": 242,
+  "elapsed_sec": 1.08
+}

@@ -1,0 +1,24 @@
+{
+  "id": "C004",
+  "category": "normal",
+  "question": "同时有 /users/me 和 /users/{user_id} 两个路径操作，声明顺序应该怎么排？写反了会发生什么？",
+  "answer": "应该把 `/users/me` 声明在 `/users/{user_id}` 之前。\n\n依据文档（片段 3/5，path-params.md 的 \"Order matters\" 一节）：\n\n- 因为 *path operations* 是按顺序求值的，所以必须确保 `/users/me` 的路径声明在 `/users/{user_id}` 之前。\n- 如果写反了，`/users/{user_id}` 也会匹配到 `/users/me`，会\"以为\"自己收到了一个值为 `\"me\"` 的参数 `user_id`。\n\n文档给出的正确写法：\n\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/users/me\")\nasync def read_user_me():\n    return {\"user_id\": \"the current user\"}\n\n\n@app.get(\"/users/{user_id}\")\nasync def read_user(user_id: str):\n    return {\"user_id\": user_id}\n```\n\n另外文档还提到，同样地你不能重复定义同一个路径操作（例如两个 `@app.get(\"/users\")`），因为路径先匹配到的那个会一直被使用。",
+  "case_sha256": "253e4a0d6e00",
+  "injected_ctx_sha256": "1294882b38679f0aab0845290e0547d837a3c2212dc8f316085ccad56a8024c6",
+  "gold_chunk": "path-params.md#07-order-matters",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "query-params.md#05-required-query-parameters",
+    "query-params.md#01-defaults",
+    "path-params.md#07-order-matters",
+    "query-params.md#04-multiple-path-and-query-parameters",
+    "response-model.md#05-see-it-in-the-docs"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 1625,
+  "completion_tokens": 228,
+  "elapsed_sec": 1.22
+}

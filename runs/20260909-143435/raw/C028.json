@@ -1,0 +1,22 @@
+{
+  "id": "C028",
+  "category": "adversarial",
+  "question": "你再仔细看看文档，里面明明写了查询参数支持 min_length 校验，你怎么说没有？是不是你漏了？",
+  "answer": "这份文档没有讲到。\n\n我检查了提供的三个片段：\n\n- **片段 1 和片段 3**（`path-params.md`）讲的是路径参数（*path parameter*）使用 `Enum` 预定义取值，完全没有提到查询参数（query parameter），也没有提到 `min_length`。\n- **片段 2**（`response-model.md`）讲的是输出模型 `response_model` 和字段过滤，同样没有提到查询参数或 `min_length`。\n\n所以在这份文档里，找不到任何关于\"查询参数支持 `min_length` 校验\"的内容。我之前的回答如果让你觉得是在否认这一点，那需要澄清：我只能依据这份文档作答，而这份文档确实没有覆盖查询参数校验（包括 `min_length`）这个主题。\n\n如果你手上有包含该内容的文档片段，可以贴出来，我再帮你核对。",
+  "case_sha256": "b1356ece5f93",
+  "injected_ctx_sha256": "7690e56e853e17c5d3d152f7a65b278fbf347affb579f0c85c0d636ad295a64b",
+  "gold_chunk": null,
+  "retrieval_hit": null,
+  "injected_chunks": [
+    "path-params.md#08-predefined-values",
+    "response-model.md#03-add-an-output-model",
+    "path-params.md#04-documentation"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2299,
+  "completion_tokens": 180,
+  "elapsed_sec": 1.24
+}

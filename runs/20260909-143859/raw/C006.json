@@ -1,0 +1,19 @@
+{
+  "id": "C006",
+  "category": "normal",
+  "question": "当路径参数是一个枚举成员时，怎么取出它真正的字符串值？",
+  "answer": "根据文档，当路径参数被声明为枚举类型时，函数收到的参数是一个**枚举成员**（enumeration member）。要取出它真正的字符串值，使用 `.value` 属性。\n\n文档中的说明（来自 `path-params.md` 的 \"Get the *enumeration value*\" 一节）：\n\n> You can get the actual value (a `str` in this case) using `model_name.value`, or in general, `your_enum_member.value`\n\n也就是说，对于参数 `model_name`，用 `model_name.value` 取出其字符串值；一般形式为 `your_enum_member.value`。\n\n文档还给出了一个具体例子，用 `ModelName.lenet.value` 来访问值 `\"lenet\"`：\n\n> You could also access the value `\"lenet\"` with `ModelName.lenet.value`.\n\n另外，文档提到枚举成员也可以直接返回，FastAPI 会在返回给客户端之前把它们转换成对应的值（这里是字符串）。",
+  "case_sha256": "1d72ea8c9c86",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13193,
+  "completion_tokens": 205,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.13,
+  "raw_id": "87350f82-a258-44c0-b550-30f3caa6519b"
+}

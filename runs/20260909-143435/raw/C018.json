@@ -1,0 +1,25 @@
+{
+  "id": "C018",
+  "category": "normal",
+  "question": "response_model_exclude_unset=True 是干什么的？用它请求 id 为 foo 的 item，会返回什么？",
+  "answer": "## `response_model_exclude_unset=True` 的作用\n\n根据文档（片段 2/6），它的作用是：**让那些没有被显式设置、只是取了默认值的字段不出现在响应结果中**，只返回实际被设置过的值。\n\n文档原文说明：\n\n> You can set the *path operation decorator* parameter `response_model_exclude_unset=True` ... and those default values won't be included in the response, only the values actually set.\n\n它常用于像 NoSQL 数据库这种有很多可选属性的模型，避免返回充满默认值的长 JSON。\n\n## 请求 id 为 `foo` 的 item 会返回什么\n\n文档中的 `items` 数据里，`foo` 是：\n\n```python\n\"foo\": {\"name\": \"Foo\", \"price\": 50.2},\n```\n\n它只显式设置了 `name` 和 `price`，其余字段（`description`、`tax`、`tags`）都取默认值。\n\n所以请求 `foo` 时，响应（不包含默认值）为：\n\n```JSON\n{\n    \"name\": \"Foo\",\n    \"price\": 50.2\n}\n```\n\n## 补充说明\n\n文档还提到，如果数据里**显式设置**了某个字段（即使值恰好等于默认值），该字段仍会被包含在响应中。例如 id 为 `baz` 的 item，虽然 `description`、`tax`、`tags` 的值与默认值相同，但因为它们是显式设置的，所以会被包含进 JSON 响应。\n\n另外，文档还提到可以配合使用 `response_model_exclude_defaults=True` 和 `response_model_exclude_none=True`。",
+  "case_sha256": "2b798bd913b5",
+  "injected_ctx_sha256": "ceddd6117324b7d056d76bd4f061349fcba21e96a9916044376e4d8197388a68",
+  "gold_chunk": "response-model.md#07-response-model-encoding-parameters",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "query-params.md#03-query-parameter-type-conversion",
+    "response-model.md#07-response-model-encoding-parameters",
+    "path-params.md#10-recap",
+    "query-params.md#01-defaults",
+    "response-model.md#08-recap",
+    "path-params.md#09-path-parameters-containing-paths"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3222,
+  "completion_tokens": 355,
+  "elapsed_sec": 1.7
+}

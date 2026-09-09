@@ -1,0 +1,25 @@
+{
+  "id": "C017",
+  "category": "normal",
+  "question": "输入模型里含有明文 password，怎么保证响应里不把它返回给客户端？",
+  "answer": "根据文档，有两种做法可以保证响应里不返回明文 password：\n\n**方法一：单独定义一个不含 password 的输出模型，用 `response_model` 参数指定**\n\n文档（片段 2/6）给出的例子中，`UserIn` 含 `password`，而 `UserOut` 不含：\n\n```python\nclass UserIn(BaseModel):\n    username: str\n    password: str\n    email: EmailStr\n    full_name: str | None = None\n\n\nclass UserOut(BaseModel):\n    username: str\n    email: EmailStr\n    full_name: str | None = None\n\n\n@app.post(\"/user/\", response_model=UserOut)\nasync def create_user(user: UserIn) -> Any:\n    return user\n```\n\n即使函数返回的是含 password 的输入对象，FastAPI 也会用 Pydantic 过滤掉所有未在输出模型中声明的数据。文档特别说明：因为两个模型不同，如果直接把返回类型标注为 `UserOut`，编辑器和工具会报类型错误，所以这里必须用 `response_model` 参数声明。\n\n**方法二：用继承 + 返回类型标注**\n\n文档（片段 3/6）指出，在大多数只想过滤/移除部分数据的场景下，可以用类继承来同时获得类型标注支持和数据过滤：\n\n```python\nclass BaseUser(BaseModel):\n    username: str\n    email: EmailStr\n    full_name: str | None = None\n\n\nclass UserIn(BaseUser):\n    password: str\n\n\n@app.post(\"/user/\")\nasync def create_user(user: UserIn) -> BaseUser:\n    return user\n```\n\n`UserIn` 继承 `BaseUser` 并加上 `password`，返回类型标注为 `BaseUser`。类型上 `UserIn` 是 `BaseUser` 的子类，所以编辑器和 mypy 不会报错；而 FastAPI 会确保返回的数据只包含 `BaseUser` 中声明的字段，从而过滤掉 password。\n\n**文档的警告**\n\n片段 6/6 明确警告：不要在生产环境用同一个模型同时声明输入和输出（那样会把密码原样返回给客户端），并且\"Never store the plain password of a user or send it in a response like this, unless you know all the caveats and you know what you are doing.\"",
+  "case_sha256": "f92b7604ec9c",
+  "injected_ctx_sha256": "a8bfcabe2e54cf2cbfc59738d25bd4465616d4da5c49b114c57958709a959318",
+  "gold_chunk": "response-model.md#03-add-an-output-model",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "path-params.md#05-standards-based-benefits-alternative-doc",
+    "response-model.md#03-add-an-output-model",
+    "response-model.md#04-return-type-and-data-filtering",
+    "body.md#02-create-your-data-model",
+    "response-model.md#07-response-model-encoding-parameters",
+    "response-model.md#02-return-the-same-input-data"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 4272,
+  "completion_tokens": 483,
+  "elapsed_sec": 1.93
+}

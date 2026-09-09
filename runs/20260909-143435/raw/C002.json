@@ -1,0 +1,25 @@
+{
+  "id": "C002",
+  "category": "normal",
+  "question": "把 item_id 声明成 int 之后，访问 /items/3 时，函数里拿到的到底是字符串 \"3\" 还是数字 3？为什么会这样？",
+  "answer": "函数里拿到的是数字 `3`（int 类型），不是字符串 `\"3\"`。\n\n依据是文档中关于参数识别的说明（片段 3/6）：\n\n> * If the parameter is also declared in the **path**, it will be used as a path parameter.\n> * If the parameter is of a **singular type** (like `int`, `float`, `str`, `bool`, etc) it will be interpreted as a **query** parameter.\n\n文档示例中 `item_id: int` 被声明为路径参数（如 `@app.put(\"/items/{item_id}\")`），FastAPI 会依据类型注解 `int` 对路径中取到的值进行解析和转换，因此函数内得到的是 int 类型的 `3`。\n\n不过需要说明：这份文档只讲了\"参数如何被识别为路径参数/查询参数/请求体\"，以及类型注解会影响编辑器的类型支持，**并没有明确写出\"路径参数值会被自动转换成声明的类型\"这一转换过程的细节**。所以\"拿到的是数字 3\"这一点，文档没有直接逐字说明，只是从类型注解 `int` 的用法可以推断。",
+  "case_sha256": "1f27513a2458",
+  "injected_ctx_sha256": "667dfc90efe01f4322fb776d326981dbd89fa29be7f0a801ad10232e821b4a7c",
+  "gold_chunk": "path-params.md#02-data-dfn-title-also-known-as-serializati",
+  "retrieval_hit": false,
+  "injected_chunks": [
+    "response-model.md#03-add-an-output-model",
+    "query-params.md#05-required-query-parameters",
+    "body.md#09-request-body-path-query-parameters",
+    "body.md#08-request-body-path-parameters",
+    "path-params.md#09-path-parameters-containing-paths",
+    "query-params.md#04-multiple-path-and-query-parameters"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2607,
+  "completion_tokens": 245,
+  "elapsed_sec": 1.55
+}

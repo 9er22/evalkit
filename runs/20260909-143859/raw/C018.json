@@ -1,0 +1,19 @@
+{
+  "id": "C018",
+  "category": "normal",
+  "question": "response_model_exclude_unset=True 是干什么的？用它请求 id 为 foo 的 item，会返回什么？",
+  "answer": "根据文档：\n\n**作用**：`response_model_exclude_unset=True` 是 *path operation decorator* 的参数，设置后，那些**没有被显式设置**的字段（即使用默认值的字段）不会包含在响应中，只返回实际设置过的值。\n\n文档原文说明：当模型有默认值（例如 `description: str | None = None`、`tax: float = 10.5`、`tags: list[str] = []`），但你可能想在结果中省略它们（如果它们实际上没有被存储），就可以用这个参数。\n\n**请求 id 为 foo 的 item 会返回**：\n\n```JSON\n{\n    \"name\": \"Foo\",\n    \"price\": 50.2\n}\n```\n\n依据是文档中的示例：`items` 字典里 `\"foo\": {\"name\": \"Foo\", \"price\": 50.2}`，只设置了 `name` 和 `price`，其余字段（`description`、`tax`、`tags`）都使用默认值，因此在使用 `response_model_exclude_unset=True` 时不会出现在响应中。\n\n文档还补充说明：如果数据中显式设置了与默认值相同的值（如 id 为 `baz` 的 item），Pydantic 仍会识别出它们是显式设置的，因此会包含在响应中。",
+  "case_sha256": "2b798bd913b5",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13215,
+  "completion_tokens": 285,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.23,
+  "raw_id": "977ee830-45f5-477f-bb43-275dbf686d0e"
+}

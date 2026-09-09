@@ -1,0 +1,22 @@
+{
+  "id": "C012",
+  "category": "normal",
+  "question": "怎么让一个查询参数变成必填？如果客户端不传，返回的错误长什么样？",
+  "answer": "这份文档没有讲到。\n\n文档的三个片段都是关于 **Path Parameters**（路径参数）的，包括路径参数的基本声明、数据转换（data conversion）以及用 `Enum` 预定义取值。文档中完全没有涉及查询参数（query parameters）的必填设置，也没有提到客户端不传参数时返回的错误信息格式。\n\n如果你需要了解查询参数必填相关的用法，建议查阅 FastAPI 文档中关于 Query Parameters 的章节。",
+  "case_sha256": "7b5240b6aa29",
+  "injected_ctx_sha256": "c4a4a9e4fefd769ec3c0933ba2d0479ebee40c8c0b4325b4d45c10c03881f152",
+  "gold_chunk": "query-params.md#05-required-query-parameters",
+  "retrieval_hit": false,
+  "injected_chunks": [
+    "path-params.md#02-data-dfn-title-also-known-as-serializati",
+    "path-params.md#08-predefined-values",
+    "path-params.md#00-head"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 1917,
+  "completion_tokens": 93,
+  "elapsed_sec": 0.86
+}

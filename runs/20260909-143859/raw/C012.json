@@ -1,0 +1,19 @@
+{
+  "id": "C012",
+  "category": "normal",
+  "question": "怎么让一个查询参数变成必填？如果客户端不传，返回的错误长什么样？",
+  "answer": "## 怎么让查询参数变成必填\n\n根据文档，**不要给这个参数声明任何默认值**，它就会变成必填的查询参数。\n\n文档原文：\n\n> But when you want to make a query parameter required, you can just not declare any default value\n\n示例（来自 `docs_src/query_params/tutorial005_py310.py`）：\n\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/items/{item_id}\")\nasync def read_user_item(item_id: str, needy: str):\n    item = {\"item_id\": item_id, \"needy\": needy}\n    return item\n```\n\n这里 `needy` 是一个必填的 `str` 类型查询参数。\n\n> 补充：文档还提到，如果只是想让它可选，就把默认值设为 `None`；如果声明了默认值，就不是必填的。\n\n## 客户端不传时返回的错误\n\n如果访问类似 `http://127.0.0.1:8000/items/foo-item` 而不带 `needy` 参数，会看到如下错误：\n\n```JSON\n{\n  \"detail\": [\n    {\n      \"type\": \"missing\",\n      \"loc\": [\n        \"query\",\n        \"needy\"\n      ],\n      \"msg\": \"Field required\",\n      \"input\": null\n    }\n  ]\n}\n```\n\n带上参数（如 `?needy=sooooneedy`）就能正常工作：\n\n```JSON\n{\n    \"item_id\": \"foo-item\",\n    \"needy\": \"sooooneedy\"\n}\n```\n\n## 混合使用\n\n文档还说明，你可以同时定义必填参数、带默认值的参数和完全可选的参数：\n\n```python\n@app.get(\"/items/{item_id}\")\nasync def read_user_item(\n    item_id: str, needy: str, skip: int = 0, limit: int | None = None\n):\n    item = {\"item_id\": item_id, \"needy\": needy, \"skip\": skip, \"limit\": limit}\n    return item\n```\n\n其中 `needy` 是必填的 `str`，`skip` 是有默认值 `0` 的 `int`，`limit` 是可选的 `int`。",
+  "case_sha256": "7b5240b6aa29",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13201,
+  "completion_tokens": 468,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.74,
+  "raw_id": "5a69d75d-7361-492d-856f-5f6063b2a461"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "C001",
+  "category": "normal",
+  "question": "根据文档，如何声明一个路径参数，让访问 /items/foo 时返回 {\"item_id\": \"foo\"}？请给出完整可运行的代码。",
+  "answer": "文档中没有直接给出\"访问 `/items/foo` 返回 `{\"item_id\": \"foo\"}`\"这个完整示例，但根据文档中路径参数的用法可以推导出写法。\n\n依据【片段 6/6】中的示例，路径参数通过 `@app.get(\"/users/{user_id}\")` 这种形式声明，函数参数名与花括号中的名字对应：\n\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/items/{item_id}\")\nasync def read_item(item_id: str):\n    return {\"item_id\": item_id}\n```\n\n说明：\n- 路径中的 `{item_id}` 是路径参数占位符，函数参数 `item_id: str` 与之对应（依据【片段 6/6】中 `/users/{user_id}` 的写法）。\n- 访问 `/items/foo` 时，`item_id` 会被赋值为 `\"foo\"`，返回 `{\"item_id\": \"foo\"}`。\n\n需要说明的是，文档中并没有出现 `/items/{item_id}` 直接返回 `{\"item_id\": item_id}` 的原始代码片段（【片段 3/6】和【片段 5/6】中的 `/items/{item_id}` 示例都额外包含了 `q`、`short` 或 `needy` 等参数），上述代码是依据文档中路径参数的通用声明方式组合得出的。",
+  "case_sha256": "b5bd372497b1",
+  "injected_ctx_sha256": "af0c2aca6ed32b69ef552badc9e5e7ced7f7ef9d86bd6c585f975ce199fd45a6",
+  "gold_chunk": "path-params.md#00-head",
+  "retrieval_hit": false,
+  "injected_chunks": [
+    "query-params.md#01-defaults",
+    "body.md#00-head",
+    "query-params.md#03-query-parameter-type-conversion",
+    "response-model.md#07-response-model-encoding-parameters",
+    "query-params.md#05-required-query-parameters",
+    "path-params.md#07-order-matters"
+  ],
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3824,
+  "completion_tokens": 297,
+  "elapsed_sec": 2.03
+}
