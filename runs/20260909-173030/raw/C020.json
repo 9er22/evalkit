@@ -1,0 +1,25 @@
+{
+  "id": "C020",
+  "category": "edge",
+  "question": "怎么把路径参数 item_id 的取值范围限制在 1 到 10 之间？",
+  "answer": "这份文档没有讲到如何限制路径参数的取值范围。\n\n文档中只提到了路径参数的类型声明（如 `item_id: int`）以及 FastAPI 会根据类型进行数据转换，但并未涉及使用 `Path` 或 `Query` 等参数来添加验证约束（如 `ge`、`le`）的内容。",
+  "case_sha256": "d10419c4ac4c",
+  "injected_ctx_sha256": "b297d76986a9a62396488b1b7974996b143343fde49c723d5e41ed39e67be901",
+  "gold_chunk": null,
+  "retrieval_hit": null,
+  "injected_chunks": [
+    "body.md#09-request-body-path-query-parameters",
+    "body.md#08-request-body-path-parameters",
+    "response-model.md#00-head",
+    "path-params.md#02-data-dfn-title-also-known-as-serializati",
+    "query-params.md#04-multiple-path-and-query-parameters",
+    "response-model.md#07-response-model-encoding-parameters"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3523,
+  "completion_tokens": 68,
+  "elapsed_sec": 1.66
+}

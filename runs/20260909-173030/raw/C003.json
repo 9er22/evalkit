@@ -1,0 +1,25 @@
+{
+  "id": "C003",
+  "category": "normal",
+  "question": "如果路径参数声明为 int，访问 /items/foo 会返回什么错误？请把完整的 JSON 错误结构写出来。",
+  "answer": "根据文档，如果路径参数 `item_id` 声明为 `int`，访问 `/items/foo` 会返回以下完整的 JSON 错误结构：\n\n```JSON\n{\n  \"detail\": [\n    {\n      \"type\": \"int_parsing\",\n      \"loc\": [\n        \"path\",\n        \"item_id\"\n      ],\n      \"msg\": \"Input should be a valid integer, unable to parse string as an integer\",\n      \"input\": \"foo\"\n    }\n  ]\n}\n```\n\n依据是文档片段 4/6 中的内容。",
+  "case_sha256": "9fd04b661bb1",
+  "injected_ctx_sha256": "f5c668c11dcb8c3e1de98a29ffea4e150be4597d53e4e5d9cdcd23ffbf086d06",
+  "gold_chunk": "path-params.md#03-data-validation",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "path-params.md#09-path-parameters-containing-paths",
+    "body.md#04-results",
+    "query-params.md#00-head",
+    "path-params.md#03-data-validation",
+    "query-params.md#05-required-query-parameters",
+    "body.md#08-request-body-path-parameters"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2207,
+  "completion_tokens": 115,
+  "elapsed_sec": 1.78
+}

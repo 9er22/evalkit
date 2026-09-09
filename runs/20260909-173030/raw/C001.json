@@ -1,0 +1,25 @@
+{
+  "id": "C001",
+  "category": "normal",
+  "question": "根据文档，如何声明一个路径参数，让访问 /items/foo 时返回 {\"item_id\": \"foo\"}？请给出完整可运行的代码。",
+  "answer": "这份文档没有讲到如何声明路径参数并返回 `{\"item_id\": \"foo\"}` 的具体代码示例。文档中虽然多次提到路径参数（如 `/items/{item_id}`），但片段内容主要聚焦于查询参数、请求体、响应模型等主题，没有给出声明路径参数并返回该 JSON 的完整可运行代码。\n\n建议查阅文档中专门介绍路径参数的章节（如 `docs/en/docs/tutorial/path-params.md` 的完整内容）来获取相关示例。",
+  "case_sha256": "b5bd372497b1",
+  "injected_ctx_sha256": "af0c2aca6ed32b69ef552badc9e5e7ced7f7ef9d86bd6c585f975ce199fd45a6",
+  "gold_chunk": "path-params.md#00-head",
+  "retrieval_hit": false,
+  "injected_chunks": [
+    "query-params.md#01-defaults",
+    "body.md#00-head",
+    "query-params.md#03-query-parameter-type-conversion",
+    "response-model.md#07-response-model-encoding-parameters",
+    "query-params.md#05-required-query-parameters",
+    "path-params.md#07-order-matters"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3823,
+  "completion_tokens": 106,
+  "elapsed_sec": 1.59
+}

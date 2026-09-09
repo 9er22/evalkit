@@ -1,0 +1,25 @@
+{
+  "id": "C014",
+  "category": "normal",
+  "question": "发送请求体应该用什么 HTTP 方法？如果用 GET 发送请求体会怎样？",
+  "answer": "根据文档，发送请求体应该使用 `POST`（最常见）、`PUT`、`DELETE` 或 `PATCH` 方法。\n\n如果用 `GET` 发送请求体，文档指出：\n- 在规范中，用 `GET` 请求发送请求体具有未定义的行为（undefined behavior）。\n- 尽管如此，FastAPI 仍然支持它，但仅用于非常复杂/极端的用例。\n- 由于不鼓励这样做，Swagger UI 的交互式文档在使用 `GET` 时不会显示请求体的文档，而且中间的代理（proxies）可能不支持它。",
+  "case_sha256": "c87762e995a3",
+  "injected_ctx_sha256": "5701b772e49e412246c30aa12235c8fcbf92fd8874d8ea6ecda390be5b6dd771",
+  "gold_chunk": "body.md#00-head",
+  "retrieval_hit": false,
+  "injected_chunks": [
+    "body.md#00-head",
+    "query-params.md#00-head",
+    "query-params.md#03-query-parameter-type-conversion",
+    "query-params.md#01-defaults",
+    "query-params.md#05-required-query-parameters",
+    "response-model.md#01-response-model-parameter"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2655,
+  "completion_tokens": 125,
+  "elapsed_sec": 1.94
+}

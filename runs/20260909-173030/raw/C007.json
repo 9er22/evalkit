@@ -1,0 +1,23 @@
+{
+  "id": "C007",
+  "category": "normal",
+  "question": "我需要一个路径参数，它本身包含斜杠，比如 /files/home/johndoe/myfile.txt。文档说该怎么声明？",
+  "answer": "根据文档，你可以使用 Starlette 提供的 **path convertor** 来声明一个包含路径的路径参数。具体做法是在路径参数名后加上 `:path`，例如：\n\n```python\n@app.get(\"/files/{file_path:path}\")\nasync def read_file(file_path: str):\n    return {\"file_path\": file_path}\n```\n\n这样，`file_path` 参数就能匹配像 `home/johndoe/myfile.txt` 这样的完整路径。文档还提到，如果路径需要以斜杠开头（如 `/home/johndoe/myfile.txt`），URL 中需要写成 `/files//home/johndoe/myfile.txt`（即 `files` 和 `home` 之间用双斜杠）。",
+  "case_sha256": "d34dc9c6b0f6",
+  "injected_ctx_sha256": "6953458ce2f90400920a04b5d69b3b5958e2e59bbdef60453c3bcd4d0c7d5cdc",
+  "gold_chunk": "path-params.md#09-path-parameters-containing-paths",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "query-params.md#02-optional-parameters",
+    "query-params.md#03-query-parameter-type-conversion",
+    "query-params.md#04-multiple-path-and-query-parameters",
+    "path-params.md#09-path-parameters-containing-paths"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 1341,
+  "completion_tokens": 155,
+  "elapsed_sec": 2.04
+}

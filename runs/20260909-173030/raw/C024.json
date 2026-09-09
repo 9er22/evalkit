@@ -1,0 +1,25 @@
+{
+  "id": "C024",
+  "category": "edge",
+  "question": "用 FastAPI 怎么接收客户端上传的文件？",
+  "answer": "这份文档没有讲到。文档内容只涉及 response model、request body、path params 等主题，没有关于文件上传（file upload）的说明。",
+  "case_sha256": "3259d72ce605",
+  "injected_ctx_sha256": "686e26e19a41162e2a8e10eb2513672d74b614ed26d4ce5bfb2f326130716746",
+  "gold_chunk": null,
+  "retrieval_hit": null,
+  "injected_chunks": [
+    "response-model.md#06-other-return-type-annotations",
+    "response-model.md#05-see-it-in-the-docs",
+    "response-model.md#04-return-type-and-data-filtering",
+    "body.md#00-head",
+    "path-params.md#07-order-matters",
+    "response-model.md#07-response-model-encoding-parameters"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 4392,
+  "completion_tokens": 32,
+  "elapsed_sec": 1.15
+}

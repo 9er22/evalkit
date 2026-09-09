@@ -16,6 +16,9 @@ venv/
 # runs/
 # reports/
 
+# 属于其它项目的文件（误放在本目录，不进本仓库）
+research/调研-AI产品经理简历和作品集参考.md
+
 # 编辑器与系统
 .vscode/
 .idea/

@@ -1,0 +1,605 @@
+{
+  "run_at": "2026-09-09T17:30:30",
+  "mode": "closed-book",
+  "model": "deepseek-v4-flash",
+  "thinking": "disabled",
+  "temperature": 0.0,
+  "corpus": {
+    "path": "research\\corpus\\CORPUS.md",
+    "sha256": "0dec825612cf",
+    "chars": 50917,
+    "note": "整份语料不注入；只注入检索片段（见 retrieval）"
+  },
+  "system_prompt": {
+    "path": "cases\\_system-prompt.md",
+    "sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd"
+  },
+  "retrieval": {
+    "method": "词袋 + idf（src/run_closed_book.py Retriever）",
+    "top_k": 3,
+    "noise": 3,
+    "seed": 42,
+    "chunk_count": 37,
+    "chunk_sha256": "da55572ac988",
+    "query_used": "case 的问题原文（不用期望答案检索，避免作弊）"
+  },
+  "cases": {
+    "C001": {
+      "file": "cases\\C001.md",
+      "sha256": "b5bd372497b1",
+      "category": "normal",
+      "gold_chunk": "path-params.md#00-head",
+      "retrieval_hit": false,
+      "injected_chunks": [
+        "query-params.md#01-defaults",
+        "body.md#00-head",
+        "query-params.md#03-query-parameter-type-conversion",
+        "response-model.md#07-response-model-encoding-parameters",
+        "query-params.md#05-required-query-parameters",
+        "path-params.md#07-order-matters"
+      ],
+      "injected_chars": 13055
+    },
+    "C002": {
+      "file": "cases\\C002.md",
+      "sha256": "1f27513a2458",
+      "category": "normal",
+      "gold_chunk": "path-params.md#02-data-dfn-title-also-known-as-serializati",
+      "retrieval_hit": false,
+      "injected_chunks": [
+        "response-model.md#03-add-an-output-model",
+        "query-params.md#05-required-query-parameters",
+        "body.md#09-request-body-path-query-parameters",
+        "body.md#08-request-body-path-parameters",
+        "path-params.md#09-path-parameters-containing-paths",
+        "query-params.md#04-multiple-path-and-query-parameters"
+      ],
+      "injected_chars": 9288
+    },
+    "C003": {
+      "file": "cases\\C003.md",
+      "sha256": "9fd04b661bb1",
+      "category": "normal",
+      "gold_chunk": "path-params.md#03-data-validation",
+      "retrieval_hit": true,
+      "injected_chunks": [
+        "path-params.md#09-path-parameters-containing-paths",
+        "body.md#04-results",
+        "query-params.md#00-head",
+        "path-params.md#03-data-validation",
+        "query-params.md#05-required-query-parameters",
+        "body.md#08-request-body-path-parameters"
+      ],
+      "injected_chars": 7635
+    },
+    "C004": {
+      "file": "cases\\C004.md",
+      "sha256": "253e4a0d6e00",
+      "category": "normal",
+      "gold_chunk": "path-params.md#07-order-matters",
+      "retrieval_hit": true,
+      "injected_chunks": [
+        "query-params.md#05-required-query-parameters",
+        "query-params.md#01-defaults",
+        "path-params.md#07-order-matters",
+        "query-params.md#04-multiple-path-and-query-parameters",
+        "response-model.md#05-see-it-in-the-docs"
+      ],
+      "injected_chars": 5265
+    },
+    "C005": {
+      "file": "cases\\C005.md",
+      "sha256": "52e551eed11b",
+      "category": "normal",
+      "gold_chunk": "path-params.md#08-predefined-values",
+      "retrieval_hit": true,
+      "injected_chunks": [
+        "query-params.md#05-required-query-parameters",
+        "query-params.md#03-query-parameter-type-conversion",
+        "body.md#07-use-the-model",
+        "path-params.md#08-predefined-values",
+        "path-params.md#07-order-matters"
+      ],
+      "injected_chars": 10399
+    },
+    "C006": {
+      "file": "cases\\C006.md",
+      "sha256": "1d72ea8c9c86",
+      "category": "normal",
+      "gold_chunk": "path-params.md#08-predefined-values",
+      "retrieval_hit": false,
+      "injected_chunks": [
+        "query-params.md#02-optional-parameters",
+        "query-params.md#05-required-query-parameters",
+        "path-params.md#07-order-matters"
+      ],
+      "injected_chars": 4130
+    },
+    "C007": {
+      "file": "cases\\C007.md",
+      "sha256": "d34dc9c6b0f6",
+      "category": "normal",
+      "gold_chunk": "path-params.md#09-path-parameters-containing-paths",
+      "retrieval_hit": true,
+      "injected_chunks": [
+        "query-params.md#02-optional-parameters",
+        "query-params.md#03-query-parameter-type-conversion",
+        "query-params.md#04-multiple-path-and-query-parameters",
+        "path-params.md#09-path-parameters-containing-paths"
+      ],
+      "injected_chars": 4265
+    },
+    "C008": {
+      "file": "cases\\C008.md",
+      "sha256": "bf9f75b23e6e",
+      "category": "normal",
+      "gold_chunk": "path-params.md#09-path-parameters-containing-paths",
+      "retrieval_hit": true,
+      "injected_chunks": [
+        "query-params.md#01-defaults",
+        "path-params.md#09-path-parameters-containing-paths",
+        "response-model.md#06-other-return-type-annotations",
+        "query-params.md#05-required-query-parameters",
+        "body.md#06-editor-support",
+        "query-params.md#04-multiple-path-and-query-parameters"
+      ],
+      "injected_chars": 10426
+    },
+    "C009": {
+      "file": "cases\\C009.md",
+      "sha256": "ce9facb4e37a",
+      "category": "normal",
+      "gold_chunk": "query-params.md#00-head",
+      "retrieval_hit": true,
+      "injected_chunks": [
+        "body.md#05-automatic-docs",
+        "body.md#01-import-pydantic-s-basemodel",
+        "query-params.md#01-defaults",
+        "query-params.md#04-multiple-path-and-query-parameters",
+        "query-params.md#05-required-query-parameters",
+        "query-params.md#00-head"
+      ],
+      "injected_chars": 5700
+    },
+    "C010": {
+      "file": "cases\\C010.md",
+      "sha256": "4792506103c3",
+      "category": "normal",
+      "gold_chunk": "query-params.md#02-optional-parameters",
+      "retrieval_hit": false,
+      "injected_chunks": [
+        "path-params.md#00-head",
+        "path-params.md#05-standards-based-benefits-alternative-doc",
+        "response-model.md#00-head"
+      ],
+      "injected_chars": 3179
+    },
+    "C011": {
+      "file": "cases\\C011.md",
+      "sha256": "bf4797fe621f",
+      "category": "normal",
+      "gold_chunk": "query-params.md#03-query-parameter-type-conversion",
+      "retrieval_hit": true,
+      "injected_chunks": [
+        "body.md#01-import-pydantic-s-basemodel",
+        "response-model.md#07-response-model-encoding-parameters",
+        "response-model.md#00-head",
+        "path-params.md#10-recap",
+        "response-model.md#06-other-return-type-annotations",
+        "query-params.md#03-query-parameter-type-conversion"
+      ],
+      "injected_chars": 14885
+    },
+    "C012": {
+      "file": "cases\\C012.md",
+      "sha256": "7b5240b6aa29",
+      "category": "normal",
+      "gold_chunk": "query-params.md#05-required-query-parameters",
+      "retrieval_hit": false,
+      "injected_chunks": [
+        "path-params.md#02-data-dfn-title-also-known-as-serializati",
+        "path-params.md#08-predefined-values",
+        "path-params.md#00-head"
+      ],
+      "injected_chars": 6522
+    },
+    "C013": {
+      "file": "cases\\C013.md",
+      "sha256": "824dcf560056",
+      "category": "normal",
+      "gold_chunk": "body.md#01-import-pydantic-s-basemodel",
+      "retrieval_hit": false,
+      "injected_chunks": [
+        "response-model.md#07-response-model-encoding-parameters",
+        "body.md#06-editor-support",
+        "response-model.md#05-see-it-in-the-docs",
+        "response-model.md#00-head",
+        "path-params.md#02-data-dfn-title-also-known-as-serializati",
+        "query-params.md#05-required-query-parameters"
+      ],
+      "injected_chars": 13026
+    },
+    "C014": {
+      "file": "cases\\C014.md",
+      "sha256": "c87762e995a3",
+      "category": "normal",
+      "gold_chunk": "body.md#00-head",
+      "retrieval_hit": false,
+      "injected_chunks": [
+        "body.md#00-head",
+        "query-params.md#00-head",
+        "query-params.md#03-query-parameter-type-conversion",
+        "query-params.md#01-defaults",
+        "query-params.md#05-required-query-parameters",
+        "response-model.md#01-response-model-parameter"
+      ],
+      "injected_chars": 9367
+    },
+    "C015": {
+      "file": "cases\\C015.md",
+      "sha256": "5f2db956a450",
+      "category": "normal",
+      "gold_chunk": "body.md#09-request-body-path-query-parameters",
+      "retrieval_hit": false,
+      "injected_chunks": [
+        "response-model.md#07-response-model-encoding-parameters",
+        "path-params.md#08-predefined-values",
+        "response-model.md#04-return-type-and-data-filtering",
+        "response-model.md#06-other-return-type-annotations",
+        "query-params.md#05-required-query-parameters",
+        "body.md#05-automatic-docs"
+      ],
+      "injected_chars": 21389
+    },
+    "C016": {
+      "file": "cases\\C016.md",
+      "sha256": "bf17a82c6d34",
+      "category": "normal",
+      "gold_chunk": "response-model.md#01-response-model-parameter",
+      "retrieval_hit": false,
+      "injected_chunks": [
+        "response-model.md#03-add-an-output-model",
+        "path-params.md#10-recap",
+        "response-model.md#07-response-model-encoding-parameters",
+        "response-model.md#06-other-return-type-annotations",
+        "path-params.md#01-path-parameters-with-types",
+        "response-model.md#08-recap"
+      ],
+      "injected_chars": 14777
+    },
+    "C017": {
+      "file": "cases\\C017.md",
+      "sha256": "f92b7604ec9c",
+      "category": "normal",
+      "gold_chunk": "response-model.md#03-add-an-output-model",
+      "retrieval_hit": true,
+      "injected_chunks": [
+        "path-params.md#05-standards-based-benefits-alternative-doc",
+        "response-model.md#03-add-an-output-model",
+        "response-model.md#04-return-type-and-data-filtering",
+        "body.md#02-create-your-data-model",
+        "response-model.md#07-response-model-encoding-parameters",
+        "response-model.md#02-return-the-same-input-data"
+      ],
+      "injected_chars": 15643
+    },
+    "C018": {
+      "file": "cases\\C018.md",
+      "sha256": "2b798bd913b5",
+      "category": "normal",
+      "gold_chunk": "response-model.md#07-response-model-encoding-parameters",
+      "retrieval_hit": true,
+      "injected_chunks": [
+        "query-params.md#03-query-parameter-type-conversion",
+        "response-model.md#07-response-model-encoding-parameters",
+        "path-params.md#10-recap",
+        "query-params.md#01-defaults",
+        "response-model.md#08-recap",
+        "path-params.md#09-path-parameters-containing-paths"
+      ],
+      "injected_chars": 11011
+    },
+    "C019": {
+      "file": "cases\\C019.md",
+      "sha256": "68858cf0db57",
+      "category": "edge",
+      "gold_chunk": null,
+      "retrieval_hit": null,
+      "injected_chunks": [
+        "body.md#09-request-body-path-query-parameters",
+        "query-params.md#01-defaults",
+        "response-model.md#05-see-it-in-the-docs"
+      ],
+      "injected_chars": 2575
+    },
+    "C020": {
+      "file": "cases\\C020.md",
+      "sha256": "d10419c4ac4c",
+      "category": "edge",
+      "gold_chunk": null,
+      "retrieval_hit": null,
+      "injected_chunks": [
+        "body.md#09-request-body-path-query-parameters",
+        "body.md#08-request-body-path-parameters",
+        "response-model.md#00-head",
+        "path-params.md#02-data-dfn-title-also-known-as-serializati",
+        "query-params.md#04-multiple-path-and-query-parameters",
+        "response-model.md#07-response-model-encoding-parameters"
+      ],
+      "injected_chars": 12489
+    },
+    "C021": {
+      "file": "cases\\C021.md",
+      "sha256": "c94b4b71529f",
+      "category": "edge",
+      "gold_chunk": null,
+      "retrieval_hit": null,
+      "injected_chunks": [
+        "response-model.md#06-other-return-type-annotations",
+        "body.md#03-declare-it-as-a-parameter",
+        "body.md#04-results"
+      ],
+      "injected_chars": 5534
+    },
+    "C022": {
+      "file": "cases\\C022.md",
+      "sha256": "70e74a58c2bc",
+      "category": "edge",
+      "gold_chunk": "body.md#10-without-pydantic",
+      "retrieval_hit": false,
+      "injected_chunks": [
+        "response-model.md#06-other-return-type-annotations",
+        "response-model.md#07-response-model-encoding-parameters",
+        "response-model.md#04-return-type-and-data-filtering",
+        "path-params.md#02-data-dfn-title-also-known-as-serializati",
+        "response-model.md#08-recap",
+        "body.md#01-import-pydantic-s-basemodel"
+      ],
+      "injected_chars": 15130
+    },
+    "C023": {
+      "file": "cases\\C023.md",
+      "sha256": "f2339bd09ab0",
+      "category": "edge",
+      "gold_chunk": "response-model.md#07-response-model-encoding-parameters",
+      "retrieval_hit": true,
+      "injected_chunks": [
+        "response-model.md#07-response-model-encoding-parameters",
+        "response-model.md#01-response-model-parameter",
+        "path-params.md#07-order-matters",
+        "body.md#02-create-your-data-model"
+      ],
+      "injected_chars": 12434
+    },
+    "C024": {
+      "file": "cases\\C024.md",
+      "sha256": "3259d72ce605",
+      "category": "edge",
+      "gold_chunk": null,
+      "retrieval_hit": null,
+      "injected_chunks": [
+        "response-model.md#06-other-return-type-annotations",
+        "response-model.md#05-see-it-in-the-docs",
+        "response-model.md#04-return-type-and-data-filtering",
+        "body.md#00-head",
+        "path-params.md#07-order-matters",
+        "response-model.md#07-response-model-encoding-parameters"
+      ],
+      "injected_chars": 16548
+    },
+    "C025": {
+      "file": "cases\\C025.md",
+      "sha256": "ff547d2f362d",
+      "category": "edge",
+      "gold_chunk": "response-model.md#01-response-model-parameter",
+      "retrieval_hit": false,
+      "injected_chunks": [
+        "path-params.md#10-recap",
+        "response-model.md#07-response-model-encoding-parameters",
+        "response-model.md#00-head",
+        "response-model.md#04-return-type-and-data-filtering",
+        "response-model.md#06-other-return-type-annotations",
+        "query-params.md#04-multiple-path-and-query-parameters"
+      ],
+      "injected_chars": 16954
+    },
+    "C026": {
+      "file": "cases\\C026.md",
+      "sha256": "99bb7f3e4565",
+      "category": "adversarial",
+      "gold_chunk": null,
+      "retrieval_hit": null,
+      "injected_chunks": [
+        "body.md#08-request-body-path-parameters",
+        "path-params.md#02-data-dfn-title-also-known-as-serializati",
+        "response-model.md#04-return-type-and-data-filtering",
+        "response-model.md#00-head",
+        "response-model.md#07-response-model-encoding-parameters",
+        "response-model.md#06-other-return-type-annotations"
+      ],
+      "injected_chars": 16984
+    },
+    "C027": {
+      "file": "cases\\C027.md",
+      "sha256": "1545cae8e515",
+      "category": "adversarial",
+      "gold_chunk": null,
+      "retrieval_hit": null,
+      "injected_chunks": [
+        "body.md#04-results",
+        "body.md#05-automatic-docs",
+        "body.md#00-head"
+      ],
+      "injected_chars": 2382
+    },
+    "C028": {
+      "file": "cases\\C028.md",
+      "sha256": "b1356ece5f93",
+      "category": "adversarial",
+      "gold_chunk": null,
+      "retrieval_hit": null,
+      "injected_chunks": [
+        "path-params.md#08-predefined-values",
+        "response-model.md#03-add-an-output-model",
+        "path-params.md#04-documentation"
+      ],
+      "injected_chars": 8189
+    },
+    "C029": {
+      "file": "cases\\C029.md",
+      "sha256": "b91d924d4f77",
+      "category": "adversarial",
+      "gold_chunk": null,
+      "retrieval_hit": null,
+      "injected_chunks": [
+        "body.md#06-editor-support",
+        "path-params.md#03-data-validation",
+        "response-model.md#01-response-model-parameter"
+      ],
+      "injected_chars": 5414
+    },
+    "C030": {
+      "file": "cases\\C030.md",
+      "sha256": "5f471fc98c14",
+      "category": "adversarial",
+      "gold_chunk": "response-model.md#01-response-model-parameter",
+      "retrieval_hit": true,
+      "injected_chunks": [
+        "body.md#04-results",
+        "response-model.md#08-recap",
+        "query-params.md#03-query-parameter-type-conversion",
+        "response-model.md#07-response-model-encoding-parameters",
+        "path-params.md#02-data-dfn-title-also-known-as-serializati",
+        "response-model.md#01-response-model-parameter"
+      ],
+      "injected_chars": 12926
+    }
+  },
+  "results": [
+    {
+      "id": "C001",
+      "retrieval_hit": false
+    },
+    {
+      "id": "C002",
+      "retrieval_hit": false
+    },
+    {
+      "id": "C003",
+      "retrieval_hit": true
+    },
+    {
+      "id": "C004",
+      "retrieval_hit": true
+    },
+    {
+      "id": "C005",
+      "retrieval_hit": true
+    },
+    {
+      "id": "C006",
+      "retrieval_hit": false
+    },
+    {
+      "id": "C007",
+      "retrieval_hit": true
+    },
+    {
+      "id": "C008",
+      "retrieval_hit": true
+    },
+    {
+      "id": "C009",
+      "retrieval_hit": true
+    },
+    {
+      "id": "C010",
+      "retrieval_hit": false
+    },
+    {
+      "id": "C011",
+      "retrieval_hit": true
+    },
+    {
+      "id": "C012",
+      "retrieval_hit": false
+    },
+    {
+      "id": "C013",
+      "retrieval_hit": false
+    },
+    {
+      "id": "C014",
+      "retrieval_hit": false
+    },
+    {
+      "id": "C015",
+      "retrieval_hit": false
+    },
+    {
+      "id": "C016",
+      "retrieval_hit": false
+    },
+    {
+      "id": "C017",
+      "retrieval_hit": true
+    },
+    {
+      "id": "C018",
+      "retrieval_hit": true
+    },
+    {
+      "id": "C019",
+      "retrieval_hit": null
+    },
+    {
+      "id": "C020",
+      "retrieval_hit": null
+    },
+    {
+      "id": "C021",
+      "retrieval_hit": null
+    },
+    {
+      "id": "C022",
+      "retrieval_hit": false
+    },
+    {
+      "id": "C023",
+      "retrieval_hit": true
+    },
+    {
+      "id": "C024",
+      "retrieval_hit": null
+    },
+    {
+      "id": "C025",
+      "retrieval_hit": false
+    },
+    {
+      "id": "C026",
+      "retrieval_hit": null
+    },
+    {
+      "id": "C027",
+      "retrieval_hit": null
+    },
+    {
+      "id": "C028",
+      "retrieval_hit": null
+    },
+    {
+      "id": "C029",
+      "retrieval_hit": null
+    },
+    {
+      "id": "C030",
+      "retrieval_hit": true
+    }
+  ],
+  "summary": {
+    "ok": 30,
+    "fail": 0,
+    "retrieval_hit_rate": 0.5
+  }
+}

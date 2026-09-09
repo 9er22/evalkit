@@ -1,0 +1,22 @@
+{
+  "id": "C010",
+  "category": "normal",
+  "question": "怎么把一个查询参数声明为可选？请给出代码，并说明判断依据是什么。",
+  "answer": "这份文档没有讲到如何把查询参数声明为可选。文档只涉及了路径参数（Path Parameters）和响应模型（Response Model），没有覆盖查询参数（Query Parameters）的声明方式。",
+  "case_sha256": "4792506103c3",
+  "injected_ctx_sha256": "238e4ed3832275fac10d610b785c7a3da8286ddc63ce719cf85ebc64cbe9f48c",
+  "gold_chunk": "query-params.md#02-optional-parameters",
+  "retrieval_hit": false,
+  "injected_chunks": [
+    "path-params.md#00-head",
+    "path-params.md#05-standards-based-benefits-alternative-doc",
+    "response-model.md#00-head"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 987,
+  "completion_tokens": 41,
+  "elapsed_sec": 1.19
+}

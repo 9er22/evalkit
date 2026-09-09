@@ -1,0 +1,24 @@
+{
+  "id": "C005",
+  "category": "normal",
+  "question": "想让一个路径参数只接受几个预设的固定值，文档推荐怎么做？请写出 Enum 类的定义方式。",
+  "answer": "根据文档，要让路径参数只接受预设的固定值，推荐使用标准的 Python `Enum` 类。\n\n定义方式如下：\n\n```python\nfrom enum import Enum\n\nclass ModelName(str, Enum):\n    alexnet = \"alexnet\"\n    resnet = \"resnet\"\n    lenet = \"lenet\"\n```\n\n然后，在路径操作函数中，用这个枚举类作为路径参数的类型注解：\n\n```python\n@app.get(\"/models/{model_name}\")\nasync def get_model(model_name: ModelName):\n    ...\n```\n\n依据是文档片段 4/5 中 \"Predefined values\" 部分的内容。",
+  "case_sha256": "52e551eed11b",
+  "injected_ctx_sha256": "f6e6ef5f6f1af56f456bed2cb4b2316d6fd27a7b109634b673d3ec7450d593ba",
+  "gold_chunk": "path-params.md#08-predefined-values",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "query-params.md#05-required-query-parameters",
+    "query-params.md#03-query-parameter-type-conversion",
+    "body.md#07-use-the-model",
+    "path-params.md#08-predefined-values",
+    "path-params.md#07-order-matters"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2987,
+  "completion_tokens": 130,
+  "elapsed_sec": 2.32
+}

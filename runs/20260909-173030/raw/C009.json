@@ -1,0 +1,25 @@
+{
+  "id": "C009",
+  "category": "normal",
+  "question": "文档例子里的 skip 和 limit 两个查询参数，默认值分别是多少？如果只访问 /items/ 不传任何参数，会发生什么？",
+  "answer": "根据文档，`skip` 的默认值是 `0`，`limit` 的默认值是 `10`。\n\n如果只访问 `/items/` 不传任何参数，文档说明这等同于访问 `/items/?skip=0&limit=10`，所以会使用默认值 `skip=0` 和 `limit=10` 来处理请求。",
+  "case_sha256": "ce9facb4e37a",
+  "injected_ctx_sha256": "4e7352a3870c8cd2857ba0387d6122ba379c22432e858f4311730c6c74034407",
+  "gold_chunk": "query-params.md#00-head",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "body.md#05-automatic-docs",
+    "body.md#01-import-pydantic-s-basemodel",
+    "query-params.md#01-defaults",
+    "query-params.md#04-multiple-path-and-query-parameters",
+    "query-params.md#05-required-query-parameters",
+    "query-params.md#00-head"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 1766,
+  "completion_tokens": 76,
+  "elapsed_sec": 1.46
+}

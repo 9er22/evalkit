@@ -1,0 +1,22 @@
+{
+  "id": "C019",
+  "category": "edge",
+  "question": "怎么限制一个查询参数的最小长度，或者用正则表达式校验它？",
+  "answer": "这份文档没有讲到。文档中只提到了查询参数可以有默认值（如 `skip=0`、`limit=10`），以及如何区分路径参数、查询参数和请求体，但没有涉及对查询参数进行长度限制或正则表达式校验的内容。",
+  "case_sha256": "68858cf0db57",
+  "injected_ctx_sha256": "fe1806345ae6929a86ed05c4faea27a7abeadfe420a42a7e6e44fca087b5dc65",
+  "gold_chunk": null,
+  "retrieval_hit": null,
+  "injected_chunks": [
+    "body.md#09-request-body-path-query-parameters",
+    "query-params.md#01-defaults",
+    "response-model.md#05-see-it-in-the-docs"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 843,
+  "completion_tokens": 54,
+  "elapsed_sec": 1.13
+}

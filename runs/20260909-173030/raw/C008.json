@@ -1,0 +1,25 @@
+{
+  "id": "C008",
+  "category": "normal",
+  "question": "如果 file_path 需要以斜杠开头（比如 /home/johndoe/myfile.txt），URL 应该怎么写？",
+  "answer": "根据文档，如果 `file_path` 需要以斜杠开头（比如 `/home/johndoe/myfile.txt`），URL 应该写成：\n\n```\n/files//home/johndoe/myfile.txt\n```\n\n即 `files` 和 `home` 之间要有双斜杠（`//`）。\n\n依据是文档片段 2 中的说明：\n\n> You might need the parameter to contain `/home/johndoe/myfile.txt`, with a leading slash (`/`).\n> In that case, the URL would be: `/files//home/johndoe/myfile.txt`, with a double slash (`//`) between `files` and `home`.",
+  "case_sha256": "bf9f75b23e6e",
+  "injected_ctx_sha256": "460840a61046ef3fa09a68bf25052cd8a8c23ce8e8c06cee675e4fcf5405cf14",
+  "gold_chunk": "path-params.md#09-path-parameters-containing-paths",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "query-params.md#01-defaults",
+    "path-params.md#09-path-parameters-containing-paths",
+    "response-model.md#06-other-return-type-annotations",
+    "query-params.md#05-required-query-parameters",
+    "body.md#06-editor-support",
+    "query-params.md#04-multiple-path-and-query-parameters"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2843,
+  "completion_tokens": 138,
+  "elapsed_sec": 1.62
+}

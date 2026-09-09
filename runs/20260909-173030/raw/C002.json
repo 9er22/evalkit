@@ -1,0 +1,25 @@
+{
+  "id": "C002",
+  "category": "normal",
+  "question": "把 item_id 声明成 int 之后，访问 /items/3 时，函数里拿到的到底是字符串 \"3\" 还是数字 3？为什么会这样？",
+  "answer": "这份文档没有讲到这个问题。文档中虽然多次出现 `item_id: int` 的声明（例如片段 3、4、6），但并未说明路径参数在传入函数前是否会被转换为声明的类型，也没有解释类型转换的机制。因此，我无法根据这份文档判断你拿到的是字符串还是数字。",
+  "case_sha256": "1f27513a2458",
+  "injected_ctx_sha256": "667dfc90efe01f4322fb776d326981dbd89fa29be7f0a801ad10232e821b4a7c",
+  "gold_chunk": "path-params.md#02-data-dfn-title-also-known-as-serializati",
+  "retrieval_hit": false,
+  "injected_chunks": [
+    "response-model.md#03-add-an-output-model",
+    "query-params.md#05-required-query-parameters",
+    "body.md#09-request-body-path-query-parameters",
+    "body.md#08-request-body-path-parameters",
+    "path-params.md#09-path-parameters-containing-paths",
+    "query-params.md#04-multiple-path-and-query-parameters"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2606,
+  "completion_tokens": 68,
+  "elapsed_sec": 2.25
+}

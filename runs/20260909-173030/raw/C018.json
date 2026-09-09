@@ -1,0 +1,25 @@
+{
+  "id": "C018",
+  "category": "normal",
+  "question": "response_model_exclude_unset=True 是干什么的？用它请求 id 为 foo 的 item，会返回什么？",
+  "answer": "根据文档，`response_model_exclude_unset=True` 是 *path operation decorator* 的一个参数，用于在响应中排除那些**未显式设置**的字段（即使用了默认值的字段），只返回实际被设置的值。\n\n对于 id 为 `foo` 的 item，文档中的示例数据是：\n```python\n{\"name\": \"Foo\", \"price\": 50.2}\n```\n\n由于 `description`、`tax`、`tags` 这些字段在数据中没有被显式设置（它们会使用模型中的默认值），所以使用 `response_model_exclude_unset=True` 后，响应将**不包含**这些默认值字段，只返回实际设置的值：\n\n```JSON\n{\n    \"name\": \"Foo\",\n    \"price\": 50.2\n}\n```\n\n依据是文档片段 2/6 中的说明和示例。",
+  "case_sha256": "2b798bd913b5",
+  "injected_ctx_sha256": "ceddd6117324b7d056d76bd4f061349fcba21e96a9916044376e4d8197388a68",
+  "gold_chunk": "response-model.md#07-response-model-encoding-parameters",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "query-params.md#03-query-parameter-type-conversion",
+    "response-model.md#07-response-model-encoding-parameters",
+    "path-params.md#10-recap",
+    "query-params.md#01-defaults",
+    "response-model.md#08-recap",
+    "path-params.md#09-path-parameters-containing-paths"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3221,
+  "completion_tokens": 185,
+  "elapsed_sec": 2.21
+}

@@ -1,0 +1,22 @@
+{
+  "id": "C006",
+  "category": "normal",
+  "question": "当路径参数是一个枚举成员时，怎么取出它真正的字符串值？",
+  "answer": "这份文档没有讲到。文档中只提到“You could also use `Enum`s the same way as with [Path Parameters](path-params.md#predefined-values).”，但并未说明如何从枚举成员中取出其真正的字符串值。",
+  "case_sha256": "1d72ea8c9c86",
+  "injected_ctx_sha256": "d8c78c3a0c4a89c35c7a9bba9da5ac1e129da3c038b6b82ea127b66163904038",
+  "gold_chunk": "path-params.md#08-predefined-values",
+  "retrieval_hit": false,
+  "injected_chunks": [
+    "query-params.md#02-optional-parameters",
+    "query-params.md#05-required-query-parameters",
+    "path-params.md#07-order-matters"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 1284,
+  "completion_tokens": 50,
+  "elapsed_sec": 1.04
+}

@@ -1,0 +1,25 @@
+{
+  "id": "C017",
+  "category": "normal",
+  "question": "输入模型里含有明文 password，怎么保证响应里不把它返回给客户端？",
+  "answer": "根据文档，你可以通过**创建独立的输出模型**来保证响应中不返回明文 `password`。\n\n具体做法是：定义一个包含 `password` 字段的输入模型（如 `UserIn`），再定义一个**不包含** `password` 字段的输出模型（如 `UserOut`），然后在路径操作装饰器中通过 `response_model` 参数指定使用输出模型。\n\n文档中的示例代码如下：\n\n```python\nclass UserIn(BaseModel):\n    username: str\n    password: str\n    email: EmailStr\n    full_name: str | None = None\n\n\nclass UserOut(BaseModel):\n    username: str\n    email: EmailStr\n    full_name: str | None = None\n\n\n@app.post(\"/user/\", response_model=UserOut)\nasync def create_user(user: UserIn) -> Any:\n    return user\n```\n\n文档说明：即使路径操作函数返回的是包含密码的输入用户对象，但由于声明了 `response_model` 为 `UserOut`，**FastAPI 会使用 Pydantic 自动过滤掉所有未在输出模型中声明的数据**（即 `password` 字段），从而确保响应中不包含明文密码。",
+  "case_sha256": "f92b7604ec9c",
+  "injected_ctx_sha256": "a8bfcabe2e54cf2cbfc59738d25bd4465616d4da5c49b114c57958709a959318",
+  "gold_chunk": "response-model.md#03-add-an-output-model",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "path-params.md#05-standards-based-benefits-alternative-doc",
+    "response-model.md#03-add-an-output-model",
+    "response-model.md#04-return-type-and-data-filtering",
+    "body.md#02-create-your-data-model",
+    "response-model.md#07-response-model-encoding-parameters",
+    "response-model.md#02-return-the-same-input-data"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 4271,
+  "completion_tokens": 245,
+  "elapsed_sec": 2.85
+}

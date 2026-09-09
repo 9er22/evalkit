@@ -1,0 +1,24 @@
+{
+  "id": "C004",
+  "category": "normal",
+  "question": "同时有 /users/me 和 /users/{user_id} 两个路径操作，声明顺序应该怎么排？写反了会发生什么？",
+  "answer": "根据文档，`/users/me` 的路径操作必须**先声明**，然后再声明 `/users/{user_id}`。\n\n如果写反了（先声明 `/users/{user_id}`），那么 `/users/me` 请求会被 `/users/{user_id}` 匹配，FastAPI 会把 `\"me\"` 当作 `user_id` 参数的值来处理，导致返回错误的结果。\n\n文档原文依据：\n> Because *path operations* are evaluated in order, you need to make sure that the path for `/users/me` is declared before the one for `/users/{user_id}`... Otherwise, the path for `/users/{user_id}` would match also for `/users/me`, \"thinking\" that it's receiving a parameter `user_id` with a value of `\"me\"`.",
+  "case_sha256": "253e4a0d6e00",
+  "injected_ctx_sha256": "1294882b38679f0aab0845290e0547d837a3c2212dc8f316085ccad56a8024c6",
+  "gold_chunk": "path-params.md#07-order-matters",
+  "retrieval_hit": true,
+  "injected_chunks": [
+    "query-params.md#05-required-query-parameters",
+    "query-params.md#01-defaults",
+    "path-params.md#07-order-matters",
+    "query-params.md#04-multiple-path-and-query-parameters",
+    "response-model.md#05-see-it-in-the-docs"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 1624,
+  "completion_tokens": 169,
+  "elapsed_sec": 2.0
+}

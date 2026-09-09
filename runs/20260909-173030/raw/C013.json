@@ -1,0 +1,25 @@
+{
+  "id": "C013",
+  "category": "normal",
+  "question": "要接收一个 JSON 请求体，文档里怎么做？请给出完整代码，并说明哪些字段是必填。",
+  "answer": "这份文档没有讲到如何接收 JSON 请求体的完整教程。文档中虽然提到了 Pydantic 模型和请求体（body）的概念，但提供的片段主要是关于响应模型（response model）、路径参数和查询参数的，没有给出一个完整的、专门讲解如何接收 JSON 请求体的代码示例。\n\n因此，我无法根据这份文档给出完整代码和必填字段的说明。",
+  "case_sha256": "824dcf560056",
+  "injected_ctx_sha256": "96e121c1f6ca368de6d3277334890a31f3e9654bfc7f538e0e0a9b45f88ec0ed",
+  "gold_chunk": "body.md#01-import-pydantic-s-basemodel",
+  "retrieval_hit": false,
+  "injected_chunks": [
+    "response-model.md#07-response-model-encoding-parameters",
+    "body.md#06-editor-support",
+    "response-model.md#05-see-it-in-the-docs",
+    "response-model.md#00-head",
+    "path-params.md#02-data-dfn-title-also-known-as-serializati",
+    "query-params.md#05-required-query-parameters"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3706,
+  "completion_tokens": 80,
+  "elapsed_sec": 1.46
+}
