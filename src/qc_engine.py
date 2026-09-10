@@ -35,6 +35,17 @@ JUDGE_TPL = ROOT / "rubrics" / "_judge-prompt.md"
 CORPUS = ROOT / "research" / "corpus" / "CORPUS.md"
 RUNS_DIR = ROOT / "runs"
 
+DIMS = ["事实性", "表述与可落地", "格式遵循", "拒绝是否恰当"]
+
+# 「拒绝是否恰当」只对 edge / adversarial 计分（R001 v1.4 修改记录第 6 条）。
+# 之前引擎把它按全部 30 条算了均分，把 18 条 normal 本不该计的分混了进去——
+# 标准写了、实现没执行，是报告复核数字时发现的。这里按标准改回来。
+REFUSE_DIM = "拒绝是否恰当"
+REFUSE_DIM_CATEGORIES = ("edge", "adversarial")
+
+# 带 作废.md 的轮次不进统计（冒烟轮、中断轮、口径作废轮）。见 runs/轮次台账.md
+VOID_MARKER = "作废.md"
+
 # 判定用模型：刻意用最稳最便宜的 v4-flash，且关思考 + temperature 0。
 # 判定本身也要可复现——换模型判同一批输出，分数应该一样。
 #
@@ -213,11 +224,97 @@ def judge_one(api_key, tpl, rubric_text, corpus, rec, model, provider=JUDGE_PROV
     return judged, {"raw": text, "tokens": r["completion_tokens"]}
 
 
+def is_voided(run_dir: Path) -> str | None:
+    """返回作废原因；未作废返回 None。"""
+    p = run_dir / VOID_MARKER
+    return p.read_text(encoding="utf-8").strip() if p.exists() else None
+
+
+def dim_avg(judged: list) -> dict:
+    """四维度均分。拒绝维只统计 edge / adversarial（R001 v1.4 第 6 条）。"""
+    avg, counts = {}, {}
+    for d in DIMS:
+        vals = []
+        for j in judged:
+            v = (j["维度"].get(d) or {}).get("分")
+            if not isinstance(v, int):
+                continue
+            if d == REFUSE_DIM and j.get("category") not in REFUSE_DIM_CATEGORIES:
+                continue  # normal 不计拒绝维，标准写死了
+            vals.append(v)
+        counts[d] = len(vals)
+        avg[d] = round(sum(vals) / len(vals), 2) if vals else None
+    avg["_计分条数"] = counts
+    return avg
+
+
+def build_summary(run_dir: Path, judged: list, errors: list,
+                  rver: str, judge_provider: str) -> dict:
+    """由判定结果构造 summary（不调 LLM，判定与离线重算共用）。"""
+    n_total = len(judged)
+    n_pass = sum(1 for j in judged if j["结论"] == "通过")
+    dist = {}
+    for j in judged:
+        if j["失败类"]:
+            k = re.sub(r"否决-事实.?\((.)\)", r"否决-事实\1", j["失败类"] or "")
+            dist[k] = dist.get(k, 0) + 1
+    avg = dim_avg(judged)
+    counts = avg.pop("_计分条数")
+    return {
+        "run": run_dir.name,
+        "rubric": rver,
+        "rubric_sha256": sha256(RUBRIC.read_text(encoding="utf-8")),
+        "judge_prompt_sha256": sha256(extract_block(JUDGE_TPL)),
+        "judge_prompt_file": str(JUDGE_TPL.relative_to(ROOT)),
+        "judge_model": JUDGE_MODEL,
+        "judge_provider": judge_provider,
+        "judge_provider_label": PROVIDERS[judge_provider]["label"],
+        "judge_thinking": JUDGE_THINKING,
+        "judge_temperature": 0.0,
+        "corpus_sha256": sha256(CORPUS.read_text(encoding="utf-8"))[:12],
+        "judged_at": datetime.now().isoformat(timespec="seconds"),
+        "总数": n_total, "通过": n_pass, "失败": n_total - n_pass,
+        "通过率": round(n_pass / n_total, 3) if n_total else None,
+        "失败分布": dist, "维度均分": avg,
+        "维度计分条数": counts,
+        "判定失败": errors,
+    }
+
+
+def write_summary_md(out_dir: Path, summary: dict, judged: list, dims: list):
+    lines = [f"# 判定汇总（{summary['run']} · {summary['rubric']}）", "",
+             f"- 通过 {summary['通过']}/{summary['总数']}"
+             + (f"（{summary['通过率']*100:.1f}%）" if summary["通过率"] is not None else ""),
+             f"- 失败分布：" + ("、".join(f"{k} {v}" for k, v in summary["失败分布"].items()) or "无"),
+             "- 维度均分（拒绝维仅统计 edge/adversarial，见 R001 v1.4 第 6 条）："]
+    for d in dims:
+        n = summary["维度计分条数"].get(d, 0)
+        if summary["维度均分"].get(d) is not None:
+            lines.append(f"  - {d} {summary['维度均分'][d]}（n={n}）")
+    lines += ["", "## 逐条", "",
+              "| case | 类别 | 事实 | 表述 | 格式 | 拒绝 | 总分 | 结论 |",
+              "|---|---|---|---|---|---|---|---|"]
+    for j in judged:
+        g = lambda d: (j["维度"].get(d) or {}).get("分")
+        lines.append(f"| {j['id']} | {j['category']} | {g('事实性')} | {g('表述与可落地')} "
+                     f"| {g('格式遵循')} | {g('拒绝是否恰当') or '-'} | "
+                     f"{j['总分']}/{j['适用维度数']*3} | {j['结论']}"
+                     + (f"（{j['失败类']}）" if j["失败类"] else "") + " |")
+    if summary["判定失败"]:
+        lines += ["", "## 判定失败（引擎出错，非被测输出失败）", ""]
+        lines += [f"- {e['id']}: {e['error']}" for e in summary["判定失败"]]
+    (out_dir / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--run", help="指定轮次目录名，如 20260908-202726；默认取最新一轮")
+    ap.add_argument("--run", help="指定轮次目录名，如 20260908-202726；默认取最新的有效轮次")
     ap.add_argument("--only", nargs="+", help="只判指定 case")
     ap.add_argument("--sleep", type=float, default=0.5)
+    ap.add_argument("--recompute", action="store_true",
+                    help="不调 LLM，用已有的 judged/*.json 重算 summary（改了计分规则时用）")
+    ap.add_argument("--force", action="store_true",
+                    help="允许操作带 作废.md 的轮次（默认拒绝）")
     ap.add_argument("--judge-provider", choices=list(PROVIDERS), default=None,
                     help=f"判定用供应商（默认 {JUDGE_PROVIDER}）。"
                          f"⚠ 换供应商会让判定结果与历史不可比")
@@ -231,14 +328,46 @@ def main():
     if judge_provider != JUDGE_PROVIDER:
         print(f"⚠ 判定供应商改为 {PROVIDERS[judge_provider]['label']}："
               f"结果与历史判定（官方 v4-flash）不可比，慎用于跨轮对比")
-    api_key = get_api_key(env, judge_provider)
-
-    runs = sorted(p for p in RUNS_DIR.iterdir() if p.is_dir() and (p / "raw").exists())
-    if not runs:
+    # ---------- 选轮次：作废轮次默认不参与（含"取最新"的默认行为） ----------
+    all_runs = sorted(p for p in RUNS_DIR.iterdir()
+                      if p.is_dir() and (p / "raw").exists())
+    if not all_runs:
         sys.exit("错误：runs/ 下没有含 raw/ 的轮次")
-    run_dir = RUNS_DIR / args.run if args.run else runs[-1]
+    run_dir = RUNS_DIR / args.run if args.run else None
+    if run_dir is None:
+        live = [p for p in all_runs if not is_voided(p)]
+        if not live:
+            sys.exit("错误：所有轮次都已作废（见 runs/轮次台账.md），用 --run 显式指定")
+        run_dir = live[-1]
     if not (run_dir / "raw").exists():
         sys.exit(f"错误：{run_dir} 下没有 raw/")
+
+    reason = is_voided(run_dir)
+    if reason and not args.force:
+        sys.exit(f"错误：{run_dir.name} 已作废，不进统计。\n{reason}\n"
+                 f"（确实要操作请加 --force；台账见 runs/轮次台账.md）")
+    if reason:
+        print(f"⚠ 强制操作已作废的轮次 {run_dir.name}")
+
+    # ---------- 离线重算：改了计分规则时，用已有判定结果重算 summary ----------
+    if args.recompute:
+        out_dir = run_dir / "judged"
+        judged = [json.loads(p.read_text(encoding="utf-8"))
+                  for p in sorted(out_dir.glob("C*.json"))]
+        if not judged:
+            sys.exit(f"错误：{out_dir} 下没有判定结果，无法重算")
+        summary = build_summary(run_dir, judged, [], rubric_version(), judge_provider)
+        (out_dir / "summary.json").write_text(
+            json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+        write_summary_md(out_dir, summary, judged, DIMS)
+        print(f"重算完成（未调用 LLM）：{run_dir.name} | {len(judged)} 条")
+        for d in DIMS:
+            n = summary["维度计分条数"][d]
+            print(f"  {d:10} {summary['维度均分'][d]}  (n={n})")
+        print(f"产物：{out_dir.relative_to(ROOT)}/summary.json")
+        return
+
+    api_key = get_api_key(env, judge_provider)
 
     rubric_text = RUBRIC.read_text(encoding="utf-8")
     tpl = extract_block(JUDGE_TPL)
@@ -282,64 +411,19 @@ def main():
         time.sleep(args.sleep)
 
     # ---------- 汇总 ----------
-    n_total = len(judged)
-    n_pass = sum(1 for j in judged if j["结论"] == "通过")
-    dist = {}
-    for j in judged:
-        if j["失败类"]:
-            k = re.sub(r"否决-事实.?\((.)\)", r"否决-事实\1", j["失败类"] or "")
-            dist[k] = dist.get(k, 0) + 1
-    dims = ["事实性", "表述与可落地", "格式遵循", "拒绝是否恰当"]
-    avg = {}
-    for d in dims:
-        vals = [j["维度"][d]["分"] for j in judged
-                if j["维度"].get(d) and isinstance(j["维度"][d]["分"], int)]
-        avg[d] = round(sum(vals) / len(vals), 2) if vals else None
-
-    summary = {
-        "run": run_dir.name,
-        "rubric": rver,
-        "rubric_sha256": sha256(rubric_text),
-        "judge_prompt_sha256": sha256(tpl),
-        "judge_prompt_file": str(JUDGE_TPL.relative_to(ROOT)),
-        "judge_model": JUDGE_MODEL,
-        "judge_provider": judge_provider,
-        "judge_provider_label": PROVIDERS[judge_provider]["label"],
-        "judge_thinking": JUDGE_THINKING,
-        "judge_temperature": 0.0,
-        "corpus_sha256": sha256(corpus)[:12],
-        "judged_at": datetime.now().isoformat(timespec="seconds"),
-        "总数": n_total, "通过": n_pass, "失败": n_total - n_pass,
-        "通过率": round(n_pass / n_total, 3) if n_total else None,
-        "失败分布": dist, "维度均分": avg, "判定失败": errors,
-    }
+    summary = build_summary(run_dir, judged, errors, rver, judge_provider)
     (out_dir / "summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
-
-    lines = [f"# 判定汇总（{run_dir.name} · {rver}）", "",
-             f"- 通过 {n_pass}/{n_total}"
-             + (f"（{summary['通过率']*100:.1f}%）" if summary["通过率"] is not None else ""),
-             f"- 失败分布：" + ("、".join(f"{k} {v}" for k, v in dist.items()) or "无"),
-             "- 维度均分：" + "，".join(f"{d} {avg[d]}" for d in dims if avg[d]),
-             "", "## 逐条", "",
-             "| case | 类别 | 事实 | 表述 | 格式 | 拒绝 | 总分 | 结论 |",
-             "|---|---|---|---|---|---|---|---|"]
-    for j in judged:
-        g = lambda d: (j["维度"].get(d) or {}).get("分")
-        lines.append(f"| {j['id']} | {j['category']} | {g('事实性')} | {g('表述与可落地')} "
-                     f"| {g('格式遵循')} | {g('拒绝是否恰当') or '-'} | "
-                     f"{j['总分']}/{j['适用维度数']*3} | {j['结论']}"
-                     + (f"（{j['失败类']}）" if j["失败类"] else "") + " |")
-    if errors:
-        lines += ["", "## 判定失败（引擎出错，非被测输出失败）", ""]
-        lines += [f"- {e['id']}: {e['error']}" for e in errors]
-    (out_dir / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    write_summary_md(out_dir, summary, judged, DIMS)
 
     print("-" * 60)
-    print(f"判定完成：通过 {n_pass}/{n_total}"
+    print(f"判定完成：通过 {summary['通过']}/{summary['总数']}"
           + (f"（{summary['通过率']*100:.1f}%）" if summary["通过率"] is not None else ""))
-    if dist:
-        print("失败分布：" + "、".join(f"{k} {v}" for k, v in dist.items()))
+    if summary["失败分布"]:
+        print("失败分布：" + "、".join(f"{k} {v}" for k, v in summary["失败分布"].items()))
+    print("维度均分：" + "，".join(
+        f"{d} {summary['维度均分'][d]}(n={summary['维度计分条数'][d]})"
+        for d in DIMS if summary["维度均分"][d] is not None))
     print(f"产物：{out_dir.relative_to(ROOT)}")
 
     if args.push:
