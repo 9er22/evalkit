@@ -26,6 +26,7 @@ from datetime import datetime
 from pathlib import Path
 
 from run_eval import (call_deepseek, load_env, resolve_model, sha256, die,
+                      get_api_key, resolve, PROVIDERS,
                       CORPUS, PROMPT_TPL, CASES_DIR, RUNS_DIR, ROOT,
                       load_system_prompt_template, parse_case, ApiError)
 
@@ -131,6 +132,10 @@ def main():
     ap.add_argument("--seed", type=int, default=42, help="干扰片段抽样的随机种子，固定以保证可复现")
     ap.add_argument("--only", nargs="+")
     ap.add_argument("--sleep", type=float, default=1.0)
+    ap.add_argument("--provider", choices=list(PROVIDERS), default=None,
+                    help="供应商：ark（火山方舟 Coding Plan）/ deepseek（官方）")
+    ap.add_argument("--model", default=None,
+                    help="模型名，可带供应商前缀如 ark:kimi-k3")
     args = ap.parse_args()
 
     corpus_text = CORPUS.read_text(encoding="utf-8")
@@ -179,10 +184,11 @@ def main():
         return
 
     env = load_env()
-    api_key = env.get("DEEPSEEK_API_KEY", "").strip()
-    if not api_key:
-        die("没读到 DEEPSEEK_API_KEY")
-    model = resolve_model(env.get("DEEPSEEK_MODEL", "") or "v4-flash")
+    provider_arg = args.provider or (env.get("EVAL_PROVIDER") or "").strip() or None
+    model_alias = (args.model or env.get("EVAL_MODEL")
+                   or env.get("DEEPSEEK_MODEL") or "deepseek-v4-flash")
+    provider, model = resolve(model_alias, provider_arg)
+    api_key = get_api_key(env, provider)
     thinking = env.get("EVAL_THINKING", "disabled")
     temperature = float(env.get("EVAL_TEMPERATURE", "0"))
 
@@ -194,6 +200,7 @@ def main():
     meta = {
         "run_at": datetime.now().isoformat(timespec="seconds"),
         "mode": "closed-book",
+        "provider": provider, "provider_label": PROVIDERS[provider]["label"],
         "model": model, "thinking": thinking, "temperature": temperature,
         "corpus": {"path": str(CORPUS.relative_to(ROOT)),
                    "sha256": sha256(corpus_text)[:12], "chars": len(corpus_text),
@@ -224,7 +231,7 @@ def main():
 
         try:
             r = call_deepseek(api_key, system, c["question"], model, temperature,
-                              thinking=thinking)
+                              thinking=thinking, provider=provider)
         except ApiError as e:
             print(f"FAIL {c['id']} {str(e)[:150]}")
             fail += 1

@@ -40,25 +40,72 @@ CASES_DIR = ROOT / "cases"
 RUNS_DIR = ROOT / "runs"
 
 CORPUS_SHA = "50113da16fec53b66b80d75e80a89296de4fa5a5"
-API_URL = "https://api.deepseek.com/chat/completions"
 
-# 模型注册表（api-docs.deepseek.com，2026-09-08 核对）：
-# 现役只有 deepseek-v4-flash / deepseek-v4-pro / deepseek-v4-flash-vision-exp 三个名字。
-# 别名是为了在命令行和配置里少打字；填完整模型名也认。
-# 注意：deepseek-chat / deepseek-reasoner 已于 2026-04-24 官方公告废弃
-# （原定 2026-07-24 停用，实测 2026-09-08 仍可调通）——随时可能失效，评测别再依赖。
-MODELS = {
-    "v4-flash":        "deepseek-v4-flash",            # 默认。当前版本 DeepSeek-V4-Flash-0731
-    "v4-pro":          "deepseek-v4-pro",              # 当前版本 DeepSeek-V4-Pro-0813，价格约 3 倍
-    "v4-flash-vision": "deepseek-v4-flash-vision-exp", # 实验版多模态；纯文本能力与 v4-flash 相当
-    # V4.1 Flash 限时内测（2026-09-08 官方群宣布，官方文档尚未收录）：
-    # 新架构 + 原生多模态；计费同 v4-flash；单账号限 20 并发；
-    # ⚠ 模型名自带过期时间，2026-09-10 后失效，届时删除此条即可。
-    "v4.1-flash-beta": "deepseek-v4.1-flash-expires-on-0910",
-    "chat":            "deepseek-chat",                # 废弃别名 = v4-flash 非思考模式
-    "reasoner":        "deepseek-reasoner",            # 废弃别名 = v4-flash 思考模式
+# ----------------------------- 供应商注册表 -----------------------------
+#
+# 两家并存（2026-09-10 起）：
+#   ark      = 火山方舟 Coding Plan，订阅制，一个月内有效 —— 额度优先烧它
+#   deepseek = DeepSeek 官方 API，按量计费 —— 当备胎，也用于 judge（保证判定可比）
+#
+# ⚠ 火山方舟有两套端点，填错会白花钱：
+#   /api/coding/v3  → Coding Plan 订阅额度（本项目用这个）
+#   /api/v3         → 在线推理，按量另计费，**不消耗**套餐额度
+#
+# 模型名在两家之间会撞车（都有 deepseek-v4-flash），所以要么用
+# `--provider ark` 显式指定，要么写成 `ark:deepseek-v4-flash`。
+
+PROVIDERS = {
+    "ark": {
+        "label": "火山方舟 Coding Plan",
+        "url": "https://ark.cn-beijing.volces.com/api/coding/v3/chat/completions",
+        "key_env": "ARK_API_KEY",
+        # Coding Plan 是 OpenAI 兼容端点，不吃 DeepSeek 的 thinking 字段
+        "supports_thinking": False,
+        # Model Name 全小写（火山方舟官方文档 2026-09-10 核对）
+        # 注意这些是套餐名，不是在线推理的 Model ID（后者形如 deepseek-v3-2-251201）
+        "models": {
+            "deepseek-v4-flash":    "deepseek-v4-flash",
+            "deepseek-v4-pro":      "deepseek-v4-pro",
+            "kimi-k3":              "kimi-k3",
+            "kimi-k2.7-code":       "kimi-k2.7-code",
+            "kimi-k2.6":            "kimi-k2.6",
+            "glm-5.3":              "glm-5.3",
+            "glm-5.3-flash":        "glm-5.3-flash",
+            "minimax-m3":           "minimax-m3",
+            "minimax-m2.7":         "minimax-m2.7",
+            "doubao-seed-2.1-turbo": "doubao-seed-2.1-turbo",
+            "doubao-seed-evolving": "doubao-seed-evolving",
+            "doubao-seed-2.0-lite": "doubao-seed-2.0-lite",
+            # Auto 模式：实际模型在控制台「开通管理」页切换，切换后 3-5 分钟生效
+            "ark-code-latest":      "ark-code-latest",
+        },
+    },
+    "deepseek": {
+        "label": "DeepSeek 官方",
+        "url": "https://api.deepseek.com/chat/completions",
+        "key_env": "DEEPSEEK_API_KEY",
+        "supports_thinking": True,  # v4 系默认开思考且忽略 temperature，必须显式关
+        # api-docs.deepseek.com，2026-09-08 核对。
+        # 注意：deepseek-chat / deepseek-reasoner 已于 2026-04-24 官方公告废弃
+        # （原定 2026-07-24 停用，实测 2026-09-08 仍可调通）——随时可能失效，评测别再依赖。
+        "models": {
+            "v4-flash":        "deepseek-v4-flash",            # 当前版本 DeepSeek-V4-Flash-0731
+            "v4-pro":          "deepseek-v4-pro",              # 当前版本 DeepSeek-V4-Pro-0813，价格约 3 倍
+            "v4-flash-vision": "deepseek-v4-flash-vision-exp", # 实验版多模态
+            "chat":            "deepseek-chat",                # 废弃别名 = v4-flash 非思考模式
+            "reasoner":        "deepseek-reasoner",            # 废弃别名 = v4-flash 思考模式
+        },
+    },
 }
-DEFAULT_MODEL = "v4-flash"
+
+# 向后兼容：旧脚本 import MODELS 只用来列可选别名
+MODELS = PROVIDERS["deepseek"]["models"]
+
+DEFAULT_PROVIDER = "ark"            # 订阅额度有时限，先烧它
+DEFAULT_MODEL = "deepseek-v4-flash"
+# 兜底链：ark 挂了（额度耗尽 / 401 / 限流）就退到 DeepSeek 官方
+FALLBACK_PROVIDER = "deepseek"
+FALLBACK_MODEL = "deepseek-v4-flash"
 # v4 系默认开思考模式且忽略 temperature（官方文档明确）。
 # 本项目要 temperature=0 的可复现性，所以默认显式关思考；要开用 --thinking enabled。
 DEFAULT_THINKING = "disabled"
@@ -134,35 +181,82 @@ def parse_case(path: Path) -> dict:
 
 # ----------------------------- 调用 -----------------------------
 
-def resolve_model(name: str) -> str:
-    """别名或完整模型名 → 完整模型名。
+def split_provider(name: str) -> tuple[str | None, str]:
+    """`ark:deepseek-v4-flash` → ("ark", "deepseek-v4-flash")。没写前缀则 (None, 原名)。"""
+    if ":" in name:
+        head, tail = name.split(":", 1)
+        if head in PROVIDERS:
+            return head, tail.strip()
+    return None, name
 
-    deepseek- 开头的完整名直接放行（带警告），方便试新模型和测试降级逻辑。
+
+def resolve(name: str, provider: str | None = None) -> tuple[str, str]:
+    """(模型名, 供应商) → (供应商, 完整模型名)。
+
+    查找顺序：显式前缀 > 指定供应商 > 默认供应商 > 其它供应商。
+    最后一道：没进注册表但看着像模型名就透传——试新模型必须留这个口子。
     """
     m = (name or "").strip()
     if not m:
-        die("模型名为空。用 --model v4-flash 或在 .env 里设 DEEPSEEK_MODEL。")
-    if m in MODELS:
-        return MODELS[m]
-    if m.startswith("deepseek-"):
-        print(f"⚠ 使用未在注册表中的模型名 `{m}`，直接透传（新模型/过期测试）")
-        return m
-    die(f"未知模型 `{m}`。可用别名：{', '.join(MODELS)}；或填 deepseek- 开头的完整模型名。")
+        die("模型名为空。用 --model deepseek-v4-flash，或在 .env 里设 EVAL_MODEL。")
+
+    explicit, m = split_provider(m)
+    provider = explicit or provider
+
+    if provider:
+        if provider not in PROVIDERS:
+            die(f"未知供应商 `{provider}`。可用：{', '.join(PROVIDERS)}")
+        table = PROVIDERS[provider]["models"]
+        if m in table:
+            return provider, table[m]
+        print(f"⚠ `{m}` 不在 {provider} 的注册表里，直接透传（新模型/过期测试）")
+        return provider, m
+
+    # 未指定供应商：默认供应商优先，其它家兜底
+    order = [DEFAULT_PROVIDER] + [p for p in PROVIDERS if p != DEFAULT_PROVIDER]
+    for p in order:
+        if m in PROVIDERS[p]["models"]:
+            return p, PROVIDERS[p]["models"][m]
+    print(f"⚠ 未在注册表中找到 `{m}`，按 {DEFAULT_PROVIDER} 透传")
+    return DEFAULT_PROVIDER, m
 
 
-# 模型失效（如内测名过期）时的自动降级目标
-FALLBACK_MODEL = "deepseek-v4-flash"
+def resolve_model(name: str, provider: str | None = None) -> str:
+    """兼容旧调用：只返回完整模型名。"""
+    return resolve(name, provider)[1]
+
+
+def get_api_key(env: dict, provider: str) -> str:
+    key_env = PROVIDERS[provider]["key_env"]
+    v = (env.get(key_env) or "").strip()
+    if not v or v.endswith("xxx"):
+        die(f"没读到 {key_env}（供应商 {provider}）。"
+            f"在 .env 里填入真实 key，或用 --provider 换一家。")
+    return v
 
 
 class ApiError(Exception):
     """API 返回非 2xx。message 里带状态码和响应体片段。"""
 
 
+def is_provider_failure(msg: str) -> bool:
+    """供应商级故障：套餐额度耗尽、鉴权失败、限流。
+
+    这类错误换模型没用，得换供应商。Coding Plan 额度用光返回 4028。
+    """
+    markers = ("4028", "401", "403", "429", "quota", "exceeded",
+               "Unauthorized", "Insufficient", "Payment Required")
+    return any(s in msg for s in markers)
+
+
 def call_deepseek(api_key: str, system: str, question: str,
                   model: str, temperature: float,
                   thinking: str | None = None,
                   reasoning_effort: str | None = None,
-                  timeout: int = 120) -> dict:
+                  timeout: int = 120,
+                  *, provider: str = "deepseek") -> dict:
+    """发一次 chat 请求。provider 决定端点和要不要带 thinking 字段。"""
+    conf = PROVIDERS[provider]
     payload = {
         "model": model,
         "messages": [
@@ -173,12 +267,14 @@ def call_deepseek(api_key: str, system: str, question: str,
         "stream": False,
     }
     # v4 系默认开思考模式且忽略 temperature。要 temperature 生效必须显式关思考。
-    if thinking:
-        payload["thinking"] = {"type": thinking}
-    if reasoning_effort:
-        payload["reasoning_effort"] = reasoning_effort
+    # 火山方舟 Coding Plan 是 OpenAI 兼容端点，不吃这个字段，传了可能直接 400。
+    if conf["supports_thinking"]:
+        if thinking:
+            payload["thinking"] = {"type": thinking}
+        if reasoning_effort:
+            payload["reasoning_effort"] = reasoning_effort
     req = urllib.request.Request(
-        API_URL,
+        conf["url"],
         data=json.dumps(payload).encode("utf-8"),
         headers={
             "Content-Type": "application/json",
@@ -192,9 +288,9 @@ def call_deepseek(api_key: str, system: str, question: str,
             data = json.loads(resp.read().decode("utf-8"))
     except urllib.error.HTTPError as e:
         detail = e.read().decode("utf-8", "replace")[:400]
-        raise ApiError(f"API 返回 {e.code}：{detail}") from e
+        raise ApiError(f"[{conf['label']}] API 返回 {e.code}：{detail}") from e
     except urllib.error.URLError as e:
-        raise ApiError(f"网络请求失败：{e.reason}") from e
+        raise ApiError(f"[{conf['label']}] 网络请求失败：{e.reason}") from e
     elapsed = time.time() - t0
 
     msg = data["choices"][0]["message"]
@@ -220,9 +316,12 @@ def main():
     ap.add_argument("--smoke", action="store_true", help="只跑 C001，验证链路")
     ap.add_argument("--only", nargs="+", help="只跑指定 case，如 --only C001 C019")
     ap.add_argument("--sleep", type=float, default=1.0, help="case 之间的间隔秒数")
+    ap.add_argument("--provider", choices=list(PROVIDERS), default=None,
+                    help=f"供应商：{' / '.join(PROVIDERS)}（默认 .env 的 EVAL_PROVIDER "
+                         f"或 {DEFAULT_PROVIDER}）")
     ap.add_argument("--model", default=None,
-                    help="模型别名或完整名（v4-flash / v4-pro / v4.1-flash-beta / ...），"
-                         "覆盖 .env 的 DEEPSEEK_MODEL")
+                    help="模型名，可带供应商前缀，如 ark:kimi-k3、deepseek:v4-flash。"
+                         "覆盖 .env 的 EVAL_MODEL")
     ap.add_argument("--thinking", choices=["enabled", "disabled"], default=None,
                     help="思考模式开关（默认 disabled）。v4 系默认开思考且忽略 temperature")
     ap.add_argument("--effort", choices=["low", "high", "max"], default=None,
@@ -230,13 +329,15 @@ def main():
     args = ap.parse_args()
 
     env = load_env()
-    api_key = env.get("DEEPSEEK_API_KEY", "").strip()
-    if not api_key or api_key == "sk-xxx":
-        die("没读到 DEEPSEEK_API_KEY。先 cp .env.example .env 并填入真实 key。")
+    provider_arg = args.provider or (env.get("EVAL_PROVIDER") or "").strip() or None
+    model_alias = (args.model or env.get("EVAL_MODEL")
+                   or env.get("DEEPSEEK_MODEL") or DEFAULT_MODEL)
+    provider, model = resolve(model_alias, provider_arg)
+    api_key = get_api_key(env, provider)
 
-    model_alias = args.model or env.get("DEEPSEEK_MODEL", "") or DEFAULT_MODEL
-    model = resolve_model(model_alias)
     thinking = args.thinking or env.get("EVAL_THINKING", DEFAULT_THINKING)
+    if thinking == "enabled" and not PROVIDERS[provider]["supports_thinking"]:
+        print(f"⚠ {PROVIDERS[provider]['label']} 不支持 thinking 参数，已忽略")
     reasoning_effort = args.effort or env.get("EVAL_REASONING_EFFORT") or None
     if thinking == "disabled":
         reasoning_effort = None  # 关思考时档位无意义，不传
@@ -278,6 +379,8 @@ def main():
     # 将来分数变了，能查清是语料/提示/case/模型配置哪一环动的。
     meta = {
         "run_at": datetime.now().isoformat(timespec="seconds"),
+        "provider": provider,
+        "provider_label": PROVIDERS[provider]["label"],
         "model": model,
         "model_alias": model_alias if model_alias != model else None,
         "thinking": thinking,
@@ -292,7 +395,7 @@ def main():
         "results": [],
     }
 
-    print(f"语料 {len(corpus):,} 字符 | 模型 {model} | "
+    print(f"语料 {len(corpus):,} 字符 | {PROVIDERS[provider]['label']} · {model} | "
           f"thinking={thinking}" + (f"/{reasoning_effort}" if reasoning_effort else "") +
           ("" if thinking == "enabled" else f" | temperature={temperature}"))
     print(f"本轮 {len(case_files)} 个 case → {run_dir.relative_to(ROOT)}")
@@ -307,27 +410,40 @@ def main():
         system = tpl.replace("{CORPUS}", corpus).replace("{QUESTION}", c["question"])
         try:
             r = call_deepseek(api_key, system, c["question"], model, temperature,
-                              thinking=thinking, reasoning_effort=reasoning_effort)
+                              thinking=thinking, reasoning_effort=reasoning_effort,
+                              provider=provider)
         except ApiError as e:
-            # 模型失效（400 且响应体提到 model，典型如内测名过期）→ 自动降级重试
             msg = str(e)
+            # 降级一：模型名被拒（内测名过期等）→ 同供应商内换兜底模型
             if ("400" in msg and "model" in msg.lower()
                     and model != FALLBACK_MODEL):
-                print(f"⚠ {c['id']}: 模型 `{model}` 被服务端拒绝（{msg[:120]}），"
+                print(f"⚠ {c['id']}: 模型 `{model}` 被服务端拒绝，"
                       f"自动降级到 `{FALLBACK_MODEL}`，后续 case 也用它")
-                model = FALLBACK_MODEL
-                meta["model_fallback"] = {"from": meta["model"], "to": model,
+                meta["model_fallback"] = {"from": model, "to": FALLBACK_MODEL,
                                           "at_case": c["id"], "reason": msg[:200]}
-                try:
-                    r = call_deepseek(api_key, system, c["question"], model,
-                                      temperature, thinking=thinking,
-                                      reasoning_effort=reasoning_effort)
-                except ApiError as e2:
-                    print(f"FAIL {c['id']} 降级后仍失败：{e2}")
-                    fail += 1
-                    continue
+                model = FALLBACK_MODEL
+            # 降级二：供应商级故障（套餐额度耗尽 4028 / 鉴权失败 / 限流）
+            #         → 换模型没用，整家换掉
+            elif provider != FALLBACK_PROVIDER and is_provider_failure(msg):
+                print(f"⚠ {c['id']}: {PROVIDERS[provider]['label']} 不可用（{msg[:90]}），"
+                      f"整轮切到 {PROVIDERS[FALLBACK_PROVIDER]['label']}")
+                meta["provider_fallback"] = {"from": provider,
+                                             "to": FALLBACK_PROVIDER,
+                                             "at_case": c["id"], "reason": msg[:200]}
+                provider = FALLBACK_PROVIDER
+                model = FALLBACK_MODEL
+                api_key = get_api_key(env, provider)
             else:
                 print(f"FAIL {c['id']} {msg[:200]}")
+                fail += 1
+                continue
+            # 降级后重试一次
+            try:
+                r = call_deepseek(api_key, system, c["question"], model, temperature,
+                                  thinking=thinking, reasoning_effort=reasoning_effort,
+                                  provider=provider)
+            except ApiError as e2:
+                print(f"FAIL {c['id']} 降级后仍失败：{e2}")
                 fail += 1
                 continue
         except Exception as e:  # 单个 case 失败不中断整轮
@@ -341,7 +457,8 @@ def main():
             "case_sha256": c["file_hash"],
             "corpus_sha256": sha256(corpus),
             "system_prompt_sha256": sha256(tpl),
-            "model": model, "temperature": temperature_for_record,
+            "provider": provider, "model": model,
+            "temperature": temperature_for_record,
             "thinking": thinking, "reasoning_effort": reasoning_effort,
             "finish_reason": r["finish_reason"],
             "prompt_tokens": r["prompt_tokens"],
@@ -359,7 +476,8 @@ def main():
             md += (f"<details><summary>思考过程（{len(r['reasoning'])} 字，"
                    f"评分不参考）</summary>\n\n{r['reasoning']}\n\n</details>\n\n")
         md += (f"---\n\n"
-               f"- 模型 {model} | thinking {thinking}"
+               f"- 供应商 {PROVIDERS[provider]['label']} | 模型 {model} "
+               f"| thinking {thinking}"
                + (f"/{reasoning_effort}" if reasoning_effort else "") + "\n"
                f"- temperature {temperature_for_record if temperature_for_record is not None else '（thinking 模式下被忽略）'}\n"
                f"- token 入 {r['prompt_tokens']} / 出 {r['completion_tokens']}"

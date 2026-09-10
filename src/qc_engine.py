@@ -28,7 +28,7 @@ from datetime import datetime
 from pathlib import Path
 
 from run_eval import (call_deepseek, load_env, resolve_model, sha256,
-                      ApiError, MODELS, ROOT)
+                      ApiError, MODELS, ROOT, PROVIDERS, get_api_key, resolve)
 
 RUBRIC = ROOT / "rubrics" / "评分标准.md"
 JUDGE_TPL = ROOT / "rubrics" / "_judge-prompt.md"
@@ -37,7 +37,14 @@ RUNS_DIR = ROOT / "runs"
 
 # 判定用模型：刻意用最稳最便宜的 v4-flash，且关思考 + temperature 0。
 # 判定本身也要可复现——换模型判同一批输出，分数应该一样。
+#
+# 供应商默认走 DeepSeek 官方而**不是**火山方舟，理由：
+# 历史判定（R001 v1.4 全量 30 条）都是官方 v4-flash 判的，换供应商会让判定漂移，
+# 新旧分数就对不上账了。judge 调用量小（每轮 30 次、不吃长语料），
+# 费不了多少额度；真正烧钱的是被测模型那一路，那才是火山套餐该顶的地方。
+# 想换用 --judge-provider ark（会明确提示判定结果不再与历史可比）。
 JUDGE_MODEL = "deepseek-v4-flash"
+JUDGE_PROVIDER = "deepseek"
 JUDGE_THINKING = "disabled"
 
 
@@ -160,7 +167,7 @@ def verdict(scores: dict, category: str) -> dict:
             "适用维度数": n, "通过线": line}
 
 
-def judge_one(api_key, tpl, rubric_text, corpus, rec, model):
+def judge_one(api_key, tpl, rubric_text, corpus, rec, model, provider=JUDGE_PROVIDER):
     """判定单条。返回 (judged_dict, 元信息)。"""
     prompt = (tpl.replace("{RUBRIC}", rubric_text)
                  .replace("{CORPUS}", corpus)
@@ -168,7 +175,7 @@ def judge_one(api_key, tpl, rubric_text, corpus, rec, model):
                  .replace("{QUESTION}", rec["question"])
                  .replace("{ANSWER}", rec["answer"]))
     r = call_deepseek(api_key, "你是一个严格、克制的评测判定员。", prompt,
-                      model, 0.0, thinking=JUDGE_THINKING)
+                      model, 0.0, thinking=JUDGE_THINKING, provider=provider)
     text = r["answer"]
     try:
         j = parse_json_reply(text)
@@ -177,7 +184,7 @@ def judge_one(api_key, tpl, rubric_text, corpus, rec, model):
         fix = ("上一条回复不是合法 JSON。请只输出 JSON 对象本身，"
                "不要代码块围栏、不要任何解释文字。")
         r2 = call_deepseek(api_key, "你是一个严格、克制的评测判定员。", prompt + "\n\n" + fix,
-                           model, 0.0, thinking=JUDGE_THINKING)
+                           model, 0.0, thinking=JUDGE_THINKING, provider=provider)
         try:
             j = parse_json_reply(r2["answer"])
         except Exception:
@@ -211,13 +218,20 @@ def main():
     ap.add_argument("--run", help="指定轮次目录名，如 20260908-202726；默认取最新一轮")
     ap.add_argument("--only", nargs="+", help="只判指定 case")
     ap.add_argument("--sleep", type=float, default=0.5)
+    ap.add_argument("--judge-provider", choices=list(PROVIDERS), default=None,
+                    help=f"判定用供应商（默认 {JUDGE_PROVIDER}）。"
+                         f"⚠ 换供应商会让判定结果与历史不可比")
     ap.add_argument("--push", action="store_true", help="判定完写回飞书并通知")
     args = ap.parse_args()
 
     env = load_env()
-    api_key = env.get("DEEPSEEK_API_KEY", "").strip()
-    if not api_key:
-        sys.exit("错误：没读到 DEEPSEEK_API_KEY")
+    judge_provider = (args.judge_provider
+                      or (env.get("JUDGE_PROVIDER") or "").strip()
+                      or JUDGE_PROVIDER)
+    if judge_provider != JUDGE_PROVIDER:
+        print(f"⚠ 判定供应商改为 {PROVIDERS[judge_provider]['label']}："
+              f"结果与历史判定（官方 v4-flash）不可比，慎用于跨轮对比")
+    api_key = get_api_key(env, judge_provider)
 
     runs = sorted(p for p in RUNS_DIR.iterdir() if p.is_dir() and (p / "raw").exists())
     if not runs:
@@ -235,7 +249,8 @@ def main():
     if args.only:
         want = {t if t.startswith("C") else f"C{t}" for t in args.only}
         files = [f for f in files if f.stem in want]
-    print(f"轮次 {run_dir.name} | rubric {rver} | judge {JUDGE_MODEL} "
+    print(f"轮次 {run_dir.name} | rubric {rver} | judge "
+          f"{PROVIDERS[judge_provider]['label']} · {JUDGE_MODEL} "
           f"| thinking {JUDGE_THINKING} | temperature 0")
     print(f"待判定 {len(files)} 条 -> {run_dir.name}/judged/")
     print("-" * 60)
@@ -247,7 +262,8 @@ def main():
     for f in files:
         rec = json.loads(f.read_text(encoding="utf-8"))
         try:
-            j, meta = judge_one(api_key, tpl, rubric_text, corpus, rec, JUDGE_MODEL)
+            j, meta = judge_one(api_key, tpl, rubric_text, corpus, rec, JUDGE_MODEL,
+                                provider=judge_provider)
         except ApiError as e:
             errors.append({"id": rec["id"], "error": str(e)[:200]})
             print(f"FAIL {rec['id']} {str(e)[:120]}")
@@ -287,6 +303,8 @@ def main():
         "judge_prompt_sha256": sha256(tpl),
         "judge_prompt_file": str(JUDGE_TPL.relative_to(ROOT)),
         "judge_model": JUDGE_MODEL,
+        "judge_provider": judge_provider,
+        "judge_provider_label": PROVIDERS[judge_provider]["label"],
         "judge_thinking": JUDGE_THINKING,
         "judge_temperature": 0.0,
         "corpus_sha256": sha256(corpus)[:12],
