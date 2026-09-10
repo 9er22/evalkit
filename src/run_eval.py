@@ -94,6 +94,11 @@ PROVIDERS = {
             "v4-flash-vision": "deepseek-v4-flash-vision-exp", # 实验版多模态
             "chat":            "deepseek-chat",                # 废弃别名 = v4-flash 非思考模式
             "reasoner":        "deepseek-reasoner",            # 废弃别名 = v4-flash 思考模式
+            # 完整名自映射：两家的模型名会撞车（都有 deepseek-v4-flash），
+            # 官方表不登记完整名的话，写完整名又不指定供应商时会被解析到火山去
+            # ——那是违规方向，必须让默认供应商先接住。
+            "deepseek-v4-flash": "deepseek-v4-flash",
+            "deepseek-v4-pro":   "deepseek-v4-pro",
         },
     },
 }
@@ -101,11 +106,19 @@ PROVIDERS = {
 # 向后兼容：旧脚本 import MODELS 只用来列可选别名
 MODELS = PROVIDERS["deepseek"]["models"]
 
-DEFAULT_PROVIDER = "ark"            # 订阅额度有时限，先烧它
+# ⚠ 默认走 DeepSeek 官方，**不是**火山方舟——原因是合规，不是技术。
+# 火山方舟《套餐概览》原文：「套餐额度仅在 AI 编程工具中生效，不可用于 API 调用。
+# 在非 AI 编程工具中使用方舟 Coding Plan 权益对应的 Base URL 和 API Key
+# 有可能被识别为滥用/违规，会导致订阅停用或账号封禁。」
+# 本项目的 runner 是脚本直连 API，不属于「AI 编程工具」。为省几十块额度
+# 冒封号风险不划算，所以 ark 必须**显式**指定（--provider ark）才会启用。
+# 降级方向也因此反过来：DeepSeek 出问题时**不会**自动切到 ark。
+DEFAULT_PROVIDER = "deepseek"
 DEFAULT_MODEL = "deepseek-v4-flash"
-# 兜底链：ark 挂了（额度耗尽 / 401 / 限流）就退到 DeepSeek 官方
-FALLBACK_PROVIDER = "deepseek"
 FALLBACK_MODEL = "deepseek-v4-flash"
+# 合规的兜底供应商：任何供应商出故障都往这里退。
+# 注意方向是单向的——DeepSeek 出问题时**不会**自动退回 ark（那是违规方向）。
+SAFE_PROVIDER = "deepseek"
 # v4 系默认开思考模式且忽略 temperature（官方文档明确）。
 # 本项目要 temperature=0 的可复现性，所以默认显式关思考；要开用 --thinking enabled。
 DEFAULT_THINKING = "disabled"
@@ -424,13 +437,12 @@ def main():
                 model = FALLBACK_MODEL
             # 降级二：供应商级故障（套餐额度耗尽 4028 / 鉴权失败 / 限流）
             #         → 换模型没用，整家换掉
-            elif provider != FALLBACK_PROVIDER and is_provider_failure(msg):
+            elif provider != SAFE_PROVIDER and is_provider_failure(msg):
                 print(f"⚠ {c['id']}: {PROVIDERS[provider]['label']} 不可用（{msg[:90]}），"
-                      f"整轮切到 {PROVIDERS[FALLBACK_PROVIDER]['label']}")
-                meta["provider_fallback"] = {"from": provider,
-                                             "to": FALLBACK_PROVIDER,
+                      f"整轮切回 {PROVIDERS[SAFE_PROVIDER]['label']}")
+                meta["provider_fallback"] = {"from": provider, "to": SAFE_PROVIDER,
                                              "at_case": c["id"], "reason": msg[:200]}
-                provider = FALLBACK_PROVIDER
+                provider = SAFE_PROVIDER
                 model = FALLBACK_MODEL
                 api_key = get_api_key(env, provider)
             else:
