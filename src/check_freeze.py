@@ -15,7 +15,9 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 FREEZE_DOC = ROOT / "docs" / "冻结-外部审阅中-20260912.md"
 
-# 冻结时登记（2026-09-12，HEAD b1fdb4a）
+# 冻结时登记（2026-09-12）。不写 commit 哈希：重写历史会让它失效，
+# 而指纹算的是文件内容，与哈希无关——这才是本脚本能在重写后仍然有效的原因。
+# 需要 HEAD 就用 `git log`，commit 哈希的唯一源是 git 本身（决策 D10）。
 FROZEN = {
     "rubrics/评分标准.md": "bf8d9849cbfa",
     "rubrics/_judge-prompt.md": "6fcedc045304",
