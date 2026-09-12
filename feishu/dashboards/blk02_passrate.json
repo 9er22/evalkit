@@ -1,0 +1,1 @@
+{"table_name":"评测轮次","series":[{"field_name":"通过率","rollup":"AVERAGE"}],"filter":{"conjunction":"and","conditions":[{"field_name":"模式","operator":"is","value":"闭卷"},{"field_name":"状态","operator":"is","value":"有效"}]},"number_format":{"formatName":"digital","precision":1}}

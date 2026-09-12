@@ -1,0 +1,1 @@
+{"table_name":"case判定明细","count_all":true,"group_by":[{"field_name":"类别","mode":"integrated"}],"filter":{"conjunction":"and","conditions":[{"field_name":"run_id","operator":"is","value":"20260909-173030"},{"field_name":"结论","operator":"is","value":"失败"}]}}

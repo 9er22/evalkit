@@ -1,0 +1,1 @@
+{"table_name":"质检结果表","series":[{"field_name":"评分","rollup":"AVERAGE"}],"number_format":{"formatName":"digital","precision":1}}

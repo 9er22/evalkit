@@ -1,0 +1,20 @@
+{
+  "id": "C001",
+  "category": "normal",
+  "question": "根据文档，如何声明一个路径参数，让访问 /items/foo 时返回 {\"item_id\": \"foo\"}？请给出完整可运行的代码。",
+  "answer": "根据文档，用 Python 格式字符串的语法在路径中声明路径参数即可。文档中给出的完整示例（`docs_src/path_params/tutorial001_py310.py`）是：\n\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/items/{item_id}\")\nasync def read_item(item_id):\n    return {\"item_id\": item_id}\n```\n\n依据文档说明：路径参数 `item_id` 的值会作为参数 `item_id` 传给函数。运行该示例并访问 `http://127.0.0.1:8000/items/foo`，就会得到响应：\n\n```JSON\n{\"item_id\":\"foo\"}\n```\n\n文档还提到，你也可以用标准 Python 类型注解声明路径参数的类型（例如 `item_id: int`），那样 FastAPI 会自动做数据转换和校验；但就本题要求的返回 `{\"item_id\": \"foo\"}` 而言，上面这段不带类型注解的代码就是文档中对应的示例。",
+  "case_sha256": "b5bd372497b1",
+  "corpus_sha256": "0dec825612cfbce9c4738dbeede3249da8668ad71437bfd9090e6406bceee75f",
+  "system_prompt_sha256": "cb783e2294223dfc60f5083df8a0e86458077de081e7d0722f5b8f96508d2dbd",
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "reasoning_effort": null,
+  "finish_reason": "stop",
+  "prompt_tokens": 13229,
+  "completion_tokens": 208,
+  "reasoning_tokens": null,
+  "elapsed_sec": 1.75,
+  "raw_id": "508cdbce-4d00-4294-83f8-f40f7d19f641"
+}

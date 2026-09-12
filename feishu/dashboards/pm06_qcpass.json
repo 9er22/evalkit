@@ -1,0 +1,1 @@
+{"table_name":"质检结果表","count_all":true,"filter":{"conjunction":"and","conditions":[{"field_name":"结论","operator":"is","value":"通过"}]}}

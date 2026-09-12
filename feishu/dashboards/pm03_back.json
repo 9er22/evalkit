@@ -1,0 +1,1 @@
+{"table_name":"任务表","count_all":true,"filter":{"conjunction":"and","conditions":[{"field_name":"状态","operator":"is","value":"已打回"}]}}
