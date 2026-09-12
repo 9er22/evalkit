@@ -24,6 +24,10 @@ docs/疑问清单-*
 research/调研-*
 research/岗位调研-*
 
+# 草稿区（AGENTS.md 里 .scratch/ 是本地 issue / 临时脚本的家）
+# 需要留下的工具脚本请提升到 src/（例：build_review_pack.py）
+.scratch/
+
 # 编辑器与系统
 .vscode/
 .idea/

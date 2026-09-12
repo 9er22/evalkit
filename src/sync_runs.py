@@ -40,6 +40,14 @@ BASELINE_TAGS = {
 MODE_LABEL = {"open-book": "开卷", "closed-book": "闭卷"}
 FAIL_TYPE_LABEL = {"A": "A-编造", "B": "B-漏检"}
 
+# 「拒绝是否恰当」只对 edge / adversarial 计分（R001 v1.4 修改记录第 6 条）。
+# 与 src/qc_engine.py 的 REFUSE_DIM_CATEGORIES 保持一致——改这里必须同步改那边。
+REFUSE_DIM_CATEGORIES = ("edge", "adversarial")
+
+# 重同步时要刷新的字段（会随计分范围/判定结果变化的那些）
+RESYNC_FIELDS = ["事实性", "表述与可落地", "格式遵循", "拒绝是否恰当",
+                 "总分", "通过线", "结论", "失败类"]
+
 
 def msel(field_name, *names):
     """多选字段定义。"""
@@ -288,16 +296,22 @@ def parse_runs_and_verdicts():
             dims = j.get("维度", {})
             ft = j.get("失败类型")
             cid = j.get("id", "")
+            cat = j.get("category", "")
+            # 拒绝维只在 edge/adversarial 计分。飞书图表是实时 rollup，没法按类别过滤，
+            # 所以「不适用」写 null——让均值只落在真正计分的样本上，
+            # 结果与 summary.json 的「维度均分」同源（单一数据源原则，见 docs/决策记录.md D10）。
+            refuse = ((dims.get("拒绝是否恰当") or {}).get("分")
+                      if cat in REFUSE_DIM_CATEGORIES else None)
             verdicts.append({
                 "记录ID": f"{rid}-{cid}",
                 "run_id": rid,
                 "case_id": cid,
-                "类别": j.get("category", ""),
+                "类别": cat,
                 "模式": mode_label,
                 "事实性": (dims.get("事实性") or {}).get("分"),
                 "表述与可落地": (dims.get("表述与可落地") or {}).get("分"),
                 "格式遵循": (dims.get("格式遵循") or {}).get("分"),
-                "拒绝是否恰当": (dims.get("拒绝是否恰当") or {}).get("分"),
+                "拒绝是否恰当": refuse,
                 "失败类型": FAIL_TYPE_LABEL.get(ft, "无") if ft else "无",
                 "结论": j.get("结论", ""),
                 "失败类": j.get("失败类", ""),
@@ -377,6 +391,58 @@ def fill_attribution_group(fs, table_id, verdicts):
     return updated, len(want) - updated
 
 
+def resync_verdicts(fs, table_id, verdicts):
+    """把判定明细里**已存在**的记录刷成当前口径（幂等：值相同则跳过）。
+
+    为什么需要它：`batch_create` 只跳过已存在的键、**不会更新**。所以 `qc_engine --recompute`
+    改了计分范围之后，重跑 `sync_runs` 其实是个空操作——飞书侧会一直停在旧口径。
+    （2026-09-12 实测：明细表里 normal 类别还带着「拒绝是否恰当」的分，
+      导致任何按该列做的均值都会算成重算前的旧值。）
+    """
+    want = {v["记录ID"]: v for v in verdicts}
+    recs, page_token = {}, ""
+    while True:
+        params = f"?page_size=200" + (f"&page_token={page_token}" if page_token else "")
+        r = fs.get(f"/open-apis/bitable/v1/apps/{APP_TOKEN}/tables/{table_id}/records", params=params)
+        if r.get("code") != 0:
+            sys.exit(f"[错误] 读表失败: {json.dumps(r, ensure_ascii=False)[:300]}")
+        d = r["data"]
+        for it in d.get("items") or []:
+            key = str(it["fields"].get("记录ID", ""))
+            if key in want:
+                recs[key] = (it["record_id"], it["fields"])
+        if not d.get("has_more"):
+            break
+        page_token = d.get("page_token", "")
+
+    def _plain(v):
+        if isinstance(v, list):
+            return "".join(x.get("text", "") if isinstance(x, dict) else str(x) for x in v)
+        return v
+
+    updates = []
+    for key, (rid, cur) in recs.items():
+        diff = {}
+        for fld in RESYNC_FIELDS:
+            new, old = want[key].get(fld), _plain(cur.get(fld))
+            if isinstance(new, (int, float)) and isinstance(old, (int, float)):
+                if abs(new - old) < 1e-9:
+                    continue
+            elif old == new or (old in (None, "") and new in (None, "")):
+                continue
+            diff[fld] = new
+        if diff:
+            updates.append({"record_id": rid, "fields": diff})
+
+    for i in range(0, len(updates), 200):
+        r = fs.post(
+            f"/open-apis/bitable/v1/apps/{APP_TOKEN}/tables/{table_id}/records/batch_update",
+            {"records": updates[i:i + 200]})
+        if r.get("code") != 0:
+            sys.exit(f"[错误] 批量更新失败: {json.dumps(r, ensure_ascii=False)[:400]}")
+    return len(updates), len(recs) - len(updates)
+
+
 def main():
     env = load_env()
     fs = Feishu(env["FEISHU_APP_ID"], env["FEISHU_APP_SECRET"])
@@ -403,6 +469,10 @@ def main():
     c, s = batch_create(fs, tables["case判定明细"], verdicts,
                         key_field="记录ID", existing=load_keys(fs, tables["case判定明细"], "记录ID"))
     print(f"[5] case判定明细: 新建 {c} / 跳过 {s}（共 {len(verdicts)}）")
+
+    # 刷已存在的记录：batch_create 不会更新，口径变了必须走这里
+    u, kept = resync_verdicts(fs, tables["case判定明细"], verdicts)
+    print(f"[5a] case判定明细重同步: 更新 {u} / 已一致 {kept}")
 
     u, kept = fill_attribution_group(fs, tables["case判定明细"], verdicts)
     print(f"[5b] 归因组别回填: 更新 {u} / 已一致 {kept}")
