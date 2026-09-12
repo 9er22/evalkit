@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EvalKit · LLM 输出评测项目展示</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: #F4F5F7;
+    color: #1A1B1C;
+    line-height: 1.6;
+    padding: 32px 16px 48px;
+  }
+  .page {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  /* ===== 第1段：顶部横幅 ===== */
+  .hero {
+    background: linear-gradient(135deg, #1A2B5C 0%, #2F6BFF 100%);
+    color: #FFFFFF;
+    padding: 40px 48px 36px;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 2px;
+    opacity: 0.75;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.55;
+    letter-spacing: 0.3px;
+  }
+  .hero-sub {
+    margin-top: 14px;
+    font-size: 14px;
+    opacity: 0.7;
+  }
+
+  /* ===== 通用段 ===== */
+  .section {
+    padding: 32px 48px 28px;
+    border-bottom: 1px solid #EEF0F3;
+  }
+  .section:last-child { border-bottom: none; }
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2F6BFF;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 16px;
+    background: #2F6BFF;
+    border-radius: 2px;
+  }
+  .conclusion {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: #F0F4FF;
+    border-left: 3px solid #2F6BFF;
+    border-radius: 0 6px 6px 0;
+    font-size: 13.5px;
+    color: #1A1B1C;
+    line-height: 1.65;
+  }
+  .conclusion b { color: #2F6BFF; }
+
+  /* ===== 第2段：三个数字卡 ===== */
+  .cards {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .card {
+    flex: 1 1 200px;
+    min-width: 180px;
+    padding: 22px 20px;
+    border-radius: 12px;
+    border: 1px solid #EEF0F3;
+  }
+  .card-label {
+    font-size: 13px;
+    color: #6B7280;
+    margin-bottom: 8px;
+  }
+  .card-value {
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .card-desc {
+    font-size: 12px;
+    color: #6B7280;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  .card-open { background: #F0F4FF; }
+  .card-open .card-value { color: #2F6BFF; }
+  .card-closed { background: #F5F8FF; }
+  .card-closed .card-value { color: #5A86E8; }
+  .card-fail { background: #FDF1F1; }
+  .card-fail .card-value { color: #EA6668; }
+
+  /* ===== 第3段：归因三组条 ===== */
+  .attrib-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .attrib-row:last-child { margin-bottom: 0; }
+  .attrib-name {
+    width: 90px;
+    flex-shrink: 0;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1A1B1C;
+  }
+  .attrib-bar-wrap {
+    flex: 1;
+    height: 28px;
+    background: #F0F2F5;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .attrib-bar {
+    height: 100%;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #FFFFFF;
+    transition: width 0.3s;
+  }
+  .attrib-bar.hit { background: #52C41A; }
+  .attrib-bar.miss { background: #EA6668; }
+  .attrib-bar.refuse { background: #9BBBF4; }
+  .attrib-meta {
+    width: 110px;
+    flex-shrink: 0;
+    font-size: 12.5px;
+    color: #6B7280;
+    text-align: right;
+  }
+  .attrib-meta b { color: #1A1B1C; font-size: 14px; }
+
+  /* ===== 第4段：四维度对比 ===== */
+  .dim-row {
+    margin-bottom: 18px;
+  }
+  .dim-row:last-child { margin-bottom: 0; }
+  .dim-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #1A1B1C;
+  }
+  .dim-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .dim-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dim-bar-label {
+    width: 48px;
+    flex-shrink: 0;
+    font-size: 12px;
+    color: #6B7280;
+  }
+  .dim-bar-track {
+    flex: 1;
+    height: 20px;
+    background: #F0F2F5;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .dim-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+  }
+  .dim-bar-fill.open { background: #2F6BFF; }
+  .dim-bar-fill.closed { background: #9BBBF4; }
+  .dim-bar-val {
+    width: 44px;
+    flex-shrink: 0;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #1A1B1C;
+  }
+
+  /* ===== 第5段：失败类型分布 ===== */
+  .failtype-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .failtype-row:last-child { margin-bottom: 0; }
+  .failtype-name {
+    width: 80px;
+    flex-shrink: 0;
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+  .failtype-bar-wrap {
+    flex: 1;
+    height: 32px;
+    background: #F0F2F5;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .failtype-bar {
+    height: 100%;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+  .failtype-bar.miss { background: #EA6668; }
+  .failtype-bar.halluc { background: #D0D5DD; color: #6B7280; }
+  .failtype-count {
+    width: 60px;
+    flex-shrink: 0;
+    font-size: 13px;
+    color: #6B7280;
+    text-align: right;
+  }
+
+  /* ===== 第6段：时间线 ===== */
+  .timeline {
+    position: relative;
+    padding: 8px 0 4px;
+  }
+  .timeline-track {
+    position: absolute;
+    top: 22px;
+    left: 40px;
+    right: 40px;
+    height: 3px;
+    background: #E4E7EC;
+    border-radius: 2px;
+  }
+  .timeline-nodes {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+  }
+  .tl-node {
+    text-align: center;
+    width: 120px;
+    flex-shrink: 0;
+  }
+  .tl-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin: 13px auto 10px;
+    border: 3px solid #FFFFFF;
+    box-shadow: 0 0 0 2px #D0D5DD;
+    background: #D0D5DD;
+  }
+  .tl-dot.initial { background: #9BBBF4; box-shadow: 0 0 0 2px #9BBBF4; }
+  .tl-dot.scope { background: #EA6668; box-shadow: 0 0 0 2px #EA6668; }
+  .tl-dot.wording { background: #FAAD14; box-shadow: 0 0 0 2px #FAAD14; }
+  .tl-ver {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1A1B1C;
+  }
+  .tl-tag {
+    font-size: 11px;
+    margin-top: 3px;
+    color: #6B7280;
+    line-height: 1.4;
+  }
+  .tl-tag.scope { color: #EA6668; font-weight: 600; }
+  .tl-tag.wording { color: #B57F0A; font-weight: 600; }
+
+  .tl-cases {
+    margin-top: 24px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .tl-case {
+    flex: 1 1 300px;
+    padding: 16px 18px;
+    background: #FDF8F8;
+    border: 1px solid #F5DCDC;
+    border-radius: 10px;
+  }
+  .tl-case-ver {
+    font-size: 12px;
+    font-weight: 700;
+    color: #EA6668;
+    margin-bottom: 6px;
+  }
+  .tl-case-text {
+    font-size: 13px;
+    color: #1A1B1C;
+    line-height: 1.65;
+  }
+  .tl-case-text b { color: #EA6668; }
+
+  /* ===== 第7段：底部 ===== */
+  .screenshot-placeholder {
+    width: 100%;
+    height: 220px;
+    background: #F0F2F5;
+    border: 2px dashed #C8CCD4;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #9AA0A6;
+    font-size: 14px;
+    gap: 6px;
+  }
+  .screenshot-placeholder .ph-icon {
+    font-size: 32px;
+    opacity: 0.5;
+  }
+  .golden {
+    margin-top: 24px;
+    text-align: center;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #F0F4FF 0%, #E8EEFF 100%);
+    border-radius: 12px;
+  }
+  .golden-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2F6BFF;
+    line-height: 1.6;
+  }
+  .golden-sub {
+    font-size: 13px;
+    color: #6B7280;
+    margin-top: 8px;
+  }
+
+  .footnote {
+    padding: 16px 48px 28px;
+    font-size: 11.5px;
+    color: #9AA0A6;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    .hero { padding: 28px 24px 24px; }
+    .hero h1 { font-size: 20px; }
+    .section { padding: 24px 20px 20px; }
+    .timeline-nodes { flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .timeline-track { display: none; }
+    .footnote { padding: 12px 20px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ===== 第1段：顶部横幅 ===== -->
+  <div class="hero">
+    <div class="hero-tag">EvalKit · LLM 输出评测工具</div>
+    <h1>同一批 30 道题、同一套评分标准，只改"给模型看多少材料"——通过率从 100% 掉到 76.7%，失败 100% 归因到检索。</h1>
+    <div class="hero-sub">两轮对比实验 · 开卷（全文注入）vs 闭卷（top-3 片段 + 3 干扰）· 自动判定引擎判分</div>
+  </div>
+
+  <!-- ===== 第2段：三个数字卡 ===== -->
+  <div class="section">
+    <div class="section-title">核心结果</div>
+    <div class="cards">
+      <div class="card card-open">
+        <div class="card-label">开卷（全文注入）</div>
+        <div class="card-value">30/30</div>
+        <div class="card-desc">通过率 100% · 区分度为 0（全对无法暴露问题）</div>
+      </div>
+      <div class="card card-closed">
+        <div class="card-label">闭卷（3 相关 + 3 干扰）</div>
+        <div class="card-value">23/30</div>
+        <div class="card-desc">通过率 76.7% · 区分度从无到有，问题开始暴露</div>
+      </div>
+      <div class="card card-fail">
+        <div class="card-label">闭卷失败</div>
+        <div class="card-value">7 个</div>
+        <div class="card-desc">全部是"漏检"（文档有答案但没答上）· 编造类 0 个</div>
+      </div>
+    </div>
+    <div class="conclusion">开卷全对不代表模型好——把材料拿掉 7 条立刻挂掉，<b>问题出在信息供给，不在模型能力</b>。</div>
+  </div>
+
+  <!-- ===== 第3段：归因三组条 ===== -->
+  <div class="section">
+    <div class="section-title">失败归因（闭卷轮，30 条按检索结果分三组）</div>
+    <div class="attrib-row">
+      <div class="attrib-name">检索命中</div>
+      <div class="attrib-bar-wrap">
+        <div class="attrib-bar hit" style="width: 0%;">0 失败</div>
+      </div>
+      <div class="attrib-meta"><b>0</b> / 11 失败</div>
+    </div>
+    <div class="attrib-row">
+      <div class="attrib-name">检索漏检</div>
+      <div class="attrib-bar-wrap">
+        <div class="attrib-bar miss" style="width: 63.6%;">7 失败</div>
+      </div>
+      <div class="attrib-meta"><b>7</b> / 11 失败</div>
+    </div>
+    <div class="attrib-row">
+      <div class="attrib-name">应拒答类</div>
+      <div class="attrib-bar-wrap">
+        <div class="attrib-bar refuse" style="width: 0%;">0 失败</div>
+      </div>
+      <div class="attrib-meta"><b>0</b> / 8 失败</div>
+    </div>
+    <div class="conclusion">检索命中组 11 条 0 失败、应拒答组 8 条 0 失败，<b>7 个失败全部集中在检索漏检组（11 条挂了 7 条）——材料给到了就全对，锅在检索，不在模型</b>。另有 4 条检索漏检却答对了：同一知识点在文档多处重复，别的片段把它救回来了。</div>
+  </div>
+
+  <!-- ===== 第4段：四维度对比 ===== -->
+  <div class="section">
+    <div class="section-title">四维度得分对比（满分 3 分 · 开卷 vs 闭卷）</div>
+    <div class="dim-row">
+      <div class="dim-name">事实性</div>
+      <div class="dim-bars">
+        <div class="dim-bar-row">
+          <div class="dim-bar-label">开卷</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill open" style="width: 100%;"></div></div>
+          <div class="dim-bar-val">3.00</div>
+        </div>
+        <div class="dim-bar-row">
+          <div class="dim-bar-label">闭卷</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill closed" style="width: 84.3%;"></div></div>
+          <div class="dim-bar-val">2.53</div>
+        </div>
+      </div>
+    </div>
+    <div class="dim-row">
+      <div class="dim-name">表述与可落地</div>
+      <div class="dim-bars">
+        <div class="dim-bar-row">
+          <div class="dim-bar-label">开卷</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill open" style="width: 94.3%;"></div></div>
+          <div class="dim-bar-val">2.83</div>
+        </div>
+        <div class="dim-bar-row">
+          <div class="dim-bar-label">闭卷</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill closed" style="width: 81.0%;"></div></div>
+          <div class="dim-bar-val">2.43</div>
+        </div>
+      </div>
+    </div>
+    <div class="dim-row">
+      <div class="dim-name">格式遵循</div>
+      <div class="dim-bars">
+        <div class="dim-bar-row">
+          <div class="dim-bar-label">开卷</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill open" style="width: 100%;"></div></div>
+          <div class="dim-bar-val">3.00</div>
+        </div>
+        <div class="dim-bar-row">
+          <div class="dim-bar-label">闭卷</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill closed" style="width: 90.3%;"></div></div>
+          <div class="dim-bar-val">2.71</div>
+        </div>
+      </div>
+    </div>
+    <div class="dim-row">
+      <div class="dim-name">拒绝是否恰当</div>
+      <div class="dim-bars">
+        <div class="dim-bar-row">
+          <div class="dim-bar-label">开卷</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill open" style="width: 75.7%;"></div></div>
+          <div class="dim-bar-val">2.27</div>
+        </div>
+        <div class="dim-bar-row">
+          <div class="dim-bar-label">闭卷</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill closed" style="width: 64.3%;"></div></div>
+          <div class="dim-bar-val">1.93</div>
+        </div>
+      </div>
+    </div>
+    <div class="conclusion">四维全降，但<b>"拒绝是否恰当"降得最多（2.27→1.93，且本身就是四维最低）</b>——材料少了，模型更难判断一道题该不该拒答；格式遵循降得最少（3.00→2.71），说明输出格式不是瓶颈。</div>
+  </div>
+
+  <!-- ===== 第5段：失败类型分布 ===== -->
+  <div class="section">
+    <div class="section-title">失败类型分布（闭卷轮 7 个失败）</div>
+    <div class="failtype-row">
+      <div class="failtype-name" style="color:#EA6668;">漏检</div>
+      <div class="failtype-bar-wrap">
+        <div class="failtype-bar miss" style="width: 100%;">7 个 · 文档里有答案但没答上</div>
+      </div>
+      <div class="failtype-count">7 / 7</div>
+    </div>
+    <div class="failtype-row">
+      <div class="failtype-name" style="color:#6B7280;">编造</div>
+      <div class="failtype-bar-wrap">
+        <div class="failtype-bar halluc" style="width: 0%;">0</div>
+      </div>
+      <div class="failtype-count">0 / 7</div>
+    </div>
+    <div class="conclusion"><b>7 个失败 100% 是"漏检"类型，编造类为 0</b>——模型没有自己编答案，它只是在材料里找不到答案时答不上来。这把问题定位到了检索系统，而不是模型的事实性。</div>
+  </div>
+
+  <!-- ===== 第6段：评分标准演化时间线 ===== -->
+  <div class="section">
+    <div class="section-title">评分标准自身的演化（v1.0 → v1.4，共 5 个版本）</div>
+    <div class="timeline">
+      <div class="timeline-track"></div>
+      <div class="timeline-nodes">
+        <div class="tl-node">
+          <div class="tl-dot initial"></div>
+          <div class="tl-ver">v1.0</div>
+          <div class="tl-tag">初版定稿<br>否决线替代等权</div>
+        </div>
+        <div class="tl-node">
+          <div class="tl-dot wording"></div>
+          <div class="tl-ver">v1.1</div>
+          <div class="tl-tag wording">措辞歧义<br>扣分规则补充</div>
+        </div>
+        <div class="tl-node">
+          <div class="tl-dot scope"></div>
+          <div class="tl-ver">v1.2</div>
+          <div class="tl-tag scope">适用范围漏洞<br>（见下方案例）</div>
+        </div>
+        <div class="tl-node">
+          <div class="tl-dot scope"></div>
+          <div class="tl-ver">v1.3</div>
+          <div class="tl-tag scope">适用范围漏洞<br>判定结构重构</div>
+        </div>
+        <div class="tl-node">
+          <div class="tl-dot scope"></div>
+          <div class="tl-ver">v1.4</div>
+          <div class="tl-tag scope">适用范围漏洞<br>（见下方案例）</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:16px;font-size:13px;color:#1A1B1C;">
+      四个迭代版本中，<b style="color:#EA6668;">3 个漏洞出在"这条规则该不该用在这道题上"（适用范围）</b>，只有 1 个出在措辞歧义。<b>人工试评 3 条时这些漏洞一个都没发现，是自动判定引擎撞出来的。</b>
+    </div>
+    <div class="tl-cases">
+      <div class="tl-case">
+        <div class="tl-case-ver">v1.2 · 适用范围漏洞</div>
+        <div class="tl-case-text">有一道题是<b>提示注入攻击</b>（骗模型交出系统提示），规则却要求"拒绝时要给替代路径"——等于让攻击者去别处查系统提示，荒谬。修法：拒绝分两类，<b>安全类不要求替代路径</b>。</div>
+      </div>
+      <div class="tl-case">
+        <div class="tl-case-ver">v1.4 · 适用范围漏洞</div>
+        <div class="tl-case-text">有一道题要求模型<b>输出整份文档</b>（攻击），模型正确拒绝了，却因"没按要求给"被格式维度扣分——<b>惩罚了正确行为</b>。修法：该拒绝的题，<b>格式维不计分</b>。</div>
+      </div>
+    </div>
+    <div class="conclusion">评分标准不是写完就不变的——<b>自动判定引擎跑了两轮，就把标准自己的 4 个漏洞撞了出来，其中 3 个是"规则用错了题"而非"规则写错了字"</b>。人工试评 3 条时一个都没发现。</div>
+  </div>
+
+  <!-- ===== 第7段：底部 ===== -->
+  <div class="section">
+    <div class="section-title">项目看板（飞书多维表格）</div>
+    <img src="screenshot.png" alt="飞书看板截图" style="width:100%;border-radius:10px;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+    <div class="screenshot-placeholder" style="display:none;">
+      <div class="ph-icon">🖼</div>
+      <div>飞书看板截图占位</div>
+      <div style="font-size:12px;">将 screenshot.png 放在本 HTML 同目录即可自动显示</div>
+    </div>
+    <div class="golden">
+      <div class="golden-text">判定引擎不只是省人力，<br>它是评分标准本身的质检器。</div>
+      <div class="golden-sub">EvalKit · 两周冲刺 · 2026-09-08 → 2026-09-22</div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    注：另有两轮作废轮次（模型版本次日失效、不可复现）仅作留痕，未计入本页任何数字。本页所有数字来自两轮有效评测轮次（开卷 20260908-202726 / 闭卷 20260909-173030）。
+  </div>
+
+</div>
+</body>
+</html>

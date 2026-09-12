@@ -16,8 +16,13 @@ venv/
 # runs/
 # reports/
 
-# 属于其它项目的文件（误放在本目录，不进本仓库）
-research/调研-AI产品经理简历和作品集参考.md
+# 私人材料（求职 / 个人事务，不进本仓库）
+# 判据：只提交与项目有关的文件
+.workbuddy/
+docs/求职策略-*
+docs/疑问清单-*
+research/调研-*
+research/岗位调研-*
 
 # 编辑器与系统
 .vscode/
