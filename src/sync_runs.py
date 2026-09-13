@@ -44,9 +44,20 @@ FAIL_TYPE_LABEL = {"A": "A-编造", "B": "B-漏检"}
 # 与 src/qc_engine.py 的 REFUSE_DIM_CATEGORIES 保持一致——改这里必须同步改那边。
 REFUSE_DIM_CATEGORIES = ("edge", "adversarial")
 
+# D1（R001 v1.5）：维度 4 的**显示名**改为「边界处理是否恰当」，但**数据键名不变**。
+# judged JSON / summary.json / qc_engine.DIMS 里的键名仍是"拒绝是否恰当"——
+# 历史 60 条 judged 以该键名存储，改键名 = 历史数据读不到 = 被迫全量重判 = 冻结白守。
+# 飞书列名是显示层，跟着改；代码里的键名一律不动。
+DIM_COL = {
+    "事实性": "事实性",
+    "表述与可落地": "表述与可落地",
+    "格式遵循": "格式遵循",
+    "拒绝是否恰当": "边界处理是否恰当",   # ← 唯一一处 显示名 ≠ 键名
+}
+
 # 重同步时要刷新的字段（会随计分范围/判定结果变化的那些）
-RESYNC_FIELDS = ["事实性", "表述与可落地", "格式遵循", "拒绝是否恰当",
-                 "总分", "通过线", "结论", "失败类"]
+RESYNC_FIELDS = [DIM_COL[d] for d in ("事实性", "表述与可落地", "格式遵循", "拒绝是否恰当")] \
+    + ["总分", "通过线", "结论", "失败类"]
 
 
 def msel(field_name, *names):
@@ -152,7 +163,7 @@ TABLES = [
             num("事实性", "0"),
             num("表述与可落地", "0"),
             num("格式遵循", "0"),
-            num("拒绝是否恰当", "0"),
+            num("边界处理是否恰当", "0"),   # 显示名，键名仍是"拒绝是否恰当"（见 DIM_COL）
             sel("失败类型", "A-编造", "B-漏检", "无"),
             sel("结论", "通过", "失败"),
             {"field_name": "失败类", "type": 1},
@@ -311,7 +322,7 @@ def parse_runs_and_verdicts():
                 "事实性": (dims.get("事实性") or {}).get("分"),
                 "表述与可落地": (dims.get("表述与可落地") or {}).get("分"),
                 "格式遵循": (dims.get("格式遵循") or {}).get("分"),
-                "拒绝是否恰当": refuse,
+                DIM_COL["拒绝是否恰当"]: refuse,
                 "失败类型": FAIL_TYPE_LABEL.get(ft, "无") if ft else "无",
                 "结论": j.get("结论", ""),
                 "失败类": j.get("失败类", ""),

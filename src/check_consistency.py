@@ -36,15 +36,13 @@ TARGETS = {
 }
 
 # 已知未修项（有工单、有理由，不算"新问题"，但仍逐条打印）
-KNOWN = {
-    "reports/showcase/index.html":
-        "已知未修：拒绝维口径待批 A（适用范围复审）落地后，与报告 §3.2/§4.5 一次同步。"
-        "对应飞书质检记录 QC-T005-展示页（结论：打回）。"
-        "\n          ⚠ 数字会随批 A 自动变对，但展示页的结论整句不会——"
-        "「拒绝维降得最多」是方法错误（四维计分样本数不同，30/30/22/12 与 30/30/21/12，"
-        "跌幅不可横向比较），不是口径错误，必须人工重写。"
-        "见 docs/批A-落地清单.md 第 7 条。",
-}
+KNOWN = {}
+
+# 2026-09-13 已销项：展示页曾长期停在 D9 重算前的旧值（2.27/1.93），
+# 且"拒绝维降得最多"那句是**方法错误**（四维计分样本数不同，30/30/22/12 与 30/30/21/12，
+# 跌幅不可横向比较）——数字会随重算自动变对，这句话不会，必须人工重写。
+# 已按 docs/批A-落地清单.md 第 7 条 + 交叉验证 R1 重写（同批做了 2.58/2.33 数字同步）。
+# 教训留在 docs/批A-落地清单.md：同类"数字改了、转述没改"的窗口已出现过两次。
 
 
 def load_source():
@@ -93,6 +91,7 @@ def check_feishu(dims):
     """核对飞书判定明细：按当前口径投影出来的均值，是否等于 summary.json。"""
     sys.path.insert(0, str(ROOT / "src"))
     from feishu_setup import Feishu, load_env
+    from sync_runs import DIM_COL  # 飞书列名 ≠ 数据键名（D1 更名后只有拒绝维不同）
 
     env = load_env()
     fs = Feishu(env["FEISHU_APP_ID"], env["FEISHU_APP_SECRET"])
@@ -114,13 +113,14 @@ def check_feishu(dims):
         s = json.loads((ROOT / "runs" / rid / "judged" / "summary.json").read_text(encoding="utf-8"))
         rows = [r["fields"] for r in recs if str(r["fields"].get("run_id")) == rid]
         for d in DIMS:
-            vals = [r[d] for r in rows if isinstance(r.get(d), (int, float))]
+            col = DIM_COL[d]          # 飞书列名（显示名）
+            vals = [r[col] for r in rows if isinstance(r.get(col), (int, float))]
             if not vals:
                 continue
             got = sum(vals) / len(vals)
             want = s["维度均分"][d]
             if abs(got - want) > 0.005:
-                bad.append(f"飞书 {rid} {d}: 投影均值 {got:.2f} ≠ 源 {want:.2f}（n={len(vals)}）")
+                bad.append(f"飞书 {rid} {col}: 投影均值 {got:.2f} ≠ 源 {want:.2f}（n={len(vals)}）")
     return bad
 
 

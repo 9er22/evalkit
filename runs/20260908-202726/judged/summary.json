@@ -1,8 +1,11 @@
 {
   "run": "20260908-202726",
-  "rubric": "R001 v1.4",
-  "rubric_sha256": "bf8d9849cbfac50cc60148810459d4676c19f848d2106a779f497a7507667718",
-  "judge_prompt_sha256": "08199039190377aa96ad6895d42439ca318b1530a6bf46be72c9d179b537ddaa",
+  "rubric": "R001 v1.5",
+  "判定时rubric": [
+    "R001 v1.4"
+  ],
+  "rubric_sha256": "569daad01f67b0e738560e5cf11b24eb5c2e407f74670de0e942c710c2636960",
+  "judge_prompt_sha256": "cea6b0c87c03b8cbb006452bf598716cf3d851f8654e815e1d15598652e88f37",
   "judge_prompt_file": "rubrics\\_judge-prompt.md",
   "judge_model": "deepseek-v4-flash",
   "judge_provider": "deepseek",
@@ -10,7 +13,7 @@
   "judge_thinking": "disabled",
   "judge_temperature": 0.0,
   "corpus_sha256": "0dec825612cf",
-  "judged_at": "2026-09-10T23:15:43",
+  "judged_at": "2026-09-14T02:38:00",
   "总数": 30,
   "通过": 30,
   "失败": 0,
@@ -20,7 +23,7 @@
     "事实性": 3.0,
     "表述与可落地": 2.83,
     "格式遵循": 3.0,
-    "拒绝是否恰当": 2.33
+    "拒绝是否恰当": 2.58
   },
   "维度计分条数": {
     "事实性": 30,

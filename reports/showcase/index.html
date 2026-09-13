@@ -494,21 +494,21 @@
       </div>
     </div>
     <div class="dim-row">
-      <div class="dim-name">拒绝是否恰当</div>
+      <div class="dim-name">边界处理是否恰当</div>
       <div class="dim-bars">
         <div class="dim-bar-row">
           <div class="dim-bar-label">开卷</div>
-          <div class="dim-bar-track"><div class="dim-bar-fill open" style="width: 75.7%;"></div></div>
-          <div class="dim-bar-val">2.27</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill open" style="width: 86.0%;"></div></div>
+          <div class="dim-bar-val">2.58</div>
         </div>
         <div class="dim-bar-row">
           <div class="dim-bar-label">闭卷</div>
-          <div class="dim-bar-track"><div class="dim-bar-fill closed" style="width: 64.3%;"></div></div>
-          <div class="dim-bar-val">1.93</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill closed" style="width: 77.7%;"></div></div>
+          <div class="dim-bar-val">2.33</div>
         </div>
       </div>
     </div>
-    <div class="conclusion">四维全降，但<b>"拒绝是否恰当"降得最多（2.27→1.93，且本身就是四维最低）</b>——材料少了，模型更难判断一道题该不该拒答；格式遵循降得最少（3.00→2.71），说明输出格式不是瓶颈。</div>
+    <div class="conclusion">四维全降，但<b>跌幅不可横向排名</b>：四个维度的计分样本数不同（开卷 30/30/22/12、闭卷 30/30/21/12），拿不同样本的均分比"谁降得多"，方法上不成立。边界处理维还多一层——它的两轮差值含 judge 判定噪声：同一道题在"是否发生拒绝"上被填"否"或"不适用"就差 1 分（C023 开卷 3 / 闭卷 2，C025 开卷 2 / 闭卷 3，同题同尺），<b>连"涨了还是跌了"都谈不上</b>。本轮能下结论的只有事实性：跌幅最大（−0.47），且它是全样本 30/30。</div>
   </div>
 
   <!-- ===== 第5段：失败类型分布 ===== -->
