@@ -5,10 +5,16 @@
 幂等：以唯一键查重（评测轮次=run_id、判定明细=run_id+case_id、归因=轮次+组别、
 case库=case_id、rubric版本=版本），已存在则跳过。
 
-导入范围：
-- 所有含 judged/summary.json 的轮次（含 D7 作废的两轮 V4.1，标注"作废"留痕不删）
-- 每轮 30 条判定明细（judged/C*.json）
-- 闭卷轮的失败归因（meta.json 的 gold_chunk + retrieval_hit 计算，与报告口径一致）
+导入范围（2026-09-15 修订：作废轮不进行级投影）：
+- 「评测轮次」表：**所有**含 judged/summary.json 的轮次（含 D7 作废的两轮 V4.1，
+  状态=作废 + 备注写原因，留痕不删）
+- 「case判定明细」「失败归因」表：**只推有效轮**。这两张表没有「状态」字段，
+  图表分不出有效/作废——未筛 run_id 的卡片会把作废轮的记录一起平均
+  （2026-09-15 实测：横轴出现 2.25 / 2.50 / 2.75 这种"4 条记录取平均"的假值，真实值只有 2 或 3）。
+  作废留痕改由「评测轮次」表（状态=作废 + 备注）与 runs/ 目录（`作废.md` + `轮次台账.md`）承担，
+  见决策 D7 / D9 / D10。**作废 = 留痕 + 排除，不是删除证据**——源数据一条没动。
+- 每轮 30 条判定明细（judged/C*.json，仅有效轮）
+- 闭卷轮的失败归因（meta.json 的 gold_chunk + retrieval_hit 计算，与报告口径一致；仅有效轮）
 - case 库（cases/*.md 解析：输入 / 期望 / 语料依据 / 关注点）
 - rubric 版本表（来自 rubrics/评分标准.md 版本历史，硬编码并注明来源）
 
@@ -225,7 +231,11 @@ RUBRIC_VERSIONS = [
      "影响范围": "治本：同一输出 v1.1 判 10/12、v1.2 判 12/12，问题在让模型自己报分", "状态": "历史"},
     {"版本": "R001 v1.4", "日期": "2026-09-09 00:00:00",
      "变更": "「格式遵循」在应拒绝（R0=是）时不计分——全量判定发现 C029 因没按请求形态输出被扣到 1 分，等于用格式分惩罚正确行为",
-     "影响范围": "现行版", "状态": "现行"},
+     "影响范围": "历史版（v1.5 起被取代）", "状态": "历史"},
+    {"版本": "R001 v1.5", "日期": "2026-09-13 00:00:00",
+     "变更": "① 维度 4 更名「拒绝是否恰当」→「边界处理是否恰当」（适用范围不变，仍按 case 标签 edge/adversarial），3 分档正式覆盖两端；② 映射表补 R0=否 且 R2=不适用 → 3（须插在 R5=否→2 之前）；③ 补 R0=是 且 R2=不适用 → 1；④ 人表 2 分档话术与引擎 R3/R4 对齐；⑤ 人表 1 分档删「或文档没覆盖时编造内容」（归事实性 F1）；⑥ judge 提示词给「否 / 不适用」划定义边界；⑦ 不适用维度写 null",
+     "影响范围": "现行版。三方交叉验证落地（见 reports/交叉验证-R001-20260913.md）。23/30 不变；60 条 judged 未重判（基于 v1.4 prompt 产生），仅离线重算",
+     "状态": "现行"},
 ]
 
 
@@ -290,6 +300,11 @@ def parse_runs_and_verdicts():
             "判定时间": to_ms(judged_at),
             "备注": INVALIDATED_RUNS.get(rid, ""),
         })
+
+        # 作废轮只进「评测轮次」表（留痕）；行级投影表（判定明细 / 失败归因）不收作废轮
+        # —— 这两张表没有「状态」字段，收进来图表就分不出有效/作废（见文件头 2026-09-15 修订）。
+        if status == "作废":
+            continue
 
         jdir = os.path.join(d, "judged")
         jitems = {}
@@ -454,6 +469,90 @@ def resync_verdicts(fs, table_id, verdicts):
     return len(updates), len(recs) - len(updates)
 
 
+def resync_rubric(fs, table_id, rows):
+    """把已存在的 rubric 版本行刷成当前口径（幂等：值相同则跳过）。
+
+    ⚠ 和 `resync_verdicts` 是同一个坑：`batch_create` 只跳过已存在的键、**不更新**。
+    所以某版「状态」由「现行」改「历史」时，光加新行不够——
+    2026-09-15 实测：把 v1.5 加进 RUBRIC_VERSIONS 后，v1.4 那行仍是「现行」，表里出现**两个现行**。
+    """
+    want = {r["版本"]: r for r in rows}
+    recs, token = {}, ""
+    while True:
+        params = f"?page_size=200" + (f"&page_token={token}" if token else "")
+        r = fs.get(f"/open-apis/bitable/v1/apps/{APP_TOKEN}/tables/{table_id}/records", params=params)
+        if r.get("code") != 0:
+            sys.exit(f"[错误] 读表失败: {json.dumps(r, ensure_ascii=False)[:300]}")
+        d = r["data"]
+        for it in d.get("items") or []:
+            k = str(it["fields"].get("版本", ""))
+            if k in want:
+                recs[k] = (it["record_id"], it["fields"])
+        if not d.get("has_more"):
+            break
+        token = d.get("page_token", "")
+
+    def _plain(v):
+        if isinstance(v, list):
+            return "".join(x.get("text", "") if isinstance(x, dict) else str(x) for x in v)
+        return v
+
+    updates = []
+    for k, (rid, cur) in recs.items():
+        diff = {}
+        for f in ("日期", "变更", "影响范围", "状态"):
+            new, old = want[k].get(f), _plain(cur.get(f))
+            if isinstance(new, (int, float)) and isinstance(old, (int, float)):
+                if abs(new - old) < 1e-9:
+                    continue
+            elif old == new:
+                continue
+            diff[f] = new
+        if diff:
+            updates.append({"record_id": rid, "fields": diff})
+    for i in range(0, len(updates), 200):
+        r = fs.post(
+            f"/open-apis/bitable/v1/apps/{APP_TOKEN}/tables/{table_id}/records/batch_update",
+            {"records": updates[i:i + 200]})
+        if r.get("code") != 0:
+            sys.exit(f"[错误] 批量更新失败: {json.dumps(r, ensure_ascii=False)[:400]}")
+    return len(updates), len(recs) - len(updates)
+
+
+def purge_invalidated(fs, table_id, key_field):
+    """删除行级投影表里作废轮的记录（幂等：没有就返回 0，不清空）。
+
+    为什么需要它：`batch_create` 只跳过已存在的键，不会删；本次改为"作废轮不进行级投影"
+    之后，早先已经推上去的作废记录仍留在表里，图表照样会平均到它们。所以要把历史遗留清掉。
+
+    为什么可以直接删（而不是加"状态"字段留着）：这两张表没有「状态」字段，任何不加
+    run_id 筛选的卡片都会把作废轮算进去（2026-09-15 实测出现 2.25 / 2.50 / 2.75 的假值）。
+    留痕不靠这两张表——`把留痕记在能记的地方`：「评测轮次」表（状态=作废 + 备注）与
+    runs/ 目录（`作废.md` + `轮次台账.md`）才是留痕处；本函数删的是**投影**，不是证据
+    （决策 D7 / D9 / D10：不删数据指的是源，投影可重算）。
+    """
+    doomed, token = [], ""
+    while True:
+        params = f"?page_size=200" + (f"&page_token={token}" if token else "")
+        r = fs.get(f"/open-apis/bitable/v1/apps/{APP_TOKEN}/tables/{table_id}/records", params=params)
+        if r.get("code") != 0:
+            sys.exit(f"[错误] 读表失败: {json.dumps(r, ensure_ascii=False)[:300]}")
+        d = r["data"]
+        for it in d.get("items") or []:
+            if str(it["fields"].get(key_field, "")) in INVALIDATED_RUNS:
+                doomed.append(it["record_id"])
+        if not d.get("has_more"):
+            break
+        token = d.get("page_token", "")
+    for i in range(0, len(doomed), 200):
+        r = fs.post(
+            f"/open-apis/bitable/v1/apps/{APP_TOKEN}/tables/{table_id}/records/batch_delete",
+            {"records": doomed[i:i + 200]})
+        if r.get("code") != 0:
+            sys.exit(f"[错误] 批量删除失败: {json.dumps(r, ensure_ascii=False)[:400]}")
+    return len(doomed)
+
+
 def main():
     env = load_env()
     fs = Feishu(env["FEISHU_APP_ID"], env["FEISHU_APP_SECRET"])
@@ -468,6 +567,10 @@ def main():
     c, s = batch_create(fs, tables["rubric版本"], rub_rows,
                         key_field="版本", existing=load_keys(fs, tables["rubric版本"], "版本"))
     print(f"[2] rubric版本: 新建 {c} / 跳过 {s}（共 {len(RUBRIC_VERSIONS)}）")
+
+    # 刷已存在的行：batch_create 不更新，某版由「现行」改「历史」必须走这里
+    u, kept = resync_rubric(fs, tables["rubric版本"], rub_rows)
+    print(f"[2a] rubric版本重同步: 更新 {u} / 已一致 {kept}")
 
     c, s = batch_create(fs, tables["case库"], cases,
                         key_field="case_id", existing=load_keys(fs, tables["case库"], "case_id"))
@@ -488,6 +591,10 @@ def main():
     u, kept = fill_attribution_group(fs, tables["case判定明细"], verdicts)
     print(f"[5b] 归因组别回填: 更新 {u} / 已一致 {kept}")
 
+    # 作废轮不进行级投影：清掉早先推上去的作废记录（幂等，源数据不动）
+    p = purge_invalidated(fs, tables["case判定明细"], "run_id")
+    print(f"[5c] case判定明细清理作废轮: 删除 {p} 条")
+
     existing_pairs = load_pairs(fs, tables["失败归因"], "轮次", "组别")
     missing = [{"fields": row} for row in attributions
                if (row["轮次"], row["组别"]) not in existing_pairs]
@@ -500,6 +607,9 @@ def main():
             sys.exit(f"[错误] 批量写入失败: {json.dumps(r, ensure_ascii=False)[:400]}")
         created += len(chunk)
     print(f"[6] 失败归因: 新建 {created} / 跳过 {len(attributions) - created}（共 {len(attributions)}）")
+
+    p = purge_invalidated(fs, tables["失败归因"], "轮次")
+    print(f"[6a] 失败归因清理作废轮: 删除 {p} 条")
 
     # 汇总与校验
     print()
