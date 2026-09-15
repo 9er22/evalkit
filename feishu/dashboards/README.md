@@ -1,32 +1,78 @@
-# 飞书看板卡片文案（唯一本地副本）
+# 飞书看板卡片文案（以线上为准的快照，改线上要同轮抄回）
 
-目录里的 23 个 JSON 是飞书多维表格**仪表盘卡片**的文案与数字，按仪表盘分三组：
+目录里的 23 个 JSON 是飞书多维表格**仪表盘卡片**的配置快照（文案 / 数字 / 字段绑定 / 筛选），按仪表盘分三组：
 
-| 前缀 | 仪表盘 | 文件数 |
-|---|---|---|
-| `blk*` | 总览驾驶舱 | 8 |
-| `pm*` | PM 视角 | 9 |
-| `qa*` | QA 视角 | 6 |
+| 前缀 | 仪表盘 | block 表 id | 线上块数 |
+|---|---|---|---|
+| `blk*` | EvalKit 评测驾驶舱 | `blkm8J9BgP9Jf4Ae` | 8 |
+| `pm*` | EvalKit PM 工作台 | `blkWR7zJgPAubg9q` | 9 |
+| `qa*` | EvalKit QA 质检台 | `blkj1m614KduPKw5` | 6 |
+
+三个仪表盘都在同一个 base（`FjmKb4l8QavWcNsOTcLct71Znhg`）里，用
+`https://my.feishu.cn/base/FjmKb4l8QavWcNsOTcLct71Znhg?table=<block 表 id>` 直达。
+
+## 文件 ↔ 线上卡片对照（2026-09-15 实测）
+
+**驾驶舱**
+`blk01_text` 说明文字 · `blk02_passrate` 闭卷通过率 76.7 · `blk03_failcount` 闭卷失败数 7 ·
+`blk04_misspass` 漏检却通过（低估风险）4 · `blk05_dimcompare` 维度均分：开卷 vs 闭卷 ·
+`blk06_attribution` 失败归因分布（闭卷） · `blk07_failtype` 失败类型分布（闭卷） ·
+`blk08_faillist` 失败 case 清单（闭卷）
+
+**PM 工作台**
+`pm01_text` 说明文字 · `pm02_total` 任务总数 5 · `pm03_back` 已打回任务 0 ·
+`pm04_status` 任务状态分布 · `pm05_type` 交付类型分布 · `pm06_qcpass` 质检通过数 5 ·
+`pm07_avgscore` 质检平均评分 1.2 · `pm08_bounce` 打回次数分布 · `pm09_reason` 打回理由排行
+
+**QA 质检台**
+`qa01_text` 说明文字 · `qa02_count` 判定条数（有效轮次）60 · `qa03_avg` 闭卷平均总分 7.8 ·
+`qa04_boundary` 边界处理逐条得分（闭卷） · `qa05_catfail` 失败数×类别（闭卷） ·
+`qa06_faillist` 失败 case 清单（闭卷）
 
 ## ⚠ 为什么必须入库
 
-**这是它们唯一的本地副本，没有任何脚本能重建。**
+**本地没有任何脚本能重建这些卡片。**
 
 - `src/feishu_setup.py` 只建**表结构**（字段），不写卡片；
 - `src/sync_runs.py` 是读 `runs/` 往表里推**记录**，也不碰卡片；
-- 卡片文案是在飞书界面上逐条填出来的，本地没有生成代码。
+- 卡片是在飞书界面上逐条配出来的，官方 OpenAPI 也没有 per-card 读写接口。
 
-放在 `feishu/dashboards/` 之前它们躺在 `.scratch/`（已被 `.gitignore` 忽略）——
-"唯一副本" + "不受保护"是矛盾状态，一次误删就只剩飞书里那一份。2026-09-13 按常硕要求移到这里入库。
+放在 `feishu/dashboards/` 之前它们躺在 `.scratch/`（已被 `.gitignore` 忽略）——一次误删就只剩飞书里那一份。
+2026-09-13 按常硕要求移到这里入库。
+
+## 口径：以线上为准，改线上要同轮抄回
+
+**这份快照不是生成源，是镜像。** 因此：
+
+- **飞书界面是权威**。改了线上卡片（标题 / 轴字段 / 筛选 / 数字），要**同一轮**把改后的配置抄回这里的 JSON，
+  否则本地和线上又会出现两份口径；
+- 早期的"唯一本地副本"说法已作废——那时把它当生成源，但界面改得比本地快，本地反而成了过期的那份；
+- 改之前建议先照 `qa04_boundary` 的样子把**实测**结果写进来（能读到的字段才写，读到什么写什么）。
 
 ## 格式
 
-每个文件是一个对象，`text` 字段是卡片正文（Markdown 语法，飞书卡片支持粗体）；
-指标类卡片另外带数字字段。示例：
+每个文件是一个对象，`text` 字段是卡片正文（Markdown 语法，飞书卡片支持粗体）；指标类卡片另外带数字字段。示例：
 
 ```json
 {"text":"**EvalKit 评测驾驶舱** —— 一句话：把 LLM 评测的判定结论做成可交代的数字与归因。…"}
 ```
+
+图表 / 指标卡的字段：
+
+| 键 | 含义 |
+|---|---|
+| `table_name` | 数据源表名 |
+| `count_all` | 计条数（指标卡的"计数"口径） |
+| `series[]` | 数值字段 + `rollup`（`AVERAGE` 等） |
+| `group_by[]` | 类别轴字段 + `mode`（`integrated` = 勾选「汇总相同的类别」），可带 `sort` |
+| `filter` | `conjunction` + `conditions[]` |
+| `number_format` | 小数位（如 `{"formatName":"digital","precision":1}`） |
+
+**取值词表**（照飞书界面原文转写）：
+
+- `conjunction`：`and` = 符合以下**所有**条件；`or` = 符合以下**任一**条件
+- `operator`：`is` = **等于**；`isNot` = **不等于**
+- `group_by[].sort`：`{"type":"value"|"record","order":"asc"|"desc"}` = 排序依据 纵轴值/记录顺序 × 正序/倒序
 
 ## 与数据源的关系
 
