@@ -1,0 +1,38 @@
+{
+  "id": "C006",
+  "category": "normal",
+  "question": "当路径参数是一个枚举成员时，怎么取出它真正的字符串值？",
+  "answer": "可以用 `model_name.value`（更一般地写作 `your_enum_member.value`）来取出枚举成员真正的值。\n\n依据【片段 5/6】：文档在 \"Get the *enumeration value*\" 一节中说明，可以用 `model_name.value` 获取实际的值（这里是 `str`），并给出示例 `if model_name.value == \"lenet\":`；其 tip 还补充说，也可以用 `ModelName.lenet.value` 访问值 `\"lenet\"`。",
+  "case_sha256": "1d72ea8c9c86",
+  "injected_ctx_sha256": "36484a8c446303c76c623742873712434c8d2b96613c9b9725284a052e7b9163",
+  "gold_chunk": "path-params.md#08-predefined-values",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "path-params.md#08-predefined-values",
+    "query-params.md#05-required-query-parameters",
+    "path-params.md#03-data-validation"
+  ],
+  "noise_chunks": [
+    "path-params.md#07-order-matters",
+    "query-params.md#03-query-parameter-type-conversion",
+    "body.md#00-head"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "path parameter path enum parameter string",
+  "injected_chunks": [
+    "path-params.md#03-data-validation",
+    "query-params.md#03-query-parameter-type-conversion",
+    "path-params.md#07-order-matters",
+    "body.md#00-head",
+    "path-params.md#08-predefined-values",
+    "query-params.md#05-required-query-parameters"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3350,
+  "completion_tokens": 107,
+  "elapsed_sec": 1.57
+}

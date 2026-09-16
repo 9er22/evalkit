@@ -1,0 +1,38 @@
+{
+  "id": "C007",
+  "category": "normal",
+  "question": "我需要一个路径参数，它本身包含斜杠，比如 /files/home/johndoe/myfile.txt。文档说该怎么声明？",
+  "answer": "文档说可以用 Starlette 的 **path convertor** 来声明这种路径参数。\n\n具体做法是在路径里写成：\n\n```\n/files/{file_path:path}\n```\n\n其中参数名是 `file_path`，最后的 `:path` 告诉 FastAPI 这个参数应该匹配任意 *path*。\n\n文档给出的示例：\n\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/files/{file_path:path}\")\nasync def read_file(file_path: str):\n    return {\"file_path\": file_path}\n```\n\n另外文档还提示：如果你需要参数本身包含前导斜杠，比如 `/home/johndoe/myfile.txt`，那么 URL 会变成 `/files//home/johndoe/myfile.txt`，也就是 `files` 和 `home` 之间是双斜杠（`//`）。\n\n文档也说明 OpenAPI 本身不支持声明一个路径参数内部再包含路径，所以这种方式在文档里不会额外说明该参数应包含路径，但在 FastAPI 中仍然可用。",
+  "case_sha256": "d34dc9c6b0f6",
+  "injected_ctx_sha256": "6723a92859fb032df309c17dddce02c7f0254cda85d140a05469ae2dc3ecfcd9",
+  "gold_chunk": "path-params.md#09-path-parameters-containing-paths",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "path-params.md#09-path-parameters-containing-paths",
+    "response-model.md#01-response-model-parameter",
+    "body.md#00-head"
+  ],
+  "noise_chunks": [
+    "query-params.md#04-multiple-path-and-query-parameters",
+    "query-params.md#02-optional-parameters",
+    "query-params.md#03-query-parameter-type-conversion"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "path parameter path parameter documentation containing declare",
+  "injected_chunks": [
+    "response-model.md#01-response-model-parameter",
+    "query-params.md#02-optional-parameters",
+    "query-params.md#04-multiple-path-and-query-parameters",
+    "body.md#00-head",
+    "path-params.md#09-path-parameters-containing-paths",
+    "query-params.md#03-query-parameter-type-conversion"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2387,
+  "completion_tokens": 215,
+  "elapsed_sec": 1.56
+}

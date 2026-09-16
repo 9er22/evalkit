@@ -1,0 +1,38 @@
+{
+  "id": "C002",
+  "category": "normal",
+  "question": "把 item_id 声明成 int 之后，访问 /items/3 时，函数里拿到的到底是字符串 \"3\" 还是数字 3？为什么会这样？",
+  "answer": "函数里拿到的是数字 `3`（Python 的 `int`），不是字符串 `\"3\"`。\n\n依据【片段 4/6 | 来源 docs/en/docs/tutorial/path-params.md】的「Data conversion」一节：\n\n- 访问 `http://127.0.0.1:8000/items/3` 时，响应是 `{\"item_id\":3}`。\n- 文档明确提示：函数收到（并返回）的值是 `3`，是 Python 的 `int`，而不是字符串 `\"3\"`。\n\n原因是：路径参数在 URL 里\"天然\"是字符串，但当你用 Python 类型（这里是 `int`）声明它时，FastAPI 会做自动的请求\"解析\"（parsing），把来自 HTTP 请求的字符串转换成你声明的 Python 类型，并按该类型做校验。这一点在【片段 2/6 | 来源 docs/en/docs/tutorial/query-params.md】里也有说明：用 Python 类型声明后，它们会被转换成该类型并据此校验。\n\n补充一点相关行为（同样来自片段 3/6）：如果传入的不是合法整数，比如 `/items/foo` 或 `/items/4.2`，会返回校验错误，例如 `\"type\": \"int_parsing\"`、`\"msg\": \"Input should be a valid integer, unable to parse string as an integer\"`。",
+  "case_sha256": "1f27513a2458",
+  "injected_ctx_sha256": "281109a1237a6c6090a92f0fa362aeb9e3c98b9b3365b0c0b8a9ca17452ef85b",
+  "gold_chunk": "path-params.md#02-data-dfn-title-also-known-as-serializati",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "path-params.md#03-data-validation",
+    "path-params.md#02-data-dfn-title-also-known-as-serializati",
+    "query-params.md#00-head"
+  ],
+  "noise_chunks": [
+    "query-params.md#05-required-query-parameters",
+    "response-model.md#07-response-model-encoding-parameters",
+    "response-model.md#01-response-model-parameter"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "declare string int",
+  "injected_chunks": [
+    "response-model.md#07-response-model-encoding-parameters",
+    "query-params.md#00-head",
+    "path-params.md#03-data-validation",
+    "path-params.md#02-data-dfn-title-also-known-as-serializati",
+    "response-model.md#01-response-model-parameter",
+    "query-params.md#05-required-query-parameters"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 4275,
+  "completion_tokens": 303,
+  "elapsed_sec": 2.16
+}

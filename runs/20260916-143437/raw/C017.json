@@ -1,0 +1,38 @@
+{
+  "id": "C017",
+  "category": "normal",
+  "question": "输入模型里含有明文 password，怎么保证响应里不把它返回给客户端？",
+  "answer": "根据文档，有两种做法：\n\n**1. 单独定义一个不含 password 的输出模型，并用 `response_model` 参数声明**\n\n文档片段 6 给出的例子：输入模型 `UserIn` 含 `password`，输出模型 `UserOut` 不含 `password`，然后在路径操作上用 `response_model=UserOut`：\n\n```python\nclass UserIn(BaseModel):\n    username: str\n    password: str\n    email: EmailStr\n    full_name: str | None = None\n\n\nclass UserOut(BaseModel):\n    username: str\n    email: EmailStr\n    full_name: str | None = None\n\n\n@app.post(\"/user/\", response_model=UserOut)\nasync def create_user(user: UserIn) -> Any:\n    return user\n```\n\n文档说明：即使函数返回的是含 password 的输入用户，**FastAPI** 也会负责过滤掉所有未在输出模型中声明的数据（使用 Pydantic）。\n\n文档还解释了为什么这里必须用 `response_model` 参数而不是返回类型注解：因为两个模型是不同的类，如果把函数返回类型注解为 `UserOut`，编辑器和工具会报错说返回了无效类型。\n\n**2. 用类继承 + 返回类型注解**\n\n文档片段 2 给出的方式：让 `UserIn` 继承 `BaseUser`（`BaseUser` 含基础字段，`UserIn` 额外加 `password`），然后把函数返回类型注解为 `BaseUser`：\n\n```python\nclass BaseUser(BaseModel):\n    username: str\n    email: EmailStr\n    full_name: str | None = None\n\n\nclass UserIn(BaseUser):\n    password: str\n\n\n@app.post(\"/user/\")\nasync def create_user(user: UserIn) -> BaseUser:\n    return user\n```\n\n这样既能获得编辑器和 mypy 的工具支持（因为 `UserIn` 是 `BaseUser` 的子类，类型合法），又能获得 FastAPI 的数据过滤。文档特别说明：FastAPI 内部用 Pydantic 做了处理，确保返回数据的过滤**不会**套用类继承规则，否则你可能返回比预期多得多的数据。\n\n**另外，文档还给出了警告**（片段 3）：不要在生产环境用同一个含 password 的模型同时声明输入和输出，否则 API 会把密码原样返回给客户端；并且\"Never store the plain password of a user or send it in a response like this, unless you know all the caveats and you know what you are doing.\"",
+  "case_sha256": "f92b7604ec9c",
+  "injected_ctx_sha256": "bd7d093ab1dd7f2ccfeb004129eb490e0b758bbf74fe88f61fedd91a42cdbe15",
+  "gold_chunk": "response-model.md#03-add-an-output-model",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "response-model.md#02-return-the-same-input-data",
+    "response-model.md#04-return-type-and-data-filtering",
+    "response-model.md#03-add-an-output-model"
+  ],
+  "noise_chunks": [
+    "response-model.md#05-see-it-in-the-docs",
+    "path-params.md#05-standards-based-benefits-alternative-doc",
+    "body.md#02-create-your-data-model"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "client model",
+  "injected_chunks": [
+    "path-params.md#05-standards-based-benefits-alternative-doc",
+    "response-model.md#04-return-type-and-data-filtering",
+    "response-model.md#02-return-the-same-input-data",
+    "body.md#02-create-your-data-model",
+    "response-model.md#05-see-it-in-the-docs",
+    "response-model.md#03-add-an-output-model"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2468,
+  "completion_tokens": 524,
+  "elapsed_sec": 2.88
+}

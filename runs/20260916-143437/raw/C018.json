@@ -1,0 +1,38 @@
+{
+  "id": "C018",
+  "category": "normal",
+  "question": "response_model_exclude_unset=True 是干什么的？用它请求 id 为 foo 的 item，会返回什么？",
+  "answer": "**作用**：`response_model_exclude_unset=True` 是 *path operation decorator* 的参数，设置后那些**没有被显式设置**的默认值不会包含在响应里，只返回实际设置过的值。（依据片段 2/6 和片段 5/6）\n\n**请求 id 为 `foo` 的 item 时返回**：\n\n```JSON\n{\n    \"name\": \"Foo\",\n    \"price\": 50.2\n}\n```\n\n依据片段 2/6：`items` 中 `\"foo\": {\"name\": \"Foo\", \"price\": 50.2}`，只设置了 `name` 和 `price`，所以 `description`、`tax`、`tags` 这些默认值不会出现在响应中。",
+  "case_sha256": "2b798bd913b5",
+  "injected_ctx_sha256": "ceddd6117324b7d056d76bd4f061349fcba21e96a9916044376e4d8197388a68",
+  "gold_chunk": "response-model.md#07-response-model-encoding-parameters",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "response-model.md#07-response-model-encoding-parameters",
+    "query-params.md#03-query-parameter-type-conversion",
+    "response-model.md#08-recap"
+  ],
+  "noise_chunks": [
+    "path-params.md#09-path-parameters-containing-paths",
+    "query-params.md#01-defaults",
+    "path-params.md#10-recap"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": null,
+  "injected_chunks": [
+    "query-params.md#03-query-parameter-type-conversion",
+    "response-model.md#07-response-model-encoding-parameters",
+    "path-params.md#10-recap",
+    "query-params.md#01-defaults",
+    "response-model.md#08-recap",
+    "path-params.md#09-path-parameters-containing-paths"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3222,
+  "completion_tokens": 164,
+  "elapsed_sec": 1.01
+}

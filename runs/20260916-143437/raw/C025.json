@@ -1,0 +1,37 @@
+{
+  "id": "C025",
+  "category": "edge",
+  "question": "我的路径操作函数直接返回一个数据库对象（不是 Pydantic 类型），会发生什么？怎么解决？",
+  "answer": "根据这份文档，可以这样回答：\n\n**会发生什么：**\n如果你给函数加了返回类型注解（比如声明为某个 Pydantic 模型），但实际返回的是数据库对象（或字典），那么编辑器和工具会报错，提示你返回的类型与声明的类型不一致。文档原文说：\n\n> If you added the return type annotation, tools and editors would complain with a (correct) error telling you that your function is returning a type (e.g. a dict) that is different from what you declared (e.g. a Pydantic model).\n\n**怎么解决：**\n文档给出的方案是：改用**路径操作装饰器**的参数 `response_model`，而不是用返回类型注解。\n\n> In those cases, you can use the *path operation decorator* parameter `response_model` instead of the return type.\n\n`response_model` 可以用在任意路径操作上（`@app.get()`、`@app.post()`、`@app.put()`、`@app.delete()` 等）。它接收和 Pydantic 模型字段相同的类型，可以是 Pydantic 模型，也可以是 Pydantic 模型的 `list`（如 `List[Item]`）。FastAPI 会用它来做数据文档、验证，并**转换和过滤输出数据**。\n\n文档还提示：如果你在编辑器或 mypy 里有严格的类型检查，可以把函数返回类型声明为 `Any`，这样告诉编辑器你是故意返回任意类型，而 FastAPI 仍会用 `response_model` 做文档、验证、过滤等工作。\n\n另外，如果同时声明了返回类型和 `response_model`，**`response_model` 优先级更高**，会被 FastAPI 采用。\n\n（文档中给出的示例正是这种用法：函数返回 `item` 或字典列表，返回类型注解为 `Any`，而在装饰器上写 `response_model=Item` / `response_model=list[Item]`。）",
+  "case_sha256": "ff547d2f362d",
+  "injected_ctx_sha256": "857410397124352dc621030939644bbc8d41bf6910d837ede317b7e58caea8f9",
+  "gold_chunk": "response-model.md#01-response-model-parameter",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "response-model.md#03-add-an-output-model",
+    "response-model.md#01-response-model-parameter",
+    "response-model.md#00-head"
+  ],
+  "noise_chunks": [
+    "path-params.md#10-recap",
+    "response-model.md#00-head",
+    "query-params.md#04-multiple-path-and-query-parameters"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "path type",
+  "injected_chunks": [
+    "path-params.md#10-recap",
+    "response-model.md#03-add-an-output-model",
+    "query-params.md#04-multiple-path-and-query-parameters",
+    "response-model.md#00-head",
+    "response-model.md#01-response-model-parameter"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2370,
+  "completion_tokens": 398,
+  "elapsed_sec": 2.45
+}

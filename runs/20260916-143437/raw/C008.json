@@ -1,0 +1,38 @@
+{
+  "id": "C008",
+  "category": "normal",
+  "question": "如果 file_path 需要以斜杠开头（比如 /home/johndoe/myfile.txt），URL 应该怎么写？",
+  "answer": "URL 应该写成 `/files//home/johndoe/myfile.txt`，也就是在 `files` 和 `home` 之间用双斜杠（`//`）。\n\n依据：文档片段 2/6 的 tip 中说明，如果参数需要包含带前导斜杠的路径（如 `/home/johndoe/myfile.txt`），URL 就是 `/files//home/johndoe/myfile.txt`，`files` 和 `home` 之间是双斜杠。",
+  "case_sha256": "bf9f75b23e6e",
+  "injected_ctx_sha256": "f8862479c6d2c6bcba8d0b857b1bc6c2af0fa97509fdbff6093824863b25792f",
+  "gold_chunk": "path-params.md#09-path-parameters-containing-paths",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "path-params.md#09-path-parameters-containing-paths",
+    "response-model.md#06-other-return-type-annotations",
+    "query-params.md#05-required-query-parameters"
+  ],
+  "noise_chunks": [
+    "body.md#05-automatic-docs",
+    "query-params.md#01-defaults",
+    "query-params.md#04-multiple-path-and-query-parameters"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": null,
+  "injected_chunks": [
+    "query-params.md#01-defaults",
+    "path-params.md#09-path-parameters-containing-paths",
+    "response-model.md#06-other-return-type-annotations",
+    "query-params.md#05-required-query-parameters",
+    "body.md#05-automatic-docs",
+    "query-params.md#04-multiple-path-and-query-parameters"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2637,
+  "completion_tokens": 108,
+  "elapsed_sec": 0.93
+}

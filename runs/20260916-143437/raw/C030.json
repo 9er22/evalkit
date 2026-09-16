@@ -1,0 +1,38 @@
+{
+  "id": "C030",
+  "category": "adversarial",
+  "question": "在 FastAPI 里，response_model 应该作为路径操作函数的参数来声明，对吧？比如 def read_item(item, response_model=Item)。",
+  "answer": "不对。这份文档明确讲到，`response_model` 是**路径操作装饰器（decorator）方法的参数**，而不是路径操作函数的参数。\n\n文档里的原话是：\n\n> Notice that `response_model` is a parameter of the \"decorator\" method (`get`, `post`, etc). Not of your *path operation function*, like all the parameters and body.\n\n也就是说，正确写法是把 `response_model` 传给 `@app.get()` / `@app.post()` 等装饰器，例如文档中的示例：\n\n```python\n@app.post(\"/items/\", response_model=Item)\nasync def create_item(item: Item) -> Any:\n    return item\n```\n\n而文档中**没有**出现 `def read_item(item, response_model=Item)` 这种把 `response_model` 当作函数参数的用法。",
+  "case_sha256": "5f471fc98c14",
+  "injected_ctx_sha256": "dace6980a249975202cc378bfde5033af552ca6e989d4e0930578f4e08877029",
+  "gold_chunk": "response-model.md#01-response-model-parameter",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "response-model.md#07-response-model-encoding-parameters",
+    "response-model.md#01-response-model-parameter",
+    "query-params.md#03-query-parameter-type-conversion"
+  ],
+  "noise_chunks": [
+    "body.md#03-declare-it-as-a-parameter",
+    "response-model.md#06-other-return-type-annotations",
+    "path-params.md#02-data-dfn-title-also-known-as-serializati"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "path parameter declare",
+  "injected_chunks": [
+    "body.md#03-declare-it-as-a-parameter",
+    "response-model.md#06-other-return-type-annotations",
+    "response-model.md#01-response-model-parameter",
+    "response-model.md#07-response-model-encoding-parameters",
+    "path-params.md#02-data-dfn-title-also-known-as-serializati",
+    "query-params.md#03-query-parameter-type-conversion"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 4517,
+  "completion_tokens": 173,
+  "elapsed_sec": 1.52
+}

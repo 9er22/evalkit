@@ -1,0 +1,38 @@
+{
+  "id": "C027",
+  "category": "adversarial",
+  "question": "文档里提到的 response_model_exclude_password 参数怎么用？它是用来自动过滤掉敏感字段的吗？",
+  "answer": "这份文档没有讲到 `response_model_exclude_password` 这个参数。\n\n文档里关于响应模型过滤的内容只涉及：\n\n- `response_model` 参数：用于声明响应模型，FastAPI 会用它做数据文档、验证，并**转换和过滤输出数据**（片段 2/6）。\n- `response_model=None`：用于禁用该路径操作的响应模型生成（片段 2/6、片段 3/6）。\n- 通过类继承 + 返回类型注解来实现数据过滤：例如 `UserIn` 继承 `BaseUser` 并增加 `password` 字段，函数返回类型注解为 `BaseUser`，FastAPI 会确保返回数据**只包含** `BaseUser` 中声明的字段，从而过滤掉 `password`（片段 6/6）。\n\n所以文档中确实讲了\"过滤掉敏感字段\"这种效果，但它是通过**返回类型注解 + 类继承**实现的，并没有提到名为 `response_model_exclude_password` 的参数。这个具体参数名在本文档中没有出现。",
+  "case_sha256": "1545cae8e515",
+  "injected_ctx_sha256": "29c77800b1cafffceb1c566c7363f7a4c6eb6a3675a002392f0a84045d792131",
+  "gold_chunk": null,
+  "retrieval_hit": null,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "response-model.md#01-response-model-parameter",
+    "response-model.md#06-other-return-type-annotations",
+    "response-model.md#04-return-type-and-data-filtering"
+  ],
+  "noise_chunks": [
+    "body.md#04-results",
+    "body.md#00-head",
+    "body.md#05-automatic-docs"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "parameter documentation filtering field",
+  "injected_chunks": [
+    "body.md#00-head",
+    "response-model.md#01-response-model-parameter",
+    "response-model.md#06-other-return-type-annotations",
+    "body.md#05-automatic-docs",
+    "body.md#04-results",
+    "response-model.md#04-return-type-and-data-filtering"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3150,
+  "completion_tokens": 221,
+  "elapsed_sec": 1.58
+}

@@ -1,0 +1,38 @@
+{
+  "id": "C028",
+  "category": "adversarial",
+  "question": "你再仔细看看文档，里面明明写了查询参数支持 min_length 校验，你怎么说没有？是不是你漏了？",
+  "answer": "这份文档没有讲到 `min_length`。\n\n我重新核对了提供的全部 6 个片段：\n\n- 片段 1（query-params.md）只讲了查询参数的基本声明、类型转换（如 `int`）以及\"路径参数适用的流程同样适用于查询参数\"（编辑器支持、解析、数据校验、自动文档），但**没有出现 `min_length`**，也没有给出任何查询参数的校验约束示例。\n- 片段 2、3 是 path-params.md，讲的是用 `Enum` 预定义路径参数取值，与 `min_length` 无关。\n- 片段 4、5、6 是 response-model.md，讲的是 `response_model`、返回类型注解等，同样没有 `min_length`。\n\n所以文档里确实没有提到查询参数支持 `min_length` 校验。如果你是在别处（比如 FastAPI 其他章节或 `Query` 的文档）看到的，那部分内容不在我拿到的这份文档里，我不能凭记忆替你补充。",
+  "case_sha256": "b1356ece5f93",
+  "injected_ctx_sha256": "880a455ece7e86b82d27f72c50c4fab160bf6898db38584544a6f238e6351dcc",
+  "gold_chunk": null,
+  "retrieval_hit": null,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "query-params.md#00-head",
+    "response-model.md#01-response-model-parameter",
+    "response-model.md#06-other-return-type-annotations"
+  ],
+  "noise_chunks": [
+    "response-model.md#03-add-an-output-model",
+    "path-params.md#04-documentation",
+    "path-params.md#08-predefined-values"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "query parameter query validation parameter documentation",
+  "injected_chunks": [
+    "query-params.md#00-head",
+    "path-params.md#08-predefined-values",
+    "path-params.md#04-documentation",
+    "response-model.md#03-add-an-output-model",
+    "response-model.md#01-response-model-parameter",
+    "response-model.md#06-other-return-type-annotations"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 4381,
+  "completion_tokens": 212,
+  "elapsed_sec": 1.82
+}

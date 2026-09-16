@@ -1,0 +1,38 @@
+{
+  "id": "C010",
+  "category": "normal",
+  "question": "怎么把一个查询参数声明为可选？请给出代码，并说明判断依据是什么。",
+  "answer": "把查询参数声明为可选的方法是：给它设置默认值为 `None`。\n\n依据【片段 1/6 | 来源 docs/en/docs/tutorial/query-params.md】中的说明和示例：\n\n> The same way, you can declare optional query parameters, by setting their default to `None`\n\n```python\n# docs_src/query_params/tutorial002_py310.py\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/items/{item_id}\")\nasync def read_item(item_id: str, q: str | None = None):\n    if q:\n        return {\"item_id\": item_id, \"q\": q}\n    return {\"item_id\": item_id}\n```\n\n文档中明确说明：在这种情况下，函数参数 `q` 将是可选的，默认值为 `None`（\"the function parameter `q` will be optional, and will be `None` by default\"）。\n\n另外，【片段 5/6 | 来源 docs/en/docs/tutorial/query-params.md】也补充了判断依据：当你为非路径参数（目前只涉及查询参数）声明了默认值时，它就不是必填的；如果你不想给它一个具体值、只想让它可选，就把默认值设为 `None`（\"If you don't want to add a specific value but just make it optional, set the default as `None`\"）。反之，不声明任何默认值就会使其成为必填查询参数。",
+  "case_sha256": "4792506103c3",
+  "injected_ctx_sha256": "2b8fd90b2bd7c863d9e02a207e4cdd1bfa826dcab860b682ba5e008b0c133059",
+  "gold_chunk": "query-params.md#02-optional-parameters",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "query-params.md#05-required-query-parameters",
+    "query-params.md#02-optional-parameters",
+    "body.md#02-create-your-data-model"
+  ],
+  "noise_chunks": [
+    "path-params.md#05-standards-based-benefits-alternative-doc",
+    "path-params.md#00-head",
+    "response-model.md#01-response-model-parameter"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "query parameter query optional parameter declare",
+  "injected_chunks": [
+    "query-params.md#02-optional-parameters",
+    "body.md#02-create-your-data-model",
+    "path-params.md#00-head",
+    "path-params.md#05-standards-based-benefits-alternative-doc",
+    "query-params.md#05-required-query-parameters",
+    "response-model.md#01-response-model-parameter"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2382,
+  "completion_tokens": 299,
+  "elapsed_sec": 2.09
+}

@@ -1,0 +1,38 @@
+{
+  "id": "C015",
+  "category": "normal",
+  "question": "同一个路径操作里同时有请求体、路径参数和查询参数，FastAPI 怎么区分它们？",
+  "answer": "FastAPI 的区分规则在文档里有明确说明（片段 1/6，`docs/en/docs/tutorial/body.md` 的 \"Request body + path + query parameters\" 一节）：\n\n- 如果参数同时声明在**路径**中，它会被当作**路径参数**（path parameter）。\n- 如果参数是**单一类型**（singular type，如 `int`、`float`、`str`、`bool` 等），它会被解释为**查询参数**（query parameter）。\n- 如果参数被声明为 **Pydantic 模型**的类型，它会被解释为请求**体**（request body）。\n\n文档给出的示例：\n\n```python\n@app.put(\"/items/{item_id}\")\nasync def update_item(item_id: int, item: Item, q: str | None = None):\n    ...\n```\n\n其中 `item_id` 出现在路径 `/items/{item_id}` 中，所以是路径参数；`item` 是 Pydantic 模型 `Item`，所以是请求体；`q` 是单一类型 `str`，所以是查询参数。\n\n另外文档还补充了一点（片段 1/6 的 note）：FastAPI 判断 `q` 不是必填，是因为它有默认值 `= None`，而不是因为写了 `str | None`；类型注解的作用是让编辑器提供更好的支持和错误检测。",
+  "case_sha256": "5f2db956a450",
+  "injected_ctx_sha256": "1a856c7b4d3bc614095d7c86658f51fc09eacdd7d83e7cf3713100374e3dbdb1",
+  "gold_chunk": "body.md#09-request-body-path-query-parameters",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "body.md#09-request-body-path-query-parameters",
+    "body.md#00-head",
+    "body.md#03-declare-it-as-a-parameter"
+  ],
+  "noise_chunks": [
+    "body.md#05-automatic-docs",
+    "query-params.md#05-required-query-parameters",
+    "path-params.md#08-predefined-values"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "path parameter path query parameter query request body parameter",
+  "injected_chunks": [
+    "body.md#09-request-body-path-query-parameters",
+    "path-params.md#08-predefined-values",
+    "body.md#03-declare-it-as-a-parameter",
+    "body.md#00-head",
+    "query-params.md#05-required-query-parameters",
+    "body.md#05-automatic-docs"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3039,
+  "completion_tokens": 290,
+  "elapsed_sec": 1.89
+}

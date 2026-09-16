@@ -1,0 +1,38 @@
+{
+  "id": "C003",
+  "category": "normal",
+  "question": "如果路径参数声明为 int，访问 /items/foo 会返回什么错误？请把完整的 JSON 错误结构写出来。",
+  "answer": "会返回一个 HTTP 错误，完整的 JSON 结构如下（依据【片段 4/6 | 来源 docs/en/docs/tutorial/path-params.md】）：\n\n```JSON\n{\n  \"detail\": [\n    {\n      \"type\": \"int_parsing\",\n      \"loc\": [\n        \"path\",\n        \"item_id\"\n      ],\n      \"msg\": \"Input should be a valid integer, unable to parse string as an integer\",\n      \"input\": \"foo\"\n    }\n  ]\n}\n```\n\n文档说明：这是因为路径参数 `item_id` 的值是 `\"foo\"`，它不是一个 `int`。文档还提到，如果传入 `float` 而不是 `int`（例如 `/items/4.2`），也会出现同样的错误。",
+  "case_sha256": "9fd04b661bb1",
+  "injected_ctx_sha256": "dbae892a0db2c70b5a308460cbbc017cb0bb89efc5cbe29ae62f3229da11dc77",
+  "gold_chunk": "path-params.md#03-data-validation",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "query-params.md#05-required-query-parameters",
+    "path-params.md#03-data-validation",
+    "path-params.md#00-head"
+  ],
+  "noise_chunks": [
+    "body.md#02-create-your-data-model",
+    "response-model.md#07-response-model-encoding-parameters",
+    "body.md#06-editor-support"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "path parameter path parameter declare",
+  "injected_chunks": [
+    "body.md#06-editor-support",
+    "body.md#02-create-your-data-model",
+    "path-params.md#00-head",
+    "path-params.md#03-data-validation",
+    "query-params.md#05-required-query-parameters",
+    "response-model.md#07-response-model-encoding-parameters"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3752,
+  "completion_tokens": 159,
+  "elapsed_sec": 1.52
+}

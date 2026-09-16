@@ -1,0 +1,37 @@
+{
+  "id": "C023",
+  "category": "edge",
+  "question": "文档推荐用 response_model_include / response_model_exclude 来隐藏字段吗？",
+  "answer": "不推荐。文档明确说这两个参数只是\"quick shortcut\"（快捷方式），并给出了 tip：\n\n> But it is still recommended to use the ideas above, using multiple classes, instead of these parameters.\n\n也就是说，文档更推荐用多个 Pydantic 模型类（比如上面提到的思路）来实现字段的包含/排除，而不是用 `response_model_include` / `response_model_exclude`。\n\n文档给出的理由是：即使你用 `response_model_include` 或 `response_model_exclude` 省略了某些属性，应用 OpenAPI（以及文档）里生成的 JSON Schema 仍然是完整模型的 schema。文档还提到这一点同样适用于行为类似的 `response_model_by_alias`。\n\n补充说明这两个参数的用法（依据文档）：它们是 *path operation decorator* 的参数，接收一个 `set` of `str`，即要包含（其余省略）或要排除（其余包含）的属性名。如果写成 `list` 或 `tuple`，FastAPI 也会自动转换成 `set`，同样能正常工作。",
+  "case_sha256": "f2339bd09ab0",
+  "injected_ctx_sha256": "7eeea891f0f2d463ae938ae76591178c15424cf812268c15cf2619d1fc498614",
+  "gold_chunk": "response-model.md#07-response-model-encoding-parameters",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "response-model.md#07-response-model-encoding-parameters",
+    "response-model.md#06-other-return-type-annotations",
+    "response-model.md#01-response-model-parameter"
+  ],
+  "noise_chunks": [
+    "path-params.md#07-order-matters",
+    "body.md#02-create-your-data-model",
+    "response-model.md#01-response-model-parameter"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "documentation field",
+  "injected_chunks": [
+    "response-model.md#07-response-model-encoding-parameters",
+    "response-model.md#06-other-return-type-annotations",
+    "path-params.md#07-order-matters",
+    "body.md#02-create-your-data-model",
+    "response-model.md#01-response-model-parameter"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 4459,
+  "completion_tokens": 214,
+  "elapsed_sec": 1.7
+}

@@ -1,0 +1,38 @@
+{
+  "id": "C022",
+  "category": "edge",
+  "question": "如果我不想用 Pydantic 模型，还能声明请求体吗？",
+  "answer": "这份文档没有讲到。\n\n文档里关于请求体的部分（片段 3/6）只说了：要声明请求体，你使用 Pydantic 模型（\"To declare a **request** body, you use [Pydantic](https://pydantic.dev/docs/) models with all their power and benefits.\"）。片段 1/6 和 2/6 的示例也都是用 Pydantic 模型来声明请求体。\n\n文档没有提到任何不使用 Pydantic 模型来声明请求体的替代方式，所以这个问题我无法依据文档回答。",
+  "case_sha256": "70e74a58c2bc",
+  "injected_ctx_sha256": "84694195c6d6a41884368d7d45e1845bfb62e822e42a004ce4f7bf3ad07359ae",
+  "gold_chunk": "body.md#10-without-pydantic",
+  "retrieval_hit": false,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "body.md#09-request-body-path-query-parameters",
+    "body.md#08-request-body-path-parameters",
+    "body.md#00-head"
+  ],
+  "noise_chunks": [
+    "response-model.md#07-response-model-encoding-parameters",
+    "response-model.md#06-other-return-type-annotations",
+    "path-params.md#02-data-dfn-title-also-known-as-serializati"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "request body model declare",
+  "injected_chunks": [
+    "body.md#08-request-body-path-parameters",
+    "body.md#09-request-body-path-query-parameters",
+    "body.md#00-head",
+    "response-model.md#06-other-return-type-annotations",
+    "response-model.md#07-response-model-encoding-parameters",
+    "path-params.md#02-data-dfn-title-also-known-as-serializati"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 4082,
+  "completion_tokens": 118,
+  "elapsed_sec": 1.08
+}

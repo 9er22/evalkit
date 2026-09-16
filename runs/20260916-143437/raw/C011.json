@@ -1,0 +1,38 @@
+{
+  "id": "C011",
+  "category": "normal",
+  "question": "查询参数声明为 bool 类型时，URL 里写哪些值会被当成 True？请尽量列全。",
+  "answer": "根据文档（片段 6/6，`docs/en/docs/tutorial/query-params.md` 的 \"Query parameter type conversion\" 一节），当查询参数声明为 `bool` 类型时，以下写法都会被解析为 `True`：\n\n- `?short=1`\n- `?short=True`\n- `?short=true`\n- `?short=on`\n- `?short=yes`\n- 以及任何其他大小写变体（全大写、首字母大写等）\n\n文档原文的说明是：\n\n> or any other case variation (uppercase, first letter in uppercase, etc), your function will see the parameter `short` with a `bool` value of `True`. Otherwise as `False`.\n\n也就是说，除了上述这些（及其大小写变体）之外的值都会被当作 `False`。\n\n需要说明的是：文档只列出了 `1`、`True`、`true`、`on`、`yes` 这几个具体示例，并补充\"任何大小写变体\"都算 `True`，并没有给出一个完整的穷举清单。所以严格来说，文档没有讲到的其他可能取值（例如 `t`、`y`、`enabled` 等）是否算 `True`，这份文档没有讲到。",
+  "case_sha256": "bf4797fe621f",
+  "injected_ctx_sha256": "dd860259e7dc80f4d3f6fd7e9db7ac7f5844c4660bb6dec5bfa5397e0f9072a3",
+  "gold_chunk": "query-params.md#03-query-parameter-type-conversion",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "query-params.md#03-query-parameter-type-conversion",
+    "body.md#09-request-body-path-query-parameters",
+    "query-params.md#05-required-query-parameters"
+  ],
+  "noise_chunks": [
+    "body.md#01-import-pydantic-s-basemodel",
+    "response-model.md#00-head",
+    "path-params.md#10-recap"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "query parameter query type parameter declare",
+  "injected_chunks": [
+    "body.md#01-import-pydantic-s-basemodel",
+    "query-params.md#05-required-query-parameters",
+    "response-model.md#00-head",
+    "path-params.md#10-recap",
+    "body.md#09-request-body-path-query-parameters",
+    "query-params.md#03-query-parameter-type-conversion"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 2214,
+  "completion_tokens": 264,
+  "elapsed_sec": 1.68
+}

@@ -1,0 +1,37 @@
+{
+  "id": "C001",
+  "category": "normal",
+  "question": "根据文档，如何声明一个路径参数，让访问 /items/foo 时返回 {\"item_id\": \"foo\"}？请给出完整可运行的代码。",
+  "answer": "根据文档【片段 4/5 | 来源 docs/en/docs/tutorial/path-params.md】，可以用 Python 格式化字符串的语法来声明路径参数，完整代码如下：\n\n```python\n# docs_src/path_params/tutorial001_py310.py\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/items/{item_id}\")\nasync def read_item(item_id):\n    return {\"item_id\": item_id}\n```\n\n文档说明：路径参数 `item_id` 的值会作为参数 `item_id` 传给函数。运行该示例并访问 `http://127.0.0.1:8000/items/foo`，会得到响应：\n\n```JSON\n{\"item_id\":\"foo\"}\n```",
+  "case_sha256": "b5bd372497b1",
+  "injected_ctx_sha256": "67bf3e752b9ed9bf06074a632ca381439f34860c866ebe1bee682e8c2bdd8058",
+  "gold_chunk": "path-params.md#00-head",
+  "retrieval_hit": true,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "query-params.md#05-required-query-parameters",
+    "path-params.md#00-head",
+    "query-params.md#03-query-parameter-type-conversion"
+  ],
+  "noise_chunks": [
+    "path-params.md#08-predefined-values",
+    "response-model.md#07-response-model-encoding-parameters",
+    "query-params.md#05-required-query-parameters"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "path parameter path parameter documentation declare",
+  "injected_chunks": [
+    "query-params.md#03-query-parameter-type-conversion",
+    "response-model.md#07-response-model-encoding-parameters",
+    "query-params.md#05-required-query-parameters",
+    "path-params.md#00-head",
+    "path-params.md#08-predefined-values"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 4567,
+  "completion_tokens": 152,
+  "elapsed_sec": 1.93
+}

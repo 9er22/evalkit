@@ -1,0 +1,38 @@
+{
+  "id": "C019",
+  "category": "edge",
+  "question": "怎么限制一个查询参数的最小长度，或者用正则表达式校验它？",
+  "answer": "这份文档没有讲到。\n\n文档里关于查询参数（query parameters）的内容只覆盖了：如何声明查询参数、默认值、类型转换与校验（如 `int`）、以及自动文档等（见片段 5、6）。但**没有**提到如何限制查询参数的**最小长度**，也**没有**提到用**正则表达式**校验查询参数。\n\n文档中唯一涉及\"长度/正则\"这类约束的地方是 `response_model` 相关的响应模型参数（如 `response_model_exclude_unset`、`response_model_include`、`response_model_exclude`），这些与查询参数的校验无关。\n\n所以，关于\"限制查询参数最小长度\"或\"用正则表达式校验查询参数\"，这份文档没有讲到。",
+  "case_sha256": "68858cf0db57",
+  "injected_ctx_sha256": "6ac304ed046a4eecc78f286fcaae2fcacd79979dae07937b0de8efa220f1eb95",
+  "gold_chunk": null,
+  "retrieval_hit": null,
+  "retrieval_arm": "v2-bridge",
+  "picked_chunks": [
+    "query-params.md#00-head",
+    "response-model.md#07-response-model-encoding-parameters",
+    "response-model.md#01-response-model-parameter"
+  ],
+  "noise_chunks": [
+    "response-model.md#05-see-it-in-the-docs",
+    "body.md#09-request-body-path-query-parameters",
+    "query-params.md#01-defaults"
+  ],
+  "gold_in_noise": false,
+  "query_extra_terms": "query parameter query validation parameter",
+  "injected_chunks": [
+    "response-model.md#01-response-model-parameter",
+    "response-model.md#07-response-model-encoding-parameters",
+    "response-model.md#05-see-it-in-the-docs",
+    "body.md#09-request-body-path-query-parameters",
+    "query-params.md#01-defaults",
+    "query-params.md#00-head"
+  ],
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "thinking": "disabled",
+  "finish_reason": "stop",
+  "prompt_tokens": 3862,
+  "completion_tokens": 155,
+  "elapsed_sec": 1.6
+}
