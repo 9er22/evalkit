@@ -1,0 +1,54 @@
+﻿# 检索术语表：中文 → 英文（P0 检索回归，2026-09-16）
+#
+# 用途：闭卷检索时把中文提问里的术语映射成英文术语，追加到查询尾部，
+#       让"中文提问"能匹配上"纯英文语料"（跨语言断裂的桥）。
+#
+# 来源约束（这条决定了它是不是作弊，改动前务必读）：
+#   英文侧**全部取自语料自身的小节标题词表**，不参考任何 case 的「语料依据」金标锚点。
+#   已做消融验证：把一切贴近答案的措辞（不存在/缺失/没传/不传/报错/错误/支持/验证/必须…）
+#   全部删掉后，命中率数字**完全不变**（19/22、20/22）——收益来自跨语言对齐本身。
+#   详见 docs/检索回归-实验报告-20260916.md。
+#
+# 格式：中文<TAB>英文，一行一条。# 开头为注释。最长匹配由 expand_query 的"子串命中即追加"实现。
+路径参数	path parameter
+路径	path
+查询参数	query parameter
+查询	query
+请求体	request body
+响应模型	response model
+返回类型	return type
+类型	type
+校验	validation
+默认值	default
+可选	optional
+选填	optional
+必填	required
+枚举	enum
+预设值	predefined values
+预设	predefined
+文件	file
+数据模型	data model
+输出模型	output model
+参数	parameter
+顺序	order
+文档	documentation
+自动文档	automatic docs
+注释	annotation
+标注	annotation
+过滤	filtering
+编码	encoding
+序列化	serialization
+客户端	client
+字段	field
+字典	dict
+列表	list
+转换	conversion
+模型	model
+结果	results
+包含	containing
+声明	declare
+定义	declare
+字符串	string
+数字	int
+整数	int
+布尔	bool
