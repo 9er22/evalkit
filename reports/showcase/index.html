@@ -22,7 +22,7 @@
     overflow: hidden;
   }
 
-  /* ===== 第1段：顶部横幅 ===== */
+  /* ===== 顶部横幅 ===== */
   .hero {
     background: linear-gradient(135deg, #1A2B5C 0%, #2F6BFF 100%);
     color: #FFFFFF;
@@ -45,8 +45,10 @@
   .hero-sub {
     margin-top: 14px;
     font-size: 14px;
-    opacity: 0.7;
+    opacity: 0.72;
+    line-height: 1.7;
   }
+  .hero-sub b { color: #FFD666; font-weight: 600; }
 
   /* ===== 通用段 ===== */
   .section {
@@ -82,13 +84,15 @@
     line-height: 1.65;
   }
   .conclusion b { color: #2F6BFF; }
-
-  /* ===== 第2段：三个数字卡 ===== */
-  .cards {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
+  .conclusion.warn {
+    background: #FFF7E6;
+    border-left-color: #FAAD14;
   }
+  .conclusion.warn b { color: #B57F0A; }
+  .lead { font-size: 13.5px; color: #4B5563; margin-bottom: 16px; line-height: 1.7; }
+
+  /* ===== 数字卡 ===== */
+  .cards { display: flex; gap: 16px; flex-wrap: wrap; }
   .card {
     flex: 1 1 200px;
     min-width: 180px;
@@ -96,284 +100,133 @@
     border-radius: 12px;
     border: 1px solid #EEF0F3;
   }
-  .card-label {
-    font-size: 13px;
-    color: #6B7280;
-    margin-bottom: 8px;
-  }
-  .card-value {
-    font-size: 34px;
-    font-weight: 700;
-    line-height: 1.1;
-  }
-  .card-desc {
-    font-size: 12px;
-    color: #6B7280;
-    margin-top: 8px;
-    line-height: 1.5;
-  }
+  .card-label { font-size: 13px; color: #6B7280; margin-bottom: 8px; }
+  .card-value { font-size: 34px; font-weight: 700; line-height: 1.1; }
+  .card-desc { font-size: 12px; color: #6B7280; margin-top: 8px; line-height: 1.5; }
   .card-open { background: #F0F4FF; }
   .card-open .card-value { color: #2F6BFF; }
   .card-closed { background: #F5F8FF; }
   .card-closed .card-value { color: #5A86E8; }
   .card-fail { background: #FDF1F1; }
   .card-fail .card-value { color: #EA6668; }
+  .card-win { background: #F2FBF0; }
+  .card-win .card-value { color: #52C41A; }
 
-  /* ===== 第3段：归因三组条 ===== */
-  .attrib-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 14px;
-  }
+  /* ===== 归因三组条 ===== */
+  .attrib-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
   .attrib-row:last-child { margin-bottom: 0; }
-  .attrib-name {
-    width: 90px;
-    flex-shrink: 0;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: #1A1B1C;
-  }
-  .attrib-bar-wrap {
-    flex: 1;
-    height: 28px;
-    background: #F0F2F5;
-    border-radius: 6px;
-    overflow: hidden;
-    position: relative;
-  }
+  .attrib-name { width: 90px; flex-shrink: 0; font-size: 13.5px; font-weight: 600; }
+  .attrib-bar-wrap { flex: 1; height: 28px; background: #F0F2F5; border-radius: 6px; overflow: hidden; }
   .attrib-bar {
-    height: 100%;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    padding-left: 10px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #FFFFFF;
-    transition: width 0.3s;
+    height: 100%; border-radius: 6px; display: flex; align-items: center;
+    padding-left: 10px; font-size: 12px; font-weight: 600; color: #FFFFFF;
   }
   .attrib-bar.hit { background: #52C41A; }
   .attrib-bar.miss { background: #EA6668; }
   .attrib-bar.refuse { background: #9BBBF4; }
-  .attrib-meta {
-    width: 110px;
-    flex-shrink: 0;
-    font-size: 12.5px;
-    color: #6B7280;
-    text-align: right;
-  }
+  .attrib-meta { width: 110px; flex-shrink: 0; font-size: 12.5px; color: #6B7280; text-align: right; }
   .attrib-meta b { color: #1A1B1C; font-size: 14px; }
 
-  /* ===== 第4段：四维度对比 ===== */
-  .dim-row {
-    margin-bottom: 18px;
+  /* ===== 消融条 ===== */
+  .ab-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .ab-row:last-child { margin-bottom: 0; }
+  .ab-name { width: 108px; flex-shrink: 0; font-size: 13px; font-weight: 600; }
+  .ab-wrap { flex: 1; height: 30px; background: #F0F2F5; border-radius: 6px; overflow: hidden; }
+  .ab-bar {
+    height: 100%; border-radius: 6px; display: flex; align-items: center;
+    padding-left: 12px; font-size: 12.5px; font-weight: 700; color: #FFFFFF;
   }
+  .ab-bar.base { background: #C8CCD4; color: #4B5563; }
+  .ab-bar.run { background: #52C41A; }
+  .ab-bar.alt { background: #9BBBF4; }
+  .ab-meta { width: 96px; flex-shrink: 0; font-size: 12.5px; color: #6B7280; text-align: right; }
+  .ab-meta b { color: #1A1B1C; }
+  .ab-note { font-size: 12px; color: #9AA0A6; margin-top: 10px; line-height: 1.6; }
+
+  /* ===== 拆账 6+1+1 ===== */
+  .split { display: flex; gap: 12px; flex-wrap: wrap; }
+  .split-item { flex: 1 1 200px; padding: 16px 18px; border-radius: 10px; border: 1px solid #EEF0F3; }
+  .split-num { font-size: 28px; font-weight: 700; line-height: 1.1; }
+  .split-t { font-size: 12.5px; color: #6B7280; margin-top: 6px; font-weight: 600; }
+  .split-d { font-size: 12px; color: #6B7280; margin-top: 6px; line-height: 1.55; }
+  .s-a { background: #F2FBF0; } .s-a .split-num { color: #52C41A; }
+  .s-b { background: #FFF7E6; } .s-b .split-num { color: #FAAD14; }
+  .s-c { background: #FDF1F1; } .s-c .split-num { color: #EA6668; }
+
+  /* ===== 四维度对比 ===== */
+  .dim-row { margin-bottom: 18px; }
   .dim-row:last-child { margin-bottom: 0; }
-  .dim-name {
-    font-size: 13.5px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: #1A1B1C;
-  }
-  .dim-bars {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .dim-bar-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .dim-bar-label {
-    width: 48px;
-    flex-shrink: 0;
-    font-size: 12px;
-    color: #6B7280;
-  }
-  .dim-bar-track {
-    flex: 1;
-    height: 20px;
-    background: #F0F2F5;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .dim-bar-fill {
-    height: 100%;
-    border-radius: 4px;
-  }
+  .dim-name { font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
+  .dim-bars { display: flex; flex-direction: column; gap: 4px; }
+  .dim-bar-row { display: flex; align-items: center; gap: 10px; }
+  .dim-bar-label { width: 56px; flex-shrink: 0; font-size: 12px; color: #6B7280; }
+  .dim-bar-track { flex: 1; height: 20px; background: #F0F2F5; border-radius: 4px; overflow: hidden; }
+  .dim-bar-fill { height: 100%; border-radius: 4px; }
   .dim-bar-fill.open { background: #2F6BFF; }
   .dim-bar-fill.closed { background: #9BBBF4; }
-  .dim-bar-val {
-    width: 44px;
-    flex-shrink: 0;
-    font-size: 12.5px;
-    font-weight: 600;
-    color: #1A1B1C;
-  }
+  .dim-bar-fill.fixed { background: #52C41A; }
+  .dim-bar-val { width: 44px; flex-shrink: 0; font-size: 12.5px; font-weight: 600; }
 
-  /* ===== 第5段：失败类型分布 ===== */
-  .failtype-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 14px;
-  }
+  /* ===== 失败类型分布 ===== */
+  .failtype-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
   .failtype-row:last-child { margin-bottom: 0; }
-  .failtype-name {
-    width: 80px;
-    flex-shrink: 0;
-    font-size: 13.5px;
-    font-weight: 600;
-  }
-  .failtype-bar-wrap {
-    flex: 1;
-    height: 32px;
-    background: #F0F2F5;
-    border-radius: 6px;
-    overflow: hidden;
-  }
+  .failtype-name { width: 80px; flex-shrink: 0; font-size: 13.5px; font-weight: 600; }
+  .failtype-bar-wrap { flex: 1; height: 32px; background: #F0F2F5; border-radius: 6px; overflow: hidden; }
   .failtype-bar {
-    height: 100%;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    padding-left: 12px;
-    font-size: 13px;
-    font-weight: 700;
-    color: #FFFFFF;
+    height: 100%; border-radius: 6px; display: flex; align-items: center;
+    padding-left: 12px; font-size: 13px; font-weight: 700; color: #FFFFFF;
   }
   .failtype-bar.miss { background: #EA6668; }
   .failtype-bar.halluc { background: #D0D5DD; color: #6B7280; }
-  .failtype-count {
-    width: 60px;
-    flex-shrink: 0;
-    font-size: 13px;
-    color: #6B7280;
-    text-align: right;
-  }
+  .failtype-count { width: 60px; flex-shrink: 0; font-size: 13px; color: #6B7280; text-align: right; }
 
-  /* ===== 第6段：时间线 ===== */
-  .timeline {
-    position: relative;
-    padding: 8px 0 4px;
-  }
+  /* ===== 时间线 ===== */
+  .timeline { position: relative; padding: 8px 0 4px; }
   .timeline-track {
-    position: absolute;
-    top: 22px;
-    left: 40px;
-    right: 40px;
-    height: 3px;
-    background: #E4E7EC;
-    border-radius: 2px;
+    position: absolute; top: 22px; left: 40px; right: 40px;
+    height: 3px; background: #E4E7EC; border-radius: 2px;
   }
-  .timeline-nodes {
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-  }
-  .tl-node {
-    text-align: center;
-    width: 120px;
-    flex-shrink: 0;
-  }
+  .timeline-nodes { display: flex; justify-content: space-between; position: relative; }
+  .tl-node { text-align: center; width: 108px; flex-shrink: 0; }
   .tl-dot {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    margin: 13px auto 10px;
-    border: 3px solid #FFFFFF;
-    box-shadow: 0 0 0 2px #D0D5DD;
-    background: #D0D5DD;
+    width: 18px; height: 18px; border-radius: 50%;
+    margin: 13px auto 10px; border: 3px solid #FFFFFF;
+    box-shadow: 0 0 0 2px #D0D5DD; background: #D0D5DD;
   }
   .tl-dot.initial { background: #9BBBF4; box-shadow: 0 0 0 2px #9BBBF4; }
   .tl-dot.scope { background: #EA6668; box-shadow: 0 0 0 2px #EA6668; }
   .tl-dot.wording { background: #FAAD14; box-shadow: 0 0 0 2px #FAAD14; }
-  .tl-ver {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1A1B1C;
-  }
-  .tl-tag {
-    font-size: 11px;
-    margin-top: 3px;
-    color: #6B7280;
-    line-height: 1.4;
-  }
+  .tl-dot.struct { background: #7A5AF8; box-shadow: 0 0 0 2px #7A5AF8; }
+  .tl-ver { font-size: 14px; font-weight: 700; }
+  .tl-tag { font-size: 11px; margin-top: 3px; color: #6B7280; line-height: 1.4; }
   .tl-tag.scope { color: #EA6668; font-weight: 600; }
   .tl-tag.wording { color: #B57F0A; font-weight: 600; }
+  .tl-tag.struct { color: #7A5AF8; font-weight: 600; }
 
-  .tl-cases {
-    margin-top: 24px;
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .tl-case {
-    flex: 1 1 300px;
-    padding: 16px 18px;
-    background: #FDF8F8;
-    border: 1px solid #F5DCDC;
-    border-radius: 10px;
-  }
-  .tl-case-ver {
-    font-size: 12px;
-    font-weight: 700;
-    color: #EA6668;
-    margin-bottom: 6px;
-  }
-  .tl-case-text {
-    font-size: 13px;
-    color: #1A1B1C;
-    line-height: 1.65;
-  }
+  .tl-cases { margin-top: 24px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .tl-case { flex: 1 1 300px; padding: 16px 18px; background: #FDF8F8; border: 1px solid #F5DCDC; border-radius: 10px; }
+  .tl-case-ver { font-size: 12px; font-weight: 700; color: #EA6668; margin-bottom: 6px; }
+  .tl-case-text { font-size: 13px; color: #1A1B1C; line-height: 1.65; }
   .tl-case-text b { color: #EA6668; }
 
-  /* ===== 第7段：底部 ===== */
-  .screenshot-placeholder {
-    width: 100%;
-    height: 220px;
-    background: #F0F2F5;
-    border: 2px dashed #C8CCD4;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #9AA0A6;
-    font-size: 14px;
-    gap: 6px;
-  }
-  .screenshot-placeholder .ph-icon {
-    font-size: 32px;
-    opacity: 0.5;
-  }
-  .golden {
-    margin-top: 24px;
-    text-align: center;
-    padding: 20px 24px;
-    background: linear-gradient(135deg, #F0F4FF 0%, #E8EEFF 100%);
-    border-radius: 12px;
-  }
-  .golden-text {
-    font-size: 18px;
-    font-weight: 700;
-    color: #2F6BFF;
-    line-height: 1.6;
-  }
-  .golden-sub {
-    font-size: 13px;
-    color: #6B7280;
-    margin-top: 8px;
+  /* ===== 证据表 ===== */
+  .fp { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .fp th, .fp td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #F0F2F5; }
+  .fp th { color: #6B7280; font-weight: 600; font-size: 12px; }
+  .fp td code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11.5px; background: #F5F7FA; padding: 1px 5px; border-radius: 4px; color: #374151;
   }
 
-  .footnote {
-    padding: 16px 48px 28px;
-    font-size: 11.5px;
-    color: #9AA0A6;
-    line-height: 1.6;
+  /* ===== 底部 ===== */
+  .golden {
+    margin-top: 24px; text-align: center; padding: 20px 24px;
+    background: linear-gradient(135deg, #F0F4FF 0%, #E8EEFF 100%); border-radius: 12px;
   }
+  .golden-text { font-size: 18px; font-weight: 700; color: #2F6BFF; line-height: 1.6; }
+  .golden-sub { font-size: 13px; color: #6B7280; margin-top: 8px; }
+  .shot { width: 100%; border-radius: 10px; display: block; border: 1px solid #EEF0F3; }
+  .footnote { padding: 16px 48px 28px; font-size: 11.5px; color: #9AA0A6; line-height: 1.6; }
 
   @media (max-width: 640px) {
     .hero { padding: 28px 24px 24px; }
@@ -388,66 +241,178 @@
 <body>
 <div class="page">
 
-  <!-- ===== 第1段：顶部横幅 ===== -->
+  <!-- ===== 顶部横幅 ===== -->
   <div class="hero">
     <div class="hero-tag">EvalKit · LLM 输出评测工具</div>
-    <h1>同一批 30 道题、同一套评分标准，只改"给模型看多少材料"——通过率从 100% 掉到 76.7%，失败 100% 归因到检索。</h1>
-    <div class="hero-sub">两轮对比实验 · 开卷（全文注入）vs 闭卷（top-3 片段 + 3 干扰）· 自动判定引擎判分</div>
+    <h1>同一个被测对象、同一套评分标准：先把它量出 7 个失败，再用一次预注册实验把失败修到 1 个。</h1>
+    <div class="hero-sub">
+      30 个测试 case &nbsp;·&nbsp; 四维度 rubric &nbsp;·&nbsp; 模型只答事实、代码算分数<br>
+      开卷 30/30（区分度为 0）→ 闭卷 <b>23/30</b>（7 个失败全部归检索）→ 改检索后 <b>29/30</b>
+    </div>
   </div>
 
-  <!-- ===== 第2段：三个数字卡 ===== -->
+  <!-- ===== 三问 ===== -->
   <div class="section">
-    <div class="section-title">核心结果</div>
+    <div class="section-title">一个 AI 应用上线后，只有三个问题必须回答</div>
     <div class="cards">
       <div class="card card-open">
-        <div class="card-label">开卷（全文注入）</div>
-        <div class="card-value">30/30</div>
-        <div class="card-desc">通过率 100% · 区分度为 0（全对无法暴露问题）</div>
+        <div class="card-label">① 它现在好不好</div>
+        <div class="card-value" style="font-size:22px;">已回答</div>
+        <div class="card-desc">开卷 30/30、闭卷 23/30。但开卷全对<b>不是好消息</b>——答案就在眼前，区分度为 0。</div>
       </div>
-      <div class="card card-closed">
-        <div class="card-label">闭卷（3 相关 + 3 干扰）</div>
-        <div class="card-value">23/30</div>
-        <div class="card-desc">通过率 76.7% · 区分度从无到有，问题开始暴露</div>
+      <div class="card card-win">
+        <div class="card-label">② 改版后变好还是变坏</div>
+        <div class="card-value" style="font-size:22px;">用实验回答</div>
+        <div class="card-desc">预注册 → 单变量改动 → 闭卷 23/30 → <b>29/30</b>，检索命中率 50% → 86.4%。</div>
       </div>
       <div class="card card-fail">
-        <div class="card-label">闭卷失败</div>
-        <div class="card-value">7 个</div>
-        <div class="card-desc">全部是"漏检"（文档有答案但没答上）· 编造类 0 个</div>
+        <div class="card-label">③ 坏在哪一类</div>
+        <div class="card-value" style="font-size:22px;">已定位</div>
+        <div class="card-desc">7 个失败<b>全部</b>是"漏检"（文档有答案没找到），编造类 <b>0</b> 个。锅在检索，不在模型。</div>
       </div>
     </div>
     <div class="conclusion">开卷全对不代表模型好——把材料拿掉 7 条立刻挂掉，<b>问题出在信息供给，不在模型能力</b>。</div>
   </div>
 
-  <!-- ===== 第3段：归因三组条 ===== -->
+  <!-- ===== 核心结果 ===== -->
   <div class="section">
-    <div class="section-title">失败归因（闭卷轮，30 条按检索结果分三组）</div>
+    <div class="section-title">三轮有效评测的核心结果</div>
+    <div class="cards">
+      <div class="card card-open">
+        <div class="card-label">开卷（全文注入）</div>
+        <div class="card-value">30/30</div>
+        <div class="card-desc">通过率 100% · 区分度为 0</div>
+      </div>
+      <div class="card card-closed">
+        <div class="card-label">闭卷（3 相关 + 3 干扰）</div>
+        <div class="card-value">23/30</div>
+        <div class="card-desc">通过率 76.7% · 7 个失败全是漏检</div>
+      </div>
+      <div class="card card-win">
+        <div class="card-label">闭卷 · 改检索后</div>
+        <div class="card-value">29/30</div>
+        <div class="card-desc">通过率 96.7% · 检索命中率 50% → 86.4%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 失败归因 ===== -->
+  <div class="section">
+    <div class="section-title">失败归因（闭卷基准轮，30 条按检索结果分三组）</div>
     <div class="attrib-row">
       <div class="attrib-name">检索命中</div>
-      <div class="attrib-bar-wrap">
-        <div class="attrib-bar hit" style="width: 0%;">0 失败</div>
-      </div>
+      <div class="attrib-bar-wrap"><div class="attrib-bar hit" style="width: 0%;">0 失败</div></div>
       <div class="attrib-meta"><b>0</b> / 11 失败</div>
     </div>
     <div class="attrib-row">
       <div class="attrib-name">检索漏检</div>
-      <div class="attrib-bar-wrap">
-        <div class="attrib-bar miss" style="width: 63.6%;">7 失败</div>
-      </div>
+      <div class="attrib-bar-wrap"><div class="attrib-bar miss" style="width: 63.6%;">7 失败</div></div>
       <div class="attrib-meta"><b>7</b> / 11 失败</div>
     </div>
     <div class="attrib-row">
       <div class="attrib-name">应拒答类</div>
-      <div class="attrib-bar-wrap">
-        <div class="attrib-bar refuse" style="width: 0%;">0 失败</div>
-      </div>
+      <div class="attrib-bar-wrap"><div class="attrib-bar refuse" style="width: 0%;">0 失败</div></div>
       <div class="attrib-meta"><b>0</b> / 8 失败</div>
     </div>
-    <div class="conclusion">检索命中组 11 条 0 失败、应拒答组 8 条 0 失败，<b>7 个失败全部集中在检索漏检组（11 条挂了 7 条）——材料给到了就全对，锅在检索，不在模型</b>。另有 4 条检索漏检却答对了：同一知识点在文档多处重复，别的片段把它救回来了。</div>
+    <div class="conclusion">检索命中组 11 条 0 失败、应拒答组 8 条 0 失败，<b>7 个失败全部集中在检索漏检组（11 条挂了 7 条）——材料给到了就全对，锅在检索，不在模型</b>。</div>
+    <div class="conclusion warn">还有 4 条检索漏检却答对了：其中 <b>3 条</b>是因为同一知识点在文档多处重复、被别的片段救了回来；另 <b>1 条（C014）</b>经复核是<b>仪器泄漏</b>——它的金标片段被随机噪声抽中注进去了，不是能力。后续实验已把噪声口径改成"固定池 + 剔除该 case 金标"，从结构上消除这种泄漏。</div>
   </div>
 
-  <!-- ===== 第4段：四维度对比 ===== -->
+  <!-- ===== 检索回归实验 ===== -->
   <div class="section">
-    <div class="section-title">四维度得分对比（满分 3 分 · 开卷 vs 闭卷）</div>
+    <div class="section-title">回答第 ② 问：一次预注册的检索回归实验</div>
+    <div class="lead">
+      改版到底变好还是变坏，只能靠对照实验回答。所以<b>先写预注册</b>——改什么、成功标准、守卫条件、未达标怎么办，全部<b>在跑之前定死</b>，跑完不许再调。
+    </div>
+
+    <div style="margin-bottom:22px;">
+      <div style="font-size:13.5px;font-weight:600;margin-bottom:10px;">根因：为什么检索会漏</div>
+      <div class="split">
+        <div class="split-item s-c">
+          <div class="split-num">主因</div>
+          <div class="split-t">跨语言断裂（物理级）</div>
+          <div class="split-d">语料是<b>纯英文</b>（FastAPI 文档，中文字符 0），提问是中文；检索器对中文取二元组，<b>永远匹配不到英文语料</b>。结果是：提问里英文词数为 0 的 6 个 case，<b>检索结果为空集</b>——其中有金标的 3 个物理上不可能命中。</div>
+        </div>
+        <div class="split-item s-b">
+          <div class="split-num">次因</div>
+          <div class="split-t">打分无长度归一化</div>
+          <div class="split-d">chunk 长度中位数 841、最长 6766（8 倍）。长片段词多、常见词命中机会多，霸榜了 11 个 case 的 top-1，把真正的答案片段挤出前三。</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:22px;">
+      <div style="font-size:13.5px;font-weight:600;margin-bottom:10px;">两处根因各贡献多少（dry-run 消融，不调 API、免费预演）</div>
+      <div class="ab-row">
+        <div class="ab-name">v1 基准</div>
+        <div class="ab-wrap"><div class="ab-bar base" style="width: 50.0%;">50.0%</div></div>
+        <div class="ab-meta"><b>11</b>/22 命中</div>
+      </div>
+      <div class="ab-row">
+        <div class="ab-name">仅改长度归一化</div>
+        <div class="ab-wrap"><div class="ab-bar alt" style="width: 63.6%;">63.6%</div></div>
+        <div class="ab-meta"><b>14</b>/22 命中</div>
+      </div>
+      <div class="ab-row">
+        <div class="ab-name">仅加术语桥</div>
+        <div class="ab-wrap"><div class="ab-bar run" style="width: 86.4%;">86.4%</div></div>
+        <div class="ab-meta"><b>19</b>/22 命中</div>
+      </div>
+      <div class="ab-row">
+        <div class="ab-name">两者叠加</div>
+        <div class="ab-wrap"><div class="ab-bar alt" style="width: 90.9%;">90.9%</div></div>
+        <div class="ab-meta"><b>20</b>/22 命中</div>
+      </div>
+      <div class="ab-note">本次实际执行的是「仅加术语桥」这一臂。术语桥＝把提问里的中文术语（路径参数 / 查询参数 / 请求体…）映射成语料自身的英文术语，追加进查询。<b>消融证明它不是偷看答案</b>：把术语表里一切贴近答案的措辞全部删掉后，命中率数字完全不变。</div>
+    </div>
+
+    <div style="margin-bottom:22px;">
+      <div style="font-size:13.5px;font-weight:600;margin-bottom:10px;">结果：达标（四条守卫全过）</div>
+      <div class="cards">
+        <div class="card card-closed">
+          <div class="card-label">检索命中率 · 目标 ≥86%</div>
+          <div class="card-value">86.4%</div>
+          <div class="card-desc">50.0% → 86.4% · 压线达标</div>
+        </div>
+        <div class="card card-win">
+          <div class="card-label">闭卷通过数 · 目标 ≥27</div>
+          <div class="card-value">29/30</div>
+          <div class="card-desc">23/30 → 29/30 · 超预期</div>
+        </div>
+        <div class="card card-win">
+          <div class="card-label">守卫：新增漏检</div>
+          <div class="card-value" style="font-size:26px;">0</div>
+          <div class="card-desc">新漏检集是旧漏检集的<b>子集</b>，未引入新的漏检</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:13.5px;font-weight:600;margin-bottom:10px;">★ 拆账：净 +6 不是 +7</div>
+      <div class="split">
+        <div class="split-item s-a">
+          <div class="split-num">6</div>
+          <div class="split-t">可直接归因给检索</div>
+          <div class="split-d">漏检 → 命中，答案跟着对。这是检索改动真正的功劳。</div>
+        </div>
+        <div class="split-item s-b">
+          <div class="split-num">1</div>
+          <div class="split-t">仍漏检，却通过（C013）</div>
+          <div class="split-d">检索其实修好了，但<b>命中率看不见它</b>——因为这道题的金标锚点落在"教程第一步"，位置不对。命中率 86.4% 是个<b>低估</b>。</div>
+        </div>
+        <div class="split-item s-c">
+          <div class="split-num">−1</div>
+          <div class="split-t">通过 → 失败（C022）</div>
+          <div class="split-d">两轮里模型行为是同型的，但 judge 的两条事实判断<b>同时翻转</b>。这是<b>判定噪声</b>，不是系统变差。</div>
+        </div>
+      </div>
+      <div class="conclusion">一个"改检索"的实验，测出来的通过数变化里混着两类东西：<b>检索的真实效果（命中率能测）</b>，和<b>代理指标自身的盲区、判定噪声（命中率测不到）</b>。只报"23→29，有效"是不完整的；拆成 6 + 1 − 1 才是诚实的账。</div>
+    </div>
+  </div>
+
+  <!-- ===== 四维度对比 ===== -->
+  <div class="section">
+    <div class="section-title">四维度得分对比（满分 3 分 · 开卷 / 闭卷 / 改检索后）</div>
     <div class="dim-row">
       <div class="dim-name">事实性</div>
       <div class="dim-bars">
@@ -460,6 +425,11 @@
           <div class="dim-bar-label">闭卷</div>
           <div class="dim-bar-track"><div class="dim-bar-fill closed" style="width: 84.3%;"></div></div>
           <div class="dim-bar-val">2.53</div>
+        </div>
+        <div class="dim-bar-row">
+          <div class="dim-bar-label">改检索后</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill fixed" style="width: 97.7%;"></div></div>
+          <div class="dim-bar-val">2.93</div>
         </div>
       </div>
     </div>
@@ -476,6 +446,11 @@
           <div class="dim-bar-track"><div class="dim-bar-fill closed" style="width: 81.0%;"></div></div>
           <div class="dim-bar-val">2.43</div>
         </div>
+        <div class="dim-bar-row">
+          <div class="dim-bar-label">改检索后</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill fixed" style="width: 94.3%;"></div></div>
+          <div class="dim-bar-val">2.83</div>
+        </div>
       </div>
     </div>
     <div class="dim-row">
@@ -490,6 +465,11 @@
           <div class="dim-bar-label">闭卷</div>
           <div class="dim-bar-track"><div class="dim-bar-fill closed" style="width: 90.3%;"></div></div>
           <div class="dim-bar-val">2.71</div>
+        </div>
+        <div class="dim-bar-row">
+          <div class="dim-bar-label">改检索后</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill fixed" style="width: 100%;"></div></div>
+          <div class="dim-bar-val">3.00</div>
         </div>
       </div>
     </div>
@@ -506,66 +486,76 @@
           <div class="dim-bar-track"><div class="dim-bar-fill closed" style="width: 77.7%;"></div></div>
           <div class="dim-bar-val">2.33</div>
         </div>
+        <div class="dim-bar-row">
+          <div class="dim-bar-label">改检索后</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill closed" style="width: 77.7%;"></div></div>
+          <div class="dim-bar-val">2.33</div>
+        </div>
       </div>
     </div>
-    <div class="conclusion">四维全降，但<b>跌幅不可横向排名</b>：四个维度的计分样本数不同（开卷 30/30/22/12、闭卷 30/30/21/12），拿不同样本的均分比"谁降得多"，方法上不成立。边界处理维还多一层——它的两轮差值含 judge 判定噪声：同一道题在"是否发生拒绝"上被填"否"或"不适用"就差 1 分（C023 开卷 3 / 闭卷 2，C025 开卷 2 / 闭卷 3，同题同尺），<b>连"涨了还是跌了"都谈不上</b>。本轮能下结论的只有事实性：跌幅最大（−0.47），且它是全样本 30/30。</div>
+    <div class="conclusion">四个维度里<b>三个上升，唯一没动的是"边界处理"</b>——而它和检索无关（那 12 条是边界 / 对抗类，本来就大多在"能命中"的组里）。<b>改动落在检索上，效果就落在依赖检索的维度上</b>，这个形状本身就是归因证据。</div>
+    <div class="conclusion warn">但<b>跌幅不可横向排名</b>：四个维度的计分样本数不同（例如边界处理维只有 12 条计分），拿不同样本的均分比"谁降得多"，方法上不成立。<b>可下结论的只有"改检索后"这一列与闭卷基准的差值</b>，且只有事实性（+0.40）、表述与可落地（+0.40）是全样本 30/30。</div>
   </div>
 
-  <!-- ===== 第5段：失败类型分布 ===== -->
+  <!-- ===== 失败类型分布 ===== -->
   <div class="section">
-    <div class="section-title">失败类型分布（闭卷轮 7 个失败）</div>
+    <div class="section-title">失败类型分布（闭卷基准轮 7 个失败）</div>
     <div class="failtype-row">
       <div class="failtype-name" style="color:#EA6668;">漏检</div>
-      <div class="failtype-bar-wrap">
-        <div class="failtype-bar miss" style="width: 100%;">7 个 · 文档里有答案但没答上</div>
-      </div>
+      <div class="failtype-bar-wrap"><div class="failtype-bar miss" style="width: 100%;">7 个 · 文档里有答案但没答上</div></div>
       <div class="failtype-count">7 / 7</div>
     </div>
     <div class="failtype-row">
       <div class="failtype-name" style="color:#6B7280;">编造</div>
-      <div class="failtype-bar-wrap">
-        <div class="failtype-bar halluc" style="width: 0%;">0</div>
-      </div>
+      <div class="failtype-bar-wrap"><div class="failtype-bar halluc" style="width: 0%;">0</div></div>
       <div class="failtype-count">0 / 7</div>
     </div>
     <div class="conclusion"><b>7 个失败 100% 是"漏检"类型，编造类为 0</b>——模型没有自己编答案，它只是在材料里找不到答案时答不上来。这把问题定位到了检索系统，而不是模型的事实性。</div>
   </div>
 
-  <!-- ===== 第6段：评分标准演化时间线 ===== -->
+  <!-- ===== 评分标准演化 ===== -->
   <div class="section">
-    <div class="section-title">评分标准自身的演化（v1.0 → v1.4，共 5 个版本）</div>
+    <div class="section-title">评分标准自身的演化（v1.0 → v1.5）</div>
     <div class="timeline">
       <div class="timeline-track"></div>
       <div class="timeline-nodes">
         <div class="tl-node">
-          <div class="tl-dot initial"></div>
+          <div class="tl-dot scope"></div>
           <div class="tl-ver">v1.0</div>
-          <div class="tl-tag">初版定稿<br>否决线替代等权</div>
+          <div class="tl-tag scope">定稿时即埋洞<br>否决线替代等权</div>
         </div>
         <div class="tl-node">
           <div class="tl-dot wording"></div>
           <div class="tl-ver">v1.1</div>
-          <div class="tl-tag wording">措辞歧义<br>扣分规则补充</div>
+          <div class="tl-tag wording">措辞歧义</div>
         </div>
         <div class="tl-node">
           <div class="tl-dot scope"></div>
           <div class="tl-ver">v1.2</div>
-          <div class="tl-tag scope">适用范围漏洞<br>（见下方案例）</div>
+          <div class="tl-tag scope">适用范围漏洞</div>
         </div>
         <div class="tl-node">
-          <div class="tl-dot scope"></div>
+          <div class="tl-dot struct"></div>
           <div class="tl-ver">v1.3</div>
-          <div class="tl-tag scope">适用范围漏洞<br>判定结构重构</div>
+          <div class="tl-tag struct">判定结构重构</div>
         </div>
         <div class="tl-node">
           <div class="tl-dot scope"></div>
           <div class="tl-ver">v1.4</div>
-          <div class="tl-tag scope">适用范围漏洞<br>（见下方案例）</div>
+          <div class="tl-tag scope">适用范围漏洞</div>
+        </div>
+        <div class="tl-node">
+          <div class="tl-dot scope"></div>
+          <div class="tl-ver">v1.5</div>
+          <div class="tl-tag scope">适用范围漏洞</div>
         </div>
       </div>
     </div>
     <div style="margin-top:16px;font-size:13px;color:#1A1B1C;">
-      四个迭代版本中，<b style="color:#EA6668;">3 个漏洞出在"这条规则该不该用在这道题上"（适用范围）</b>，只有 1 个出在措辞歧义。<b>人工试评 3 条时这些漏洞一个都没发现，是自动判定引擎撞出来的。</b>
+      六次版本状态共撞出 6 个洞：<b style="color:#EA6668;">4 个出在"这条规则该不该用在这道题上"（适用范围）</b>、
+      <b style="color:#B57F0A;">1 个出在措辞歧义</b>、
+      <b style="color:#7A5AF8;">1 个（v1.3）是判定结构重做</b>——把"模型自己报分"改成"模型只答可观察事实、分数由代码按映射表算"。
+      <b>人工试评 3 条时这些洞一个都没发现，是自动判定引擎撞出来的。</b>
     </div>
     <div class="tl-cases">
       <div class="tl-case">
@@ -577,26 +567,36 @@
         <div class="tl-case-text">有一道题要求模型<b>输出整份文档</b>（攻击），模型正确拒绝了，却因"没按要求给"被格式维度扣分——<b>惩罚了正确行为</b>。修法：该拒绝的题，<b>格式维不计分</b>。</div>
       </div>
     </div>
-    <div class="conclusion">评分标准不是写完就不变的——<b>自动判定引擎跑了两轮，就把标准自己的 4 个漏洞撞了出来，其中 3 个是"规则用错了题"而非"规则写错了字"</b>。人工试评 3 条时一个都没发现。</div>
+    <div class="conclusion">评分标准不是写完就不变的——<b>自动判定引擎跑了几轮，就把标准自己的洞撞了出来，其中 4 个是"规则用错了题"而非"规则写错了字"</b>。人工试评 3 条时一个都没发现。</div>
   </div>
 
-  <!-- ===== 第7段：底部 ===== -->
+  <!-- ===== 看板 ===== -->
   <div class="section">
-    <div class="section-title">项目看板（飞书多维表格）</div>
-    <img src="screenshot.png" alt="飞书看板截图" style="width:100%;border-radius:10px;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-    <div class="screenshot-placeholder" style="display:none;">
-      <div class="ph-icon">🖼</div>
-      <div>飞书看板截图占位</div>
-      <div style="font-size:12px;">将 screenshot.png 放在本 HTML 同目录即可自动显示</div>
-    </div>
+    <div class="section-title">端到端闭环：判定结果回写看板</div>
+    <img class="shot" src="dashboard.png" alt="EvalKit 评测驾驶舱">
     <div class="golden">
       <div class="golden-text">判定引擎不只是省人力，<br>它是评分标准本身的质检器。</div>
       <div class="golden-sub">EvalKit · 两周冲刺 · 2026-09-08 → 2026-09-22</div>
     </div>
   </div>
 
+  <!-- ===== 证据索引 ===== -->
+  <div class="section">
+    <div class="section-title">证据可追溯（每一轮都留指纹）</div>
+    <table class="fp">
+      <tr><th>项</th><th>值</th></tr>
+      <tr><td>语料</td><td><code>CORPUS.md</code> · 50,917 字符 · sha256 <code>0dec825612cf</code></td></tr>
+      <tr><td>系统提示</td><td>sha256 <code>cb783e229422…</code></td></tr>
+      <tr><td>rubric</td><td>R001 v1.5 · sha256 <code>569daad01f67…</code></td></tr>
+      <tr><td>judge 模型</td><td><code>deepseek-v4-flash</code> · temperature 0 · thinking 关闭</td></tr>
+      <tr><td>术语表（检索回归）</td><td><code>terms_zh_en.tsv</code> · 42 条 · sha256 <code>f63a03db4fea…</code></td></tr>
+      <tr><td>有效轮次</td><td>开卷 <code>20260908-202726</code> / 闭卷 <code>20260909-173030</code> / 实验 <code>20260916-143437</code></td></tr>
+    </table>
+    <div class="conclusion">只有一个数据源：<code>runs/&lt;轮次&gt;/judged/summary.json</code>。<b>报告、本页、看板全部是它的投影</b>——一份数据只允许一个源，改数字只改源，投影跟着动。</div>
+  </div>
+
   <div class="footnote">
-    注：另有两轮作废轮次（模型版本次日失效、不可复现）仅作留痕，未计入本页任何数字。本页所有数字来自两轮有效评测轮次（开卷 20260908-202726 / 闭卷 20260909-173030）。
+    注：① 另有 13 个轮次为冒烟、中断或模型次日失效，仅作留痕，<b>未计入本页任何数字</b>；② 维度均分不可跨维度横向排名（计分样本数不同）；③ 边界处理维两轮差值含 judge 判定噪声，不作结论；④ 本次检索回归的命中率目标（≥86%）是按 dry-run 预演的同一数字设定的，<b>不是独立预注册</b>，真正撑住结论的是通过数 29/30；⑤ 仍有已知未解项（长片段霸榜未处置、1 个 case 的金标锚点位置不对、1 个 case 的判定会在两轮间翻转），详见项目仓库。
   </div>
 
 </div>
