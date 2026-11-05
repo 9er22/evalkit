@@ -1,5 +1,7 @@
 # EvalKit
 
+> **在线看**：<https://evalkit-showcase.app.workbuddy.host/> —— 一页看完三轮结果、失败归因与检索回归实验，无需登录。
+
 一个最小的 LLM / Agent 输出评测工具。
 
 给任意一个 LLM / Agent 应用做批量评测：喂一批测试 case，得到**通过率、失败分类、版本间回归对比**。
@@ -25,10 +27,10 @@
 | 节点 0 | 建仓库 + 记录亲历的标准不一致事件 | **已完成**（9/8） |
 | 节点 1 | 定被测对象 + 设计 30 个 case | **已完成**（9/8 提前做完） |
 | 节点 2 | 设计评分标准 rubric | **已完成**（9/8，R001 定稿 + 3 条试评） |
-| 节点 3 | 跑起来 + 出界面 | **已完成**（runner + 质检引擎；开卷/闭卷两轮有效跑测；界面 = 静态展示页 `reports/showcase/index.html`） |
+| 节点 3 | 跑起来 + 出界面 | **已完成**（runner + 质检引擎；开卷/闭卷两轮有效跑测；界面 = 静态展示页 [`reports/showcase/index.html`](reports/showcase/index.html)，线上版 <https://evalkit-showcase.app.workbuddy.host/>） |
 | 节点 4 | 评测报告 + 交叉验证 + 检索回归 | **已完成**（评测报告 `reports/评测报告-R001-20260910.md`；交叉验证 `reports/交叉验证-R001-20260913.md`；检索回归 `docs/检索回归-实验报告-20260916.md`） |
 
-仓库：<https://github.com/9er22/evalkit>（**私有**；是否公开待定，真要公开先走 `docs/公开前检查清单.md`）。环境配置踩坑记录见 `docs/环境配置.md`。
+仓库：<https://github.com/9er22/evalkit>（**已公开**；公开前按 `docs/公开前检查清单.md` 重写过一次历史，清掉曾进过提交的私人路径）。环境配置踩坑记录见 `docs/环境配置.md`。
 
 节点 1 产出：被测对象与语料见 `research/被测对象说明.md`，30 个 case 在 `cases/`，语料快照在 `research/corpus/`（固定 commit `50113da`）。
 
@@ -59,3 +61,5 @@ docs/       执行方案与决策记录
 ## 完成标志
 
 一个公开仓库 + 一个能打开的界面。README 写清：评的是什么 / 标准怎么定的 / 发现了什么 / 最该改什么。（复盘长文即这条的展开版。）
+
+**当前状态**：两项均已达成——仓库已公开（<https://github.com/9er22/evalkit>），展示页已上线（<https://evalkit-showcase.app.workbuddy.host/>）。
